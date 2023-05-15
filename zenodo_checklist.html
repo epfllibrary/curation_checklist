@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Zenodo curation report generator</title>
+    <!-- importing lots of unncessary packages, maybe we'll use them later -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+    <!--Load Bootstrap-->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/@mui/material@latest/umd/material-ui.production.min.js"></script>
+    <meta name="description" content="Our first page">
+    <meta name="keywords" content="html tutorial template">
+</head>
+
+<body>
+    <h1>Zenodo curation report generator</h1>
+    <form action="/">
+        <fieldset>
+            <legend>MUST: </legend>
+            <div>
+                <input type="checkbox" name="must" value="M1" />
+                <label for="M1">
+                    At least one author is affiliated with EPFL at the time of the submission or creation of the submitted work.
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="must" value="M2" />
+                <label for="M2">
+                    The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired.
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="must" value="M3" />
+                <label for="M3">
+                    The Description of the submitted dataset is sufficiently detailed. Mere references to external articles or other resources are not a sufficient description.
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="must" value="M4" />
+                <label for="M4">
+                    If no ORCID is listed, the name and surname and EPFL email address of at least one author are specified in the Description.
+                </label>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>RECOMMENDED: </legend>
+            <div>
+                <input type="checkbox" name="recommended" value="R1" />
+                <label for="R1">
+                    Authors are identified by their ORCID.
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="recommended" value="R2" />
+                <label for="R2">
+                    The title is human-readable on the same level as conventional publications: filenames or coded expressions are deprecated.
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="recommended" value="R3" />
+                <label for="R3">
+                    If existing, references to related publications (e.g., article, source code, other datasets, etc.) are specified in the "Related/alternate identifiers" field, using a DOI if available.
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="recommended" value="R4" />
+                <label for="R4">
+                    In general, a README file is present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides).
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="recommended" value="R5" />
+                <label for="R5">
+                    Any sensitive, personal data has been anonymized.
+                </label>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>NICE TO HAVE: </legend>
+            <div>
+                <input type="checkbox" name="nth" value="N1" />
+                <label for="N1">
+                    If applicable, related grants are acknowledged using “Funding/Grants” fields.
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="nth" value="N2" />
+                <label for="N2">
+                    Dataset has been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.).
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="nth" value="N3" />
+                <label for="N3">
+                    Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code).
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="nth" value="N4" />
+                <label for="N4">
+                    When a README file is advised, it contains information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc. 
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="nth" value="N5" />
+                <label for="N5">
+                    If the submission is related to a PhD thesis, the supervisor is specified.
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="nth" value="N6" />
+                <label for="N6">
+                    Files are available in open formats.
+                </label>
+            </div>
+            <div>
+                <input type="checkbox" name="nth" value="N7" />
+                <label for="N7">
+                    Where applicable, sources from which the work is derived are specified.
+                </label>
+                <div>
+                <input type="checkbox" name="nth" value="N8" />
+                <label for="N8">
+                    Keywords are entered as separated fields.
+                </label>
+            </div>
+
+        </fieldset>
+    </form>
+    <br />
+    <button class="demo" id="curation" value="submit">Create feedback e-mail</button>
+    </div>
+    <script type="text/jsx">
+        const emailTo = "info@zenodo.org";
+        const emailSub = "Zenodo dataset submitted to the EPFL community"
+        var text = "";
+
+        $(document).ready(function () {
+        $('#curation').click(function () {
+            const MustCheckboxChecked = $('input[name="must"]:checked').length;
+            const RecommendedCheckboxChecked = $('input[name="recommended"]:checked').length;
+            const NTHCheckboxChecked = $('input[name="nth"]:checked').length;
+            console.log(MustCheckboxChecked);
+            if (MustCheckboxChecked > 0) {
+                text += `Total ${MustCheckboxChecked} MUST criteria:\n`;
+                        $('input[name="must"]:checked').each(function () {
+                            let value = $(this).val();
+                            let checkboxText = $(`label[for="${value}"]`).text().trim();
+                            text += `${value}: `;
+                            text += `${checkboxText}\n`;
+                            text += `=>\n\n`;
+                        })
+            }
+
+            if (RecommendedCheckboxChecked > 0) {
+                text += `Total ${RecommendedCheckboxChecked} RECOMMENDED criteria:\n`;
+                        $('input[name="recommended"]:checked').each(function () {
+                            let value = $(this).val();
+                            let checkboxText = $(`label[for="${value}"]`).text().trim();
+                            text += `${value}: `;
+                            text += `${checkboxText}\n`;
+                            text += `=>\n\n`;
+                        })
+            }
+
+            if (NTHCheckboxChecked > 0) {
+                text += `Total ${NTHCheckboxChecked} NICE TO HAVE criteria:\n`;
+                        $('input[name="nth"]:checked').each(function () {
+                            let value = $(this).val();
+                            let checkboxText = $(`label[for="${value}"]`).text().trim();
+                            text += `${value}: `;
+                            text += `${checkboxText}\n`;
+                            text += `=>\n\n`;
+                        })
+            }
+            location.href = "mailto:"+emailTo+'?&subject='+emailSub+'&body='+encodeURIComponent(text);
+        });
+        
+    });
+    </script>
+</body>
+
+</html>
