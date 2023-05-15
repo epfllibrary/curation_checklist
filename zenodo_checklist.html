@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
     <!--Load Bootstrap-->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/@mui/material@latest/umd/material-ui.production.min.js"></script>
     <meta name="description" content="Our first page">
@@ -140,13 +140,13 @@
 
         $(document).ready(function () {
         $('#curation').click(function () {
-            const MustCheckboxChecked = $('input[name="must"]:checked').length;
-            const RecommendedCheckboxChecked = $('input[name="recommended"]:checked').length;
-            const NTHCheckboxChecked = $('input[name="nth"]:checked').length;
-            console.log(MustCheckboxChecked);
-            if (MustCheckboxChecked > 0) {
-                text += `Total ${MustCheckboxChecked} MUST criteria:\n`;
-                        $('input[name="must"]:checked').each(function () {
+            const MustCheckboxUnchecked = $('input[name="must"]:not(:checked)').length;
+            const RecommendedCheckboxUnchecked = $('input[name="recommended"]:not(:checked)').length;
+            const NTHCheckboxUnchecked = $('input[name="nth"]:not(:checked)').length;
+            console.log(MustCheckboxUnchecked);
+            if (MustCheckboxUnchecked > 0) {
+                text += `Total ${MustCheckboxUnchecked} MUST criteria:\n`;
+                        $('input[name="must"]:not(:checked)').each(function () {
                             let value = $(this).val();
                             let checkboxText = $(`label[for="${value}"]`).text().trim();
                             text += `${value}: `;
@@ -155,9 +155,9 @@
                         })
             }
 
-            if (RecommendedCheckboxChecked > 0) {
-                text += `Total ${RecommendedCheckboxChecked} RECOMMENDED criteria:\n`;
-                        $('input[name="recommended"]:checked').each(function () {
+            if (RecommendedCheckboxUnchecked > 0) {
+                text += `Total ${RecommendedCheckboxUnchecked} RECOMMENDED criteria:\n`;
+                        $('input[name="recommended"]:not(:checked)').each(function () {
                             let value = $(this).val();
                             let checkboxText = $(`label[for="${value}"]`).text().trim();
                             text += `${value}: `;
@@ -166,9 +166,9 @@
                         })
             }
 
-            if (NTHCheckboxChecked > 0) {
-                text += `Total ${NTHCheckboxChecked} NICE TO HAVE criteria:\n`;
-                        $('input[name="nth"]:checked').each(function () {
+            if (NTHCheckboxUnchecked > 0) {
+                text += `Total ${NTHCheckboxUnchecked} NICE TO HAVE criteria:\n`;
+                        $('input[name="nth"]:not(:checked)').each(function () {
                             let value = $(this).val();
                             let checkboxText = $(`label[for="${value}"]`).text().trim();
                             text += `${value}: `;
