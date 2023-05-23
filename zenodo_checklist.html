@@ -139,6 +139,7 @@
         const emailSub = 'Zenodo dataset submitted to the EPFL community';
         var text = '';
 
+        $(document).ready(function () {
         $('#curation').click(function () {
             const MustCheckboxUnchecked = $('input[name="must"]:not(:checked)').length;
             const RecommendedCheckboxUnchecked = $('input[name="recommended"]:not(:checked)').length;
@@ -201,8 +202,7 @@
 
             let doi = $('input[name="DOI"]').val();
             console.log('https://api.datacite.org/dois/' + doi);
-            $(document).ready(function () {
-                fetch('https://api.datacite.org/dois/' + doi, {
+            fetch('https://api.datacite.org/dois/' + doi, {
                 method: 'GET', 
                 headers: {
                     accept: 'application/json'
