@@ -139,19 +139,6 @@
         const emailSub = 'Zenodo dataset submitted to the EPFL community';
         var text = '';
 
-
-        $(document).ready(function () {
-            fetch('https://api.datacite.org/dois/10.5281/zenodo.7937983', {
-            method: 'GET', 
-            headers: {
-                accept: 'application/json'
-            }
-        })
-        .then(resp => resp.json())
-        .then(json => console.log(json))
-        // .then(err => console.error(json, err));
-
-
         $('#curation').click(function () {
             const MustCheckboxUnchecked = $('input[name="must"]:not(:checked)').length;
             const RecommendedCheckboxUnchecked = $('input[name="recommended"]:not(:checked)').length;
@@ -211,6 +198,19 @@
                 footer += "\n\nIf you have any questions or comments about this service, do not hesitate to ask. We will be glad to answer or receive your feedback.\n\n"
                 footer += "Best regards,\nZZZZZZ"
             }
+
+            let doi = $('input[name="DOI"]').val();
+            console.log('https://api.datacite.org/dois/' + doi);
+            $(document).ready(function () {
+                fetch('https://api.datacite.org/dois/' + doi, {
+                method: 'GET', 
+                headers: {
+                    accept: 'application/json'
+                }
+            })
+            .then(resp => resp.json())
+            .then(json => console.log(json))
+            .then(err => console.error(err));
 
             text = header + text + footer;
 
