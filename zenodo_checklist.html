@@ -18,6 +18,7 @@
 <body>
     <h1>Zenodo curation report generator</h1>
     <form action="/">
+        <input type="text" id="doi" name="DOI" /><br/><br/>
         <fieldset>
             <legend>MUST: </legend>
             <div>
@@ -138,7 +139,19 @@
         const emailSub = 'Zenodo dataset submitted to the EPFL community';
         var text = '';
 
+
         $(document).ready(function () {
+            fetch('https://api.datacite.org/dois/10.5281/zenodo.7937983', {
+            method: 'GET', 
+            headers: {
+                accept: 'application/json'
+            }
+        })
+        .then(resp => resp.json())
+        .then(json => console.log(json))
+        // .then(err => console.error(json, err));
+
+
         $('#curation').click(function () {
             const MustCheckboxUnchecked = $('input[name="must"]:not(:checked)').length;
             const RecommendedCheckboxUnchecked = $('input[name="recommended"]:not(:checked)').length;
