@@ -132,27 +132,16 @@
         </fieldset>
     </form>
     <br />
-    <button class="demo" id="curation" value="submit">Create feedback e-mail</button>
+    <button class="demo" id="curation">Create feedback e-mail</button>
     </div>
     <script type="text/jsx">
         const emailTo = 'info@zenodo.org';
         const emailSub = 'Zenodo dataset submitted to the EPFL community';
         var text = '';
-		
-		// This seems to work
-		console.log('constant URL at the beginning');
-		fetch('https://api.datacite.org/dois/10.5281/zenodo.7937983', {
-                method: 'GET', 
-                headers: {
-                    accept: 'application/json'
-                }
-            })
-            .then(resp => resp.json())
-            .then(json => console.log(json))
-            .catch(err => console.error(err));
 
         $(document).ready(function () {
-        $('#curation').click(function () {
+        $('#curation').click(function (event) {
+            event.preventDefault();
             const MustCheckboxUnchecked = $('input[name="must"]:not(:checked)').length;
             const RecommendedCheckboxUnchecked = $('input[name="recommended"]:not(:checked)').length;
             const NTHCheckboxUnchecked = $('input[name="nth"]:not(:checked)').length;
@@ -212,9 +201,11 @@
                 footer += "Best regards,\nZZZZZZ"
             }
 
-			// fails with NS_BINDING_ABORTED ???
 			console.log('variable URL at the end');
             let doi = $('input[name="DOI"]').val();
+            if (doi === '') {
+                doi = 'dummy';
+            }
             console.log('https://api.datacite.org/dois/' + doi);
             fetch('https://api.datacite.org/dois/' + doi, {
                 method: 'GET', 
@@ -223,12 +214,13 @@
                 }
             })
             .then(resp => resp.json())
-            .then(json => console.log(json))
+            .then(json => {
+                console.log(json);
+                text = header + text + footer;
+                location.href = "mailto:"+emailTo+'?&subject='+emailSub+'&body='+encodeURIComponent(text);
+            })
             .catch(err => console.error(err));
 
-            text = header + text + footer;
-
-            location.href = "mailto:"+emailTo+'?&subject='+emailSub+'&body='+encodeURIComponent(text);
         });
 
         
