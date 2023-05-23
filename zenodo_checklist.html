@@ -138,6 +138,18 @@
         const emailTo = 'info@zenodo.org';
         const emailSub = 'Zenodo dataset submitted to the EPFL community';
         var text = '';
+		
+		// This seems to work
+		console.log('constant URL at the beginning');
+		fetch('https://api.datacite.org/dois/10.5281/zenodo.7937983', {
+                method: 'GET', 
+                headers: {
+                    accept: 'application/json'
+                }
+            })
+            .then(resp => resp.json())
+            .then(json => console.log(json))
+            .catch(err => console.error(err));
 
         $(document).ready(function () {
         $('#curation').click(function () {
@@ -200,6 +212,8 @@
                 footer += "Best regards,\nZZZZZZ"
             }
 
+			// fails with NS_BINDING_ABORTED ???
+			console.log('variable URL at the end');
             let doi = $('input[name="DOI"]').val();
             console.log('https://api.datacite.org/dois/' + doi);
             fetch('https://api.datacite.org/dois/' + doi, {
@@ -210,7 +224,7 @@
             })
             .then(resp => resp.json())
             .then(json => console.log(json))
-            .then(err => console.error(err));
+            .catch(err => console.error(err));
 
             text = header + text + footer;
 
