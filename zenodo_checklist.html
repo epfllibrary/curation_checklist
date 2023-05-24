@@ -199,7 +199,7 @@
                 if ('data' in json) {
                     console.log('And we have a winner!');
                     // TODO check if only valid for the meta-DOI and not for versions
-                    identifier = json.data.attributes.identifiers[0].identifier;
+                    identifier = json.data.attributes.url;
                     title = json.data.attributes.titles[0].title;
                     console.log(identifier, title);
                 }
