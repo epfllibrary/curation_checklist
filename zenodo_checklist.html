@@ -137,10 +137,10 @@
     <script type="text/jsx">
         const emailTo = 'info@zenodo.org';
         const emailSub = 'Zenodo dataset submitted to the EPFL community';
-        var text = '';
 
         $(document).ready(function () {
         $('#curation').click(function (event) {
+            var text = '';
             event.preventDefault();
             const MustCheckboxUnchecked = $('input[name="must"]:not(:checked)').length;
             const RecommendedCheckboxUnchecked = $('input[name="recommended"]:not(:checked)').length;
