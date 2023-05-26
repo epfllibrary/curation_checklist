@@ -1,6 +1,8 @@
 // ==UserScript==
 // @name        Zenodo Curation Checklist
+// @resource    https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css
 // @require     https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js
+// @require     https://cdn.jsdelivr.net/npm/jquery-ui@1.13.2/dist/jquery-ui.min.js
 // @namespace   curation.epflrdm.zenodo
 // @author      Alain Borel
 // @include     https://zenodo.org/record/*
@@ -10,7 +12,12 @@
 // ==/UserScript==
 
 this.$ = this.jQuery = jQuery.noConflict(true);
+addStyles();
 addButtons();
+
+function addStyles() {
+  
+}
 
 function addButtons() {
   
@@ -47,7 +54,8 @@ function addButtons() {
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
   if (relativeIdentifiers) {
-    relativeIdentifiers.append('&nbsp;<input type="checkbox" name="recommended" value="R3" />');
+    relativeIdentifiers.tooltip();
+    relativeIdentifiers.append('&nbsp;<input type="checkbox" name="recommended" value="R3" title="are relative IDs OK?"/>');
   }
   
   let grants = $( "dt:contains('Grants:')" );
