@@ -11,6 +11,30 @@
 // @version     1
 // ==/UserScript==
 
+const checklistData = {
+  "M1": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",                
+  "M2": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired",
+  "M3": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
+  "M4": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
+  "R1": "Authors are identified by their ORCID",
+  "R2": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
+  "R3": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available',
+  "R4": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",  
+  "R5": "Any sensitive, personal data should have been anonymized",
+  "N1": 'If applicable, related grants should acknowledged using “Funding/Grants” fields"',
+  "N2": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
+  "N3": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)",
+  "N4": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
+  "N5": "If the submission is related to a PhD thesis, the supervisor should be specified",
+  "N6": "Files should be available in open formats",
+  "N7": "Where applicable, sources from which the work is derived should be specified",
+  "N8": "Keywords should be entered as separated fields"
+};
+
+
+//const checklistData = { "R3": "This is the R3 tooltip" };
+
+
 this.$ = this.jQuery = jQuery.noConflict(true);
 $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css') );
 
@@ -53,13 +77,15 @@ function addButtons() {
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
   if (relativeIdentifiers) {
-    relativeIdentifiers.attr("title", "are relative IDs OK?");
+    relativeIdentifiers.attr("title", checklistData["R3"]);
     relativeIdentifiers.tooltip();
     relativeIdentifiers.append('&nbsp;<input type="checkbox" name="recommended" value="R3"/>');
   }
   
   let grants = $( "dt:contains('Grants:')" );
   if (grants) {
+    grants.attr("title", checklistData["N1"]);
+    grants.tooltip();
     grants.append('&nbsp;<input type="checkbox" name="nth" value="N1" />');
   }
   
