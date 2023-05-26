@@ -32,11 +32,42 @@ const checklistData = {
 };
 
 
-//const checklistData = { "R3": "This is the R3 tooltip" };
+const checklistStyle = `
+<style>
+.check {
+  -webkit-appearance: none; /*hides the default checkbox*/
+  height: 20px;
+  width: 20px;
+  transition: 0.10s;
+  background-color: #FE0006;
+  text-align: center;
+  font-weight: 600;
+  color: white;
+  border-radius: 3px;
+  outline: none;
+}
 
+.check:checked {
+  background-color: #0E9700;
+}
+
+.check:before {
+  content: "✖";
+}
+.check:checked:before {
+  content: "✔";
+}
+
+.check:hover {
+  cursor: pointer; 
+  opacity: 0.8;
+}
+</style>
+`;
 
 this.$ = this.jQuery = jQuery.noConflict(true);
 $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css') );
+$('head').append( checklistStyle );
 
 
 addButtons();
@@ -86,12 +117,12 @@ function addButtons() {
   if (grants) {
     grants.attr("title", checklistData["N1"]);
     grants.tooltip();
-    grants.append('&nbsp;<input type="checkbox" name="nth" value="N1" />');
+    grants.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N1" />');
   }
   
   let license = $( "dt:contains('License (for files):')" );
   if (license) {
-    license.append('&nbsp;<input type="checkbox" name="nth" value="N3" />');
+    license.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N3" />');
   }
   
   let keywords = $( "dt:contains('Keyword(s):')" );
