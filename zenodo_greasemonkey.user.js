@@ -54,8 +54,9 @@ function addButtons() {
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
   if (relativeIdentifiers) {
+    relativeIdentifiers.attr("title", "are relative IDs OK?");
     relativeIdentifiers.tooltip();
-    relativeIdentifiers.append('&nbsp;<input type="checkbox" name="recommended" value="R3" title="are relative IDs OK?"/>');
+    relativeIdentifiers.append('&nbsp;<input type="checkbox" name="recommended" value="R3"/>');
   }
   
   let grants = $( "dt:contains('Grants:')" );
