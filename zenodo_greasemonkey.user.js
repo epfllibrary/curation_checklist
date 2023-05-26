@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Zenodo Curation Checklist
-// @resource    https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css
-// @require     https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js
-// @require     https://cdn.jsdelivr.net/npm/jquery-ui@1.13.2/dist/jquery-ui.min.js
+// @resource    jqueryUiCss https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css
+// @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js
+// @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js
 // @namespace   curation.epflrdm.zenodo
 // @author      Alain Borel
 // @include     https://zenodo.org/record/*
@@ -12,12 +12,11 @@
 // ==/UserScript==
 
 this.$ = this.jQuery = jQuery.noConflict(true);
-addStyles();
+$('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css') );
+
+
 addButtons();
 
-function addStyles() {
-  
-}
 
 function addButtons() {
   
