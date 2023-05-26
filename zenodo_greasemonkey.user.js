@@ -42,7 +42,29 @@ function addButtons() {
 
   //menu.appendChild(btn);
 
-   menu.insertBefore(frm, metadata);
+  menu.insertBefore(frm, metadata);
+  
+  
+  let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
+  if (relativeIdentifiers) {
+    relativeIdentifiers.append('&nbsp;<input type="checkbox" name="recommended" value="R3" />');
+  }
+  
+  let grants = $( "dt:contains('Grants:')" );
+  if (grants) {
+    grants.append('&nbsp;<input type="checkbox" name="nth" value="N1" />');
+  }
+  
+  let license = $( "dt:contains('License (for files):')" );
+  if (license) {
+    license.append('&nbsp;<input type="checkbox" name="nth" value="N3" />');
+  }
+  
+  let keywords = $( "dt:contains('Keyword(s):')" );
+  if (keywords) {
+    keywords.append('&nbsp;<input type="checkbox" name="nth" value="N8" />');
+  }
+  
 
 }
 
@@ -53,4 +75,3 @@ function openMailEditor(url) {
 
 // wait for async elements to load
 //setTimeout(addButton, 1000);
-
