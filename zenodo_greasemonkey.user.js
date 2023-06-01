@@ -12,23 +12,23 @@
 // ==/UserScript==
 
 const checklistData = {
-  "M1": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",                
-  "M2": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired",
-  "M3": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
-  "M4": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
-  "R1": "Authors are identified by their ORCID",
-  "R2": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
-  "R3": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available',
-  "R4": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",  
-  "R5": "Any sensitive, personal data should have been anonymized",
-  "N1": 'If applicable, related grants should acknowledged using “Funding/Grants” fields"',
-  "N2": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
-  "N3": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)",
-  "N4": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
-  "N5": "If the submission is related to a PhD thesis, the supervisor should be specified",
-  "N6": "Files should be available in open formats",
-  "N7": "Where applicable, sources from which the work is derived should be specified",
-  "N8": "Keywords should be entered as separated fields"
+  "M1": {"full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work", "category": "must"},                
+  "M2": {"full": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired", "category": "must"},   
+  "M3": {"full": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description", "category": "must"},
+  "M4": {"full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description", "category": "must"},   
+  "R1": {"full": "Authors are identified by their ORCID", "category": "recommended"},   
+  "R2": {"full": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated", "category": "recommended"},   
+  "R3": {"full": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available', "category": "recommended"},   
+  "R4": {"full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)", "category": "recommended"},    
+  "R5": {"full": "Any sensitive, personal data should have been anonymized", "category": "recommended"},   
+  "N1": {"full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields', "category": "nth"},   
+  "N2": {"full": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)", "category": "nth"},
+  "N3": {"full": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)", "category": "nth"},
+  "N4": {"full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.", "category": "nth"},
+  "N5": {"full": "If the submission is related to a PhD thesis, the supervisor should be specified", "category": "nth"},
+  "N6": {"full": "Files should be available in open formats", "category": "nth"},
+  "N7": {"full": "Where applicable, sources from which the work is derived should be specified", "category": "nth"},
+  "N8": {"full": "Keywords should be entered as separated fields", "category": "nth"}
 };
 
 
@@ -108,7 +108,6 @@ function addButtons() {
   // This one should always be there, let's use it as a reference
   let license = $( "dt:contains('License (for files):')" );
   let importantFrame = license.parent();
-  console.log(importantFrame);
   if (license.length) {
     license.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N3" />');
   }
