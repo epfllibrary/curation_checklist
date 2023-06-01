@@ -105,29 +105,40 @@ function addButtons() {
 
   menu.insertBefore(frm, metadata);
   
-  
-  let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
-  if (relativeIdentifiers) {
-    relativeIdentifiers.attr("title", checklistData["R3"]);
-    relativeIdentifiers.tooltip();
-    relativeIdentifiers.append('&nbsp;<input type="checkbox" name="recommended" value="R3"/>');
-  }
-  
-  let grants = $( "dt:contains('Grants:')" );
-  if (grants) {
-    grants.attr("title", checklistData["N1"]);
-    grants.tooltip();
-    grants.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N1" />');
-  }
-  
+  // This one should always be there, let's use it as a reference
   let license = $( "dt:contains('License (for files):')" );
-  if (license) {
+  let importantFrame = license.parent();
+  console.log(importantFrame);
+  if (license.length) {
     license.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N3" />');
   }
   
+  
+  let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
+  if (relativeIdentifiers.length) {
+    relativeIdentifiers.attr("title", checklistData["R3"]);
+    relativeIdentifiers.tooltip();
+    relativeIdentifiers.append('&nbsp;<input type="checkbox" name="recommended" class="check" value="R3"/>');
+  } else {
+    importantFrame.append('<dt>No related identifiers here, is it OK? &nbsp;<input type="checkbox" name="recommended" class="check" value="R3" /></dt>');
+  }
+  
+  let grants = $( "dt:contains('Grants:')" );
+  if (grants.length) {
+    grants.attr("title", checklistData["N1"]);
+    grants.tooltip();
+    grants.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N1" />');
+  } else {
+    importantFrame.append('<dt>No grants here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
+  }
+  
+  
   let keywords = $( "dt:contains('Keyword(s):')" );
-  if (keywords) {
+  console.log('Keywords', keywords);
+  if (keywords.length) {
     keywords.append('&nbsp;<input type="checkbox" name="nth" value="N8" />');
+  } else {
+    importantFrame.append('<dt>No keywords here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
   }
   
 
