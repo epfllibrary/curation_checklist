@@ -11,24 +11,44 @@
 // @version     1
 // ==/UserScript==
 
+// TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery
+
 const checklistData = {
-  "M1": {"full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work", "category": "must"},                
-  "M2": {"full": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired", "category": "must"},   
-  "M3": {"full": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description", "category": "must"},
-  "M4": {"full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description", "category": "must"},   
-  "R1": {"full": "Authors are identified by their ORCID", "category": "recommended"},   
-  "R2": {"full": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated", "category": "recommended"},   
-  "R3": {"full": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available', "category": "recommended"},   
-  "R4": {"full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)", "category": "recommended"},    
-  "R5": {"full": "Any sensitive, personal data should have been anonymized", "category": "recommended"},   
-  "N1": {"full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields', "category": "nth"},   
-  "N2": {"full": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)", "category": "nth"},
-  "N3": {"full": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)", "category": "nth"},
-  "N4": {"full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.", "category": "nth"},
-  "N5": {"full": "If the submission is related to a PhD thesis, the supervisor should be specified", "category": "nth"},
-  "N6": {"full": "Files should be available in open formats", "category": "nth"},
-  "N7": {"full": "Where applicable, sources from which the work is derived should be specified", "category": "nth"},
-  "N8": {"full": "Keywords should be entered as separated fields", "category": "nth"}
+  "M1": {"full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",
+         "category": "must"},                
+  "M2": {"full": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired",
+         "category": "must"},   
+  "M3": {"full": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
+         "category": "must"},
+  "M4": {"full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
+         "category": "must"},   
+  "R1": {"full": "Authors are identified by their ORCID",
+         "category": "recommended"},   
+  "R2": {"full": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
+         "category": "recommended"},   
+  "R3": {"full": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available',
+         "category": "recommended"},   
+  "R4": {"full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
+         "category": "recommended"},    
+  "R5": {"full": "Any sensitive, personal data should have been anonymized",
+         "category": "recommended"},   
+  "N1": {"full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields',
+         "category": "nth",
+        "selector": "dt:contains('Grants:')"},   
+  "N2": {"full": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
+         "category": "nth"},
+  "N3": {"full": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)",
+         "category": "nth"},
+  "N4": {"full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
+         "category": "nth"},
+  "N5": {"full": "If the submission is related to a PhD thesis, the supervisor should be specified",
+         "category": "nth"},
+  "N6": {"full": "Files should be available in open formats",
+         "category": "nth"},
+  "N7": {"full": "Where applicable, sources from which the work is derived should be specified",
+         "category": "nth"},
+  "N8": {"full": "Keywords should be entered as separated fields",
+         "category": "nth"}
 };
 
 
@@ -36,8 +56,8 @@ const checklistStyle = `
 <style>
 .check {
   -webkit-appearance: none; /*hides the default checkbox*/
-  height: 20px;
-  width: 20px;
+  height: 2ch;
+  width: 2ch;
   transition: 0.10s;
   background-color: #FE0006;
   text-align: center;
@@ -72,6 +92,21 @@ $('head').append( checklistStyle );
 
 addButtons();
 
+/* TODO find out why this does crashes the script
+function handleDtElement(importantFrame, criterion) {
+  //let domElement = $( checklistData[criterion].selector );
+  var domElement = {};
+  if (domElement.length) {
+    domElement.attr("title", checklistData[criterion].full);
+    domElement.tooltip();
+    domElement.append('&nbsp;<input type="checkbox" class="check" name="' + checklistData[criterion] + 'value="' + criterion +'" />');
+  } else {
+    importantFrame.append('<dt>No XX here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="' + criterion '" /></dt>');
+  }
+  
+}
+*/
+
 
 function addButtons() {
   
@@ -105,6 +140,13 @@ function addButtons() {
 
   menu.insertBefore(frm, metadata);
   
+  let mainTitle = $("h1");
+  if (mainTitle.length) {
+    mainTitle.attr("title", checklistData["R2"].full);
+    mainTitle.tooltip();
+    mainTitle.append('&nbsp;<input type="checkbox" class="check" name="recommended" value="R2" />');
+  }
+  
   // This one should always be there, let's use it as a reference
   let license = $( "dt:contains('License (for files):')" );
   let importantFrame = license.parent();
@@ -115,7 +157,7 @@ function addButtons() {
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
   if (relativeIdentifiers.length) {
-    relativeIdentifiers.attr("title", checklistData["R3"]);
+    relativeIdentifiers.attr("title", checklistData["R3"].full);
     relativeIdentifiers.tooltip();
     relativeIdentifiers.append('&nbsp;<input type="checkbox" name="recommended" class="check" value="R3"/>');
   } else {
@@ -124,7 +166,7 @@ function addButtons() {
   
   let grants = $( "dt:contains('Grants:')" );
   if (grants.length) {
-    grants.attr("title", checklistData["N1"]);
+    grants.attr("title", checklistData["N1"].full);
     grants.tooltip();
     grants.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N1" />');
   } else {
