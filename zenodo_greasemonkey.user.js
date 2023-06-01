@@ -140,6 +140,12 @@ function addButtons() {
 
   menu.insertBefore(frm, metadata);
   
+  // TODO M1+M4+R1 author list: 1st <p> after the title
+  
+  // TODO M2 div#preview ?
+  
+  // TODO M3 abstract: div class="record-description"
+  
   let mainTitle = $("h1");
   if (mainTitle.length) {
     mainTitle.attr("title", checklistData["R2"].full);
@@ -147,7 +153,7 @@ function addButtons() {
     mainTitle.append('&nbsp;<input type="checkbox" class="check" name="recommended" value="R2" />');
   }
   
-  // This one should always be there, let's use it as a reference
+  // This one should always be there, let's use it as a reference point
   let license = $( "dt:contains('License (for files):')" );
   let importantFrame = license.parent();
   if (license.length) {
