@@ -146,6 +146,8 @@ function addButtons() {
   
   // TODO M3 abstract: div class="record-description"
   
+  // TODO R5 div#preview ?
+  
   let mainTitle = $("h1");
   if (mainTitle.length) {
     mainTitle.attr("title", checklistData["R2"].full);
@@ -179,6 +181,15 @@ function addButtons() {
     importantFrame.append('<dt>No grants here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
   }
   
+  // TODO N2 div#preview ?
+  
+  // TODO N4 div#preview ?
+  
+  // TODO N5 no idea yet
+  
+  // TODO N6 div#preview ?
+  
+  // TODO N7 no idea yet
   
   let keywords = $( "dt:contains('Keyword(s):')" );
   console.log('Keywords', keywords);
