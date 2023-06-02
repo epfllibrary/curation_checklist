@@ -334,7 +334,7 @@ function addButtons() {
   let keywords = $( "dt:contains('Keyword(s):')" );
   console.log('Keywords', keywords);
   if (keywords.length) {
-    keywords.append('&nbsp;<input type="checkbox" name="nth" value="N8" />');
+    keywords.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N8" />');
   } else {
     importantFrame.append('<dt>No keywords here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
   }
