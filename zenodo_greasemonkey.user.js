@@ -312,7 +312,15 @@ function addButtons() {
     contentElement.prepend(goodReadme);
   }
   
-  // TODO N5 no idea yet
+  let thesisUniversity = $( "dt:contains('Awarding University:')" );
+  if (thesisUniversity.length) {
+    thesisUniversity.attr("title", checklistData["N5"].full);
+    thesisUniversity.tooltip();
+    thesisUniversity.append('&nbsp;Supevisor listed?<input type="checkbox" class="check" name="nth" value="N5" />');
+  } else {
+    importantFrame.append('<dt>No thesis indication, probably OK&nbsp;<input type="checkbox" name="nth" class="check" value="N5" /></dt>');
+  }
+ 
   
   if (contentElement.length) {
     let openFormats = $('<span><b>&nbsp;Open file formats?</b> <input type="checkbox" class="check" name="nth" value="N6" /><span>');
@@ -321,14 +329,7 @@ function addButtons() {
     contentElement.prepend(openFormats);
   }
   
-  let thesisUniversity = $( "dt:contains('Awarding University:')" );
-  if (thesisUniversity.length) {
-    thesisUniversity.attr("title", checklistData["N7"].full);
-    thesisUniversity.tooltip();
-    thesisUniversity.append('&nbsp;Supevisor listed?<input type="checkbox" class="check" name="nth" value="N7" />');
-  } else {
-    importantFrame.append('<dt>No thesis indication, probably OK&nbsp;<input type="checkbox" name="nth" class="check" value="N7" /></dt>');
-  }
+  // TODO N7 no idea yet
   
   let keywords = $( "dt:contains('Keyword(s):')" );
   console.log('Keywords', keywords);
