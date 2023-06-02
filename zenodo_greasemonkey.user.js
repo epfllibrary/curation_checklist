@@ -256,7 +256,6 @@ function addButtons() {
   }
  
   
-  // TODO R5 div#preview ?
   if (contentElement.length) {
     let readmeExists = $('<span><b>README present?</b> <input type="checkbox" class="check" name="recommended" value="R5" /></span>');
     readmeExists.attr("title", checklistData["R5"].full);
@@ -294,7 +293,7 @@ function addButtons() {
     grants.tooltip();
     grants.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N1" />');
   } else {
-    importantFrame.append('<dt>No grants here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
+    importantFrame.append('<dt>No grants here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N1" /></dt>');
   }
   
   if (contentElement.length) {
@@ -320,7 +319,14 @@ function addButtons() {
     contentElement.prepend(openFormats);
   }
   
-  // TODO N7 no idea yet
+  let thesisUniversity = $( "dt:contains('Awarding University:')" );
+  if (thesisUniversity.length) {
+    thesisUniversity.attr("title", checklistData["N7"].full);
+    thesisUniversity.tooltip();
+    thesisUniversity.append('&nbsp;Supevisor listed?<input type="checkbox" class="check" name="nth" value="N7" />');
+  } else {
+    importantFrame.append('<dt>No thesis indication, probably OK&nbsp;<input type="checkbox" name="nth" class="check" value="N7" /></dt>');
+  }
   
   let keywords = $( "dt:contains('Keyword(s):')" );
   console.log('Keywords', keywords);
