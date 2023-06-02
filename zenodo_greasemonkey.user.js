@@ -142,9 +142,8 @@ function addButtons() {
       
       $('input[name="must"]:not(:checked)').each(function () {
         let value = $(this).val();
-        let checkboxText = $(`label[for="${value}"]`).text().trim();
         text += `${value}: `;
-        text += `${checkboxText}\n`; 
+        text += `${checklistData[value].full}\n`; 
         text += `=>\n\n`;
       })
       
@@ -156,9 +155,8 @@ function addButtons() {
       text += `Total ${RecommendedCheckboxUnchecked} missing RECOMMENDED criteria:\n`;
       $('input[name="recommended"]:not(:checked)').each(function () {
         let value = $(this).val();
-        let checkboxText = $(`label[for="${value}"]`).text().trim();
         text += `${value}: `;
-        text += `${checkboxText}\n`; 
+        text += `${checklistData[value].full}\n`; 
         text += `=>\n\n`;
       })
     }
@@ -168,9 +166,8 @@ function addButtons() {
       text += `Total ${NTHCheckboxUnchecked} missing NICE TO HAVE criteria:\n`;
       $('input[name="nth"]:not(:checked)').each(function () {
         let value = $(this).val();
-        let checkboxText = $(`label[for="${value}"]`).text().trim();
         text += `${value}: `;
-        text += `${checkboxText}\n`;
+        text += `${checklistData[value].full}\n`; 
         text += `=>\n\n`;
       })
     }
