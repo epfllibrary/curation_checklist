@@ -136,6 +136,9 @@ function addButtons() {
     const MustCheckboxUnchecked = $('input[name="must"]:not(:checked)').length;
     const RecommendedCheckboxUnchecked = $('input[name="recommended"]:not(:checked)').length;
     const NTHCheckboxUnchecked = $('input[name="nth"]:not(:checked)').length;
+    
+    
+    // TODO sort the elements by criterion number in the e-mail text
     console.log(MustCheckboxUnchecked);
     if (MustCheckboxUnchecked > 0) {
       text += `Total "+ ${MustCheckboxUnchecked} + " missing MUST criteria:\n`;
@@ -240,7 +243,12 @@ function addButtons() {
   
   // TODO M1+M4+R1 author list: 1st <p> after the title
   
-  // TODO M2 div#preview ?
+  contentElement = $("div#preview");
+  if (contentElement.length) {
+    contentElement.attr("title", checklistData["M2"].full);
+    contentElement.tooltip();
+    contentElement.prepend('<b>Access to content?</b> <input type="checkbox" class="check" name="recommended" value="M2" />');
+  }
   
   // TODO M3 abstract: div class="record-description"
   
@@ -279,13 +287,25 @@ function addButtons() {
     importantFrame.append('<dt>No grants here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
   }
   
-  // TODO N2 div#preview ?
+  if (contentElement.length) {
+    contentElement.attr("title", checklistData["N2"].full);
+    contentElement.tooltip();
+    contentElement.prepend('&nbsp;<b>Clean content?</b> <input type="checkbox" class="check" name="nth" value="N2" />');
+  }
   
-  // TODO N4 div#preview ?
+  if (contentElement.length) {
+    contentElement.attr("title", checklistData["N4"].full);
+    contentElement.tooltip();
+    contentElement.prepend('&nbsp;<b>Good README?</b> <input type="checkbox" class="check" name="nth" value="N4" />');
+  }
   
   // TODO N5 no idea yet
   
-  // TODO N6 div#preview ?
+  if (contentElement.length) {
+    contentElement.attr("title", checklistData["N6"].full);
+    contentElement.tooltip();
+    contentElement.prepend('&nbsp;<b>Open file formats?</b> <input type="checkbox" class="check" name="nth" value="N6" />');
+  }
   
   // TODO N7 no idea yet
   
