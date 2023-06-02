@@ -129,6 +129,9 @@ function addButtons() {
     var collapse = document.getElementById('collapseTwo');
     
     var zenodoURL = window.location.href;
+    let title = $('h1').text();
+    console.log(title);
+    console.log(zenodoURL);
     
     const emailTo = 'info@zenodo.org';
     const emailSub = 'Zenodo dataset submitted to the EPFL community';
@@ -191,7 +194,6 @@ function addButtons() {
     .then(json => {
       console.log(json);
       let identifier = 'XXXXXX';
-      let title = 'YYYYYYYYYYYYYYYYYYYY'
       if ('data' in json) {
         console.log('And we have a winner!');
         // TODO check if only valid for the meta-DOI and not for versions
@@ -212,7 +214,7 @@ function addButtons() {
 
         footer += "Best regards,\nZZZZZZ"
       } else {
-        header += `Good XXX,\n\nYou are designated as EPFL creators for the dataset \"${title}\" (${identifier}), which has been submitted to the EPFL Community.\n\n`;
+        header += `Good XXX,\n\nYou are designated as EPFL creators for the dataset \"${title}\" (${zenodoURL}), which has been submitted to the EPFL Community.\n\n`;
        header += "Within our new curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
 
        footer += "With this curation procedure, we introduce new processes intended to add value to your results and potentially save some of your time:\n";
