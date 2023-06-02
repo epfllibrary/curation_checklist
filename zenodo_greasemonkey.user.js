@@ -3,6 +3,8 @@
 // @resource    jqueryUiCss https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js
+// @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js
+// @require     https://far-nyon.ch/assets/js/tinysort/src/jquery.tinysort.min.js
 // @namespace   curation.epflrdm.zenodo
 // @author      Alain Borel
 // @include     https://zenodo.org/record/*
@@ -133,17 +135,15 @@ function addButtons() {
     
     var text = '';
     event.preventDefault();
-    const MustCheckboxUnchecked = $('input[name="must"]:not(:checked)').length;
-    const RecommendedCheckboxUnchecked = $('input[name="recommended"]:not(:checked)').length;
-    const NTHCheckboxUnchecked = $('input[name="nth"]:not(:checked)').length;
+    const MustCheckboxUnchecked = $('input[name="must"]:not(:checked)').tsort({attr:'value'});
+    const RecommendedCheckboxUnchecked = $('input[name="recommended"]:not(:checked)').tsort({attr:'value'});
+    const NTHCheckboxUnchecked = $('input[name="nth"]:not(:checked)').tsort({attr:'value'});
     
     
-    // TODO sort the elements by criterion number in the e-mail text
-    console.log(MustCheckboxUnchecked);
-    if (MustCheckboxUnchecked > 0) {
-      text += `Total "+ ${MustCheckboxUnchecked} + " missing MUST criteria:\n`;
+    if (MustCheckboxUnchecked.length) {
+      text += `Total ${MustCheckboxUnchecked.length} missing MUST criteria:\n`;
       
-      $('input[name="must"]:not(:checked)').each(function () {
+      MustCheckboxUnchecked.each(function () {
         let value = $(this).val();
         text += `${value}: `;
         text += `${checklistData[value].full}\n`; 
@@ -153,10 +153,9 @@ function addButtons() {
     }
 
     
-    console.log(RecommendedCheckboxUnchecked);
-    if (RecommendedCheckboxUnchecked > 0) {
-      text += `Total ${RecommendedCheckboxUnchecked} missing RECOMMENDED criteria:\n`;
-      $('input[name="recommended"]:not(:checked)').each(function () {
+    if (RecommendedCheckboxUnchecked.length) {
+      text += `Total ${RecommendedCheckboxUnchecked.length} missing RECOMMENDED criteria:\n`;
+      RecommendedCheckboxUnchecked.each(function () {
         let value = $(this).val();
         text += `${value}: `;
         text += `${checklistData[value].full}\n`; 
@@ -165,9 +164,9 @@ function addButtons() {
     }
 
     
-    if (NTHCheckboxUnchecked > 0) {
-      text += `Total ${NTHCheckboxUnchecked} missing NICE TO HAVE criteria:\n`;
-      $('input[name="nth"]:not(:checked)').each(function () {
+    if (NTHCheckboxUnchecked.length) {
+      text += `Total ${NTHCheckboxUnchecked.length} missing NICE TO HAVE criteria:\n`;
+      NTHCheckboxUnchecked.each(function () {
         let value = $(this).val();
         text += `${value}: `;
         text += `${checklistData[value].full}\n`; 
@@ -245,7 +244,7 @@ function addButtons() {
   
   let contentElement = $("div#preview");
   if (contentElement.length) {
-    let contentAccess = $('<span><b>&nbsp;Access to content?</b> <input type="checkbox" class="check" name="recommended" value="M2" /></span>')
+    let contentAccess = $('<span><b>&nbsp;Access to content?</b> <input type="checkbox" class="check" name="must" value="M2" /></span>')
     contentAccess.attr("title", checklistData["M2"].full);
     contentAccess.tooltip();
     contentElement.prepend(contentAccess);
