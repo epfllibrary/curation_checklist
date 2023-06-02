@@ -243,11 +243,12 @@ function addButtons() {
   
   // TODO M1+M4+R1 author list: 1st <p> after the title
   
-  contentElement = $("div#preview");
+  let contentElement = $("div#preview");
   if (contentElement.length) {
-    contentElement.attr("title", checklistData["M2"].full);
-    contentElement.tooltip();
-    contentElement.prepend('<b>Access to content?</b> <input type="checkbox" class="check" name="recommended" value="M2" />');
+    let contentAccess = $('<span><b>&nbsp;Access to content?</b> <input type="checkbox" class="check" name="recommended" value="M2" /></span>')
+    contentAccess.attr("title", checklistData["M2"].full);
+    contentAccess.tooltip();
+    contentElement.prepend(contentAccess);
   }
   
   // TODO M3 abstract: div class="record-description"
@@ -287,24 +288,29 @@ function addButtons() {
     importantFrame.append('<dt>No grants here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
   }
   
+  contentElement = $("div#preview");
   if (contentElement.length) {
-    contentElement.attr("title", checklistData["N2"].full);
-    contentElement.tooltip();
-    contentElement.prepend('&nbsp;<b>Clean content?</b> <input type="checkbox" class="check" name="nth" value="N2" />');
+    let cleanContent = $('<span><b>&nbsp;Clean content?</b> <input type="checkbox" class="check" name="nth" value="N2" /></span>');
+    cleanContent.attr("title", checklistData["N2"].full);
+    cleanContent.tooltip();
+    contentElement.prepend(cleanContent);
   }
   
+  contentElement = $("div#preview");
   if (contentElement.length) {
-    contentElement.attr("title", checklistData["N4"].full);
-    contentElement.tooltip();
-    contentElement.prepend('&nbsp;<b>Good README?</b> <input type="checkbox" class="check" name="nth" value="N4" />');
+    let goodReadme = $('<span><b>&nbsp;Good README?</b> <input type="checkbox" class="check" name="nth" value="N4" /></span>');
+    goodReadme.attr("title", checklistData["N4"].full);
+    goodReadme.tooltip();
+    contentElement.prepend(goodReadme);
   }
   
   // TODO N5 no idea yet
   
   if (contentElement.length) {
-    contentElement.attr("title", checklistData["N6"].full);
-    contentElement.tooltip();
-    contentElement.prepend('&nbsp;<b>Open file formats?</b> <input type="checkbox" class="check" name="nth" value="N6" />');
+    let openFormats = $('<span><b>&nbsp;Open file formats?</b> <input type="checkbox" class="check" name="nth" value="N6" /><span>');
+    openFormats.attr("title", checklistData["N6"].full);
+    openFormats.tooltip();
+    contentElement.prepend(openFormats);
   }
   
   // TODO N7 no idea yet
