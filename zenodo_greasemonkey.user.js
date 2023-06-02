@@ -250,9 +250,19 @@ function addButtons() {
     contentElement.prepend(contentAccess);
   }
   
-  // TODO M3 abstract: div class="record-description"
+  let abstract = $("div.record-description");
+  if (abstract.length) {
+    abstract.prepend('<span><b>Sufficient abstract?</b> <input type="checkbox" class="check" name="must" value="M3" /></span>')
+  }
+ 
   
   // TODO R5 div#preview ?
+  if (contentElement.length) {
+    let readmeExists = $('<span><b>README present?</b> <input type="checkbox" class="check" name="recommended" value="R5" /></span>');
+    readmeExists.attr("title", checklistData["R5"].full);
+    readmeExists.tooltip();
+    contentElement.prepend(readmeExists);
+  }
   
   let mainTitle = $("h1");
   if (mainTitle.length) {
@@ -287,7 +297,6 @@ function addButtons() {
     importantFrame.append('<dt>No grants here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
   }
   
-  contentElement = $("div#preview");
   if (contentElement.length) {
     let cleanContent = $('<span><b>&nbsp;Clean content?</b> <input type="checkbox" class="check" name="nth" value="N2" /></span>');
     cleanContent.attr("title", checklistData["N2"].full);
@@ -295,7 +304,6 @@ function addButtons() {
     contentElement.prepend(cleanContent);
   }
   
-  contentElement = $("div#preview");
   if (contentElement.length) {
     let goodReadme = $('<span><b>&nbsp;Good README?</b> <input type="checkbox" class="check" name="nth" value="N4" /></span>');
     goodReadme.attr("title", checklistData["N4"].full);
