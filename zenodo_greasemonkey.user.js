@@ -246,6 +246,7 @@ function addButtons() {
   let authorList = mainTitle.next('p');
   if (authorList.length) {
     let epflAuthors = $('<span><b>&nbsp;EPFL authors?</b> <input type="checkbox" class="check" name="must" value="M1" /></span>');
+    epflAuthors.attr("title", checklistData["M1"].full);
     epflAuthors.tooltip();
     authorList.append(epflAuthors);
   }
@@ -265,14 +266,19 @@ function addButtons() {
   
   let abstract = $("div.record-description");
   if (abstract.length) {
-    abstract.prepend('<span><b>Sufficient abstract?</b> <input type="checkbox" class="check" name="must" value="M3" /></span>');
+    abstractCheck = $('<div><b>Sufficient abstract?</b> <input type="checkbox" class="check" name="must" value="M3" /></div>');
+    abstractCheck.attr("title", checklistData["M3"].full);
+    abstractCheck.tooltip();
+    abstract.prepend(abstractCheck);
   }
  
   if (authorList.length) {
     let contactAuthors = $('<span><b>&nbsp;Email or ORCID for 1 author?</b> <input type="checkbox" class="check" name="must" value="M4" /></span>');
+    contactAuthors.attr("title", checklistData["M4"].full);
     contactAuthors.tooltip();
     authorList.append(contactAuthors);
     let orcidAuthors = $('<span><b>&nbsp;Authors with ORCID?</b> <input type="checkbox" class="check" name="recommended" value="R1" /></span>');
+    orcidAuthors.attr("title", checklistData["R1"].full);
     orcidAuthors.tooltip();
     authorList.append(orcidAuthors);
   }
@@ -294,7 +300,10 @@ function addButtons() {
   let license = $( "dt:contains('License (for files):')" );
   let importantFrame = license.parent();
   if (license.length) {
-    license.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N3" />');
+    let licenseCheck = $('<span>&nbsp;<input type="checkbox" class="check" name="nth" value="N3" /></span>');
+    licenseCheck.attr("title", checklistData["N3"].full);
+    licenseCheck.tooltip();
+    license.append(licenseCheck);
   }
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
@@ -303,7 +312,10 @@ function addButtons() {
     relativeIdentifiers.tooltip();
     relativeIdentifiers.append('&nbsp;<input type="checkbox" name="recommended" class="check" value="R3"/>');
   } else {
-    importantFrame.append('<dt>No related identifiers here, is it OK? &nbsp;<input type="checkbox" name="recommended" class="check" value="R3" /></dt>');
+    relativeIdentifiers = $('<dt>No related identifiers here, is it OK? &nbsp;<input type="checkbox" name="recommended" class="check" value="R3" /></dt>');
+    relativeIdentifiers.attr("title", checklistData["R3"].full);
+    relativeIdentifiers.tooltip();
+    importantFrame.append(relativeIdentifiers);
   }
   
   let grants = $( "dt:contains('Grants:')" );
@@ -312,7 +324,10 @@ function addButtons() {
     grants.tooltip();
     grants.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N1" />');
   } else {
-    importantFrame.append('<dt>No grants here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N1" /></dt>');
+    grants = $('<dt>No grants here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N1" /></dt>');
+    grants.attr("title", checklistData["N1"].full);
+    grants.tooltip();
+    importantFrame.append(grants);
   }
   
   if (contentElement.length) {
@@ -335,7 +350,10 @@ function addButtons() {
     thesisUniversity.tooltip();
     thesisUniversity.append('&nbsp;Supevisor listed?<input type="checkbox" class="check" name="nth" value="N5" />');
   } else {
-    importantFrame.append('<dt>No thesis indication, probably OK&nbsp;<input type="checkbox" name="nth" class="check" value="N5" /></dt>');
+    thesisUniversity = $('<dt>No thesis indication, probably OK&nbsp;<input type="checkbox" name="nth" class="check" value="N5" /></dt>');
+    thesisUniversity.attr("title", checklistData["N5"].full);
+    thesisUniversity.tooltip();
+    importantFrame.append(thesisUniversity);
   }
   
   if (contentElement.length) {
