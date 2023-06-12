@@ -245,7 +245,8 @@ function addButtons() {
   let mainTitle = $("h1");
   let authorList = mainTitle.next('p');
   if (authorList.length) {
-    let epflAuthors = $('<span><b>&nbsp;EPFL authors?</b> <input type="checkbox" class="check" name="must" value="M1" /></span>')
+    let epflAuthors = $('<span><b>&nbsp;EPFL authors?</b> <input type="checkbox" class="check" name="must" value="M1" /></span>');
+    epflAuthors.tooltip();
     authorList.append(epflAuthors);
   }
   
@@ -256,7 +257,7 @@ function addButtons() {
     contentElement = $("div#files");
   }
   if (contentElement.length) {
-    let contentAccess = $('<span><b>&nbsp;Access to content?</b> <input type="checkbox" class="check" name="must" value="M2" /></span>')
+    let contentAccess = $('<span><b>&nbsp;Access to content?</b> <input type="checkbox" class="check" name="must" value="M2" /></span>');
     contentAccess.attr("title", checklistData["M2"].full);
     contentAccess.tooltip();
     contentChecks.append(contentAccess);
@@ -264,13 +265,15 @@ function addButtons() {
   
   let abstract = $("div.record-description");
   if (abstract.length) {
-    abstract.prepend('<span><b>Sufficient abstract?</b> <input type="checkbox" class="check" name="must" value="M3" /></span>')
+    abstract.prepend('<span><b>Sufficient abstract?</b> <input type="checkbox" class="check" name="must" value="M3" /></span>');
   }
  
   if (authorList.length) {
-    let contactAuthors = $('<span><b>&nbsp;Email or ORCID for 1 author?</b> <input type="checkbox" class="check" name="must" value="M4" /></span>')
+    let contactAuthors = $('<span><b>&nbsp;Email or ORCID for 1 author?</b> <input type="checkbox" class="check" name="must" value="M4" /></span>');
+    contactAuthors.tooltip();
     authorList.append(contactAuthors);
-    let orcidAuthors = $('<span><b>&nbsp;Authors with ORCID?</b> <input type="checkbox" class="check" name="must" value="R1" /></span>')
+    let orcidAuthors = $('<span><b>&nbsp;Authors with ORCID?</b> <input type="checkbox" class="check" name="recommended" value="R1" /></span>');
+    orcidAuthors.tooltip();
     authorList.append(orcidAuthors);
   }
   
@@ -334,7 +337,6 @@ function addButtons() {
   } else {
     importantFrame.append('<dt>No thesis indication, probably OK&nbsp;<input type="checkbox" name="nth" class="check" value="N5" /></dt>');
   }
- 
   
   if (contentElement.length) {
     let openFormats = $('<span><b>&nbsp;Open file formats?</b> <input type="checkbox" class="check" name="nth" value="N6" /><span>');
@@ -343,14 +345,28 @@ function addButtons() {
     contentChecks.append(openFormats);
   }
   
-  // TODO N7 no idea yet
+  let referencesElement = $("div#references");
+  if (referencesElement.length) {
+    let referencesCheck = $('<span><b>&nbsp;Relevant sources?</b> <input type="checkbox" class="check" name="nth" value="N7" /><span>');
+    referencesCheck.tooltip();
+    referencesElement.append(referencesCheck);  
+  } else {
+    referencesElement = $("div#citation");
+    let referencesCheck = $('<span><b>&nbsp;No "References" section, is this OK?</b> <input type="checkbox" class="check" name="nth" value="N7" /><span>');
+    referencesCheck.tooltip();
+    referencesElement.prepend(referencesCheck);
+  }
   
   let keywords = $( "dt:contains('Keyword(s):')" );
   console.log('Keywords', keywords);
   if (keywords.length) {
-    keywords.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N8" />');
+    let keywordCheck = $('<span>&nbsp;<input type="checkbox" class="check" name="nth" value="N8" /><span>');
+    keywordCheck.tooltip();
+    keywords.append(keywordCheck);
   } else {
-    importantFrame.append('<dt>No keywords here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
+    let keywordCheck = $('<dt>No keywords here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
+    keywordCheck.tooltip();
+    importantFrame.append(keywordCheck);
   }
   
   contentElement.prepend(contentChecks);
