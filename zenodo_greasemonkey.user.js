@@ -219,7 +219,7 @@ function addButtons() {
 
        footer += "With this curation procedure, we introduce new processes intended to add value to your results and potentially save some of your time:\n";
        footer += "- we create Infoscience records for datasets newly accepted into the EPFL community, so that they are available for web pages, activity reports, etc.\n";
-       footer += "- if the dataset is related with a publication and if the distribution license allows it (hence the question about the preprint), we can take advantage of this situation to copy the dataset into EPFL's long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n";
+       footer += "- if the dataset is related with a publication and if the distribution license allows it, we can take advantage of this situation to copy the dataset into EPFL's long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n";
        footer += "\n\nIf you have any questions or comments about this service, do not hesitate to ask. We will be glad to answer or receive your feedback.\n\n"
        footer += "Best regards,\nZZZZZZ"
       }
@@ -245,6 +245,9 @@ function addButtons() {
   // TODO M1+M4+R1 author list: 1st <p> after the title
   
   let contentElement = $("div#preview");
+  if (contentElement.length == 0) {
+    contentElement = $("div#files");
+  }
   if (contentElement.length) {
     let contentAccess = $('<span><b>&nbsp;Access to content?</b> <input type="checkbox" class="check" name="must" value="M2" /></span>')
     contentAccess.attr("title", checklistData["M2"].full);
