@@ -366,11 +366,13 @@ function addButtons() {
   let referencesElement = $("div#references");
   if (referencesElement.length) {
     let referencesCheck = $('<span><b>&nbsp;Relevant sources?</b> <input type="checkbox" class="check" name="nth" value="N7" /><span>');
+    referencesCheck.attr("title", checklistData["N7"].full);
     referencesCheck.tooltip();
     referencesElement.append(referencesCheck);  
   } else {
     referencesElement = $("div#citation");
     let referencesCheck = $('<span><b>&nbsp;No "References" section, is this OK?</b> <input type="checkbox" class="check" name="nth" value="N7" /><span>');
+    referencesCheck.attr("title", checklistData["N7"].full);
     referencesCheck.tooltip();
     referencesElement.prepend(referencesCheck);
   }
@@ -379,19 +381,19 @@ function addButtons() {
   console.log('Keywords', keywords);
   if (keywords.length) {
     let keywordCheck = $('<span>&nbsp;<input type="checkbox" class="check" name="nth" value="N8" /><span>');
+    keywordCheck.attr("title", checklistData["N8"].full);
     keywordCheck.tooltip();
     keywords.append(keywordCheck);
   } else {
     let keywordCheck = $('<dt>No keywords here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
+    rkeywordCheck.attr("title", checklistData["N8"].full);
     keywordCheck.tooltip();
     importantFrame.append(keywordCheck);
   }
   
   contentElement.prepend(contentChecks);
   
-
 }
-
 
 function openMailEditor(url) {
   location.href = url;
