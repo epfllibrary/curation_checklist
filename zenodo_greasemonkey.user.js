@@ -244,6 +244,8 @@ function addButtons() {
   
   // TODO M1+M4+R1 author list: 1st <p> after the title
   
+  
+  let contentChecks = $('<div>');
   let contentElement = $("div#preview");
   if (contentElement.length == 0) {
     contentElement = $("div#files");
@@ -252,7 +254,7 @@ function addButtons() {
     let contentAccess = $('<span><b>&nbsp;Access to content?</b> <input type="checkbox" class="check" name="must" value="M2" /></span>')
     contentAccess.attr("title", checklistData["M2"].full);
     contentAccess.tooltip();
-    contentElement.prepend(contentAccess);
+    contentChecks.append(contentAccess);
   }
   
   let abstract = $("div.record-description");
@@ -262,10 +264,10 @@ function addButtons() {
  
   
   if (contentElement.length) {
-    let readmeExists = $('<span><b>README present?</b> <input type="checkbox" class="check" name="recommended" value="R5" /></span>');
+    let readmeExists = $('<span>&nbsp;<b>README present?</b> <input type="checkbox" class="check" name="recommended" value="R5" /></span>');
     readmeExists.attr("title", checklistData["R5"].full);
     readmeExists.tooltip();
-    contentElement.prepend(readmeExists);
+    contentChecks.append(readmeExists);
   }
   
   let mainTitle = $("h1");
@@ -281,7 +283,6 @@ function addButtons() {
   if (license.length) {
     license.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N3" />');
   }
-  
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
   if (relativeIdentifiers.length) {
@@ -305,14 +306,14 @@ function addButtons() {
     let cleanContent = $('<span><b>&nbsp;Clean content?</b> <input type="checkbox" class="check" name="nth" value="N2" /></span>');
     cleanContent.attr("title", checklistData["N2"].full);
     cleanContent.tooltip();
-    contentElement.prepend(cleanContent);
+    contentChecks.append(cleanContent);
   }
   
   if (contentElement.length) {
     let goodReadme = $('<span><b>&nbsp;Good README?</b> <input type="checkbox" class="check" name="nth" value="N4" /></span>');
     goodReadme.attr("title", checklistData["N4"].full);
     goodReadme.tooltip();
-    contentElement.prepend(goodReadme);
+    contentChecks.append(goodReadme);
   }
   
   let thesisUniversity = $( "dt:contains('Awarding University:')" );
@@ -329,7 +330,7 @@ function addButtons() {
     let openFormats = $('<span><b>&nbsp;Open file formats?</b> <input type="checkbox" class="check" name="nth" value="N6" /><span>');
     openFormats.attr("title", checklistData["N6"].full);
     openFormats.tooltip();
-    contentElement.prepend(openFormats);
+    contentChecks.append(openFormats);
   }
   
   // TODO N7 no idea yet
@@ -341,6 +342,8 @@ function addButtons() {
   } else {
     importantFrame.append('<dt>No keywords here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
   }
+  
+  contentElement.prepend(contentChecks);
   
 
 }
