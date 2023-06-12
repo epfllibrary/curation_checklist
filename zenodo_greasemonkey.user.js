@@ -10,7 +10,7 @@
 // @include     https://zenodo.org/record/*
 // @include     https://sandbox.zenodo.org/record/*
 // @grant       none
-// @version     1
+// @version     1.1
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery
@@ -231,9 +231,7 @@ function addButtons() {
     })
     .catch(err => console.error(err));
 
-  });
-  
-
+  }); 
 
   var menu = document.getElementsByClassName("col-sm-4 col-md-4 col-right")[0];
   var metadata = document.getElementsByClassName("well metadata")[0];
@@ -392,8 +390,9 @@ function addButtons() {
   }
   
   contentElement.prepend(contentChecks);
-  
+
 }
+
 
 function openMailEditor(url) {
   location.href = url;
