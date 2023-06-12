@@ -242,7 +242,12 @@ function addButtons() {
 
   menu.insertBefore(frm, metadata);
   
-  // TODO M1+M4+R1 author list: 1st <p> after the title
+  let mainTitle = $("h1");
+  let authorList = mainTitle.next('p');
+  if (authorList.length) {
+    let epflAuthors = $('<span><b>&nbsp;EPFL authors?</b> <input type="checkbox" class="check" name="must" value="M1" /></span>')
+    authorList.append(epflAuthors);
+  }
   
   
   let contentChecks = $('<div>');
@@ -262,6 +267,12 @@ function addButtons() {
     abstract.prepend('<span><b>Sufficient abstract?</b> <input type="checkbox" class="check" name="must" value="M3" /></span>')
   }
  
+  if (authorList.length) {
+    let contactAuthors = $('<span><b>&nbsp;Email or ORCID for 1 author?</b> <input type="checkbox" class="check" name="must" value="M4" /></span>')
+    authorList.append(contactAuthors);
+    let orcidAuthors = $('<span><b>&nbsp;Authors with ORCID?</b> <input type="checkbox" class="check" name="must" value="R1" /></span>')
+    authorList.append(orcidAuthors);
+  }
   
   if (contentElement.length) {
     let readmeExists = $('<span>&nbsp;<b>README present?</b> <input type="checkbox" class="check" name="recommended" value="R5" /></span>');
@@ -270,7 +281,6 @@ function addButtons() {
     contentChecks.append(readmeExists);
   }
   
-  let mainTitle = $("h1");
   if (mainTitle.length) {
     mainTitle.attr("title", checklistData["R2"].full);
     mainTitle.tooltip();
