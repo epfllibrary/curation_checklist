@@ -135,8 +135,8 @@
     <button class="demo" id="curation">Create feedback e-mail</button>
     </div>
     <script type="text/jsx">
-        const emailTo = 'info@zenodo.org';
-        const emailSub = 'Zenodo dataset submitted to the EPFL community';
+        let emailTo = 'info@zenodo.org';
+        let emailSub = 'Zenodo dataset submitted to the EPFL community';
 
         $(document).ready(function () {
         $('#curation').click(function (event) {
@@ -215,6 +215,7 @@
 
                     footer += "Best regards,\nZZZZZZ"
                 } else {
+                    emailSub += encodeURIComponent(': '+title);
                     header += `Good XXX,\n\nYou are designated as EPFL creators for the dataset \"${title}\" (${identifier}), which has been submitted to the EPFL Community.\n\n`;
                     header += "Within our new curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
 

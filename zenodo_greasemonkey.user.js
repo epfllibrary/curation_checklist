@@ -133,8 +133,8 @@ function addButtons() {
     console.log(title);
     console.log(zenodoURL);
     
-    const emailTo = 'info@zenodo.org';
-    const emailSub = 'Zenodo dataset submitted to the EPFL community';
+    let emailTo = 'info@zenodo.org';
+    let emailSub = 'Zenodo dataset submitted to the EPFL community';
     
     var text = '';
     event.preventDefault();
@@ -214,14 +214,15 @@ function addButtons() {
 
         footer += "Best regards,\nZZZZZZ"
       } else {
+        emailSub += encodeURIComponent(': '+title);
         header += `Good XXX,\n\nYou are designated as EPFL creators for the dataset \"${title}\" (${zenodoURL}), which has been submitted to the EPFL Community.\n\n`;
-       header += "Within our new curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
+        header += "Within our new curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
 
-       footer += "With this curation procedure, we introduce new processes intended to add value to your results and potentially save some of your time:\n";
-       footer += "- we create Infoscience records for datasets newly accepted into the EPFL community, so that they are available for web pages, activity reports, etc.\n";
-       footer += "- if the dataset is related with a publication and if the distribution license allows it, we can take advantage of this situation to copy the dataset into EPFL's long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n";
-       footer += "\n\nIf you have any questions or comments about this service, do not hesitate to ask. We will be glad to answer or receive your feedback.\n\n"
-       footer += "Best regards,\nZZZZZZ"
+        footer += "With this curation procedure, we introduce new processes intended to add value to your results and potentially save some of your time:\n";
+        footer += "- we create Infoscience records for datasets newly accepted into the EPFL community, so that they are available for web pages, activity reports, etc.\n";
+        footer += "- if the dataset is related with a publication and if the distribution license allows it, we can take advantage of this situation to copy the dataset into EPFL's long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n";
+        footer += "\n\nIf you have any questions or comments about this service, do not hesitate to ask. We will be glad to answer or receive your feedback.\n\n"
+        footer += "Best regards,\nZZZZZZ"
       }
 
       text = header + text + footer;
