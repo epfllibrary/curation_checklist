@@ -42,8 +42,10 @@ const checklistData = {
          "wrapper": "span"},   
   "R3": {"full": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available',
          "category": "recommended",
-         "short": "TBD",
-         "wrapper": "dt"},   
+         "short": "&nbsp;",
+         "wrapper": "span",
+         "altspan": "dt",
+         "altshort": "<b>No related identifiers here, is it OK?&nbsp;</b>"},   
   "R4": {"full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
          "category": "recommended",
          "short": "&nbsp;<b>README present?</b>",
@@ -143,8 +145,13 @@ function handleDtElement(importantFrame, criterion) {
 }
 */
 
-function addCheckElement(selector, checkCode, position) {
-  let checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
+function addCheckElement(selector, checkCode, position, normal) {
+  let checkElement;
+  if (normal) {
+    checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
+  } else {
+    checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].altwrapper}>`);    
+  }
   checkElement.attr("title", checklistData[checkCode].full);
   checkElement.tooltip();
   if (position == "before") {
@@ -289,7 +296,7 @@ function addButtons() {
   let mainTitle = $("h1");
   let authorList = mainTitle.next('p');
   if (authorList.length) {
-    addCheckElement(authorList, "M1", "after");
+    addCheckElement(authorList, "M1", "after", true);
   }
   
   
@@ -299,24 +306,24 @@ function addButtons() {
     contentElement = $("div#files");
   }
   if (contentElement.length) {
-    addCheckElement(contentChecks, "M2", "after");
+    addCheckElement(contentChecks, "M2", "after", true);
   }
   
   let abstract = $("div.record-description");
   if (abstract.length) {
-    addCheckElement(abstract, "M3", "before");
+    addCheckElement(abstract, "M3", "before", true);
   }
  
   if (authorList.length) {
-    addCheckElement(authorList, "M4", "after");
+    addCheckElement(authorList, "M4", "after", true);
     addCheckElement(authorList, "R1", "after");
     
     
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "R4", "after");
-    addCheckElement(contentChecks, "R5", "after");
+    addCheckElement(contentChecks, "R4", "after", true);
+    addCheckElement(contentChecks, "R5", "after", true);
   }
   
   if (mainTitle.length) {
@@ -324,22 +331,20 @@ function addButtons() {
   }
   
   // This one should always be there, let's use it as a reference point
+  
+  let importantFrame = $( "dt:contains('Publication date:')" ).parent();
+  
+  // TODO make license an optional element (for non-public uploads)
   let license = $( "dt:contains('License (for files):')" );
-  let importantFrame = license.parent();
   if (license.length) {
-    addCheckElement(license, "N3", "after");
+    addCheckElement(license, "N3", "after", true);
   }
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
   if (relativeIdentifiers.length) {
-    relativeIdentifiers.attr("title", checklistData["R3"].full);
-    relativeIdentifiers.tooltip();
-    relativeIdentifiers.append('&nbsp;<input type="checkbox" name="recommended" class="check" value="R3"/>');
+    addCheckElement(relativeIdentifiers, "R3", "after", true);
   } else {
-    relativeIdentifiers = $('<dt>No related identifiers here, is it OK? &nbsp;<input type="checkbox" name="recommended" class="check" value="R3" /></dt>');
-    relativeIdentifiers.attr("title", checklistData["R3"].full);
-    relativeIdentifiers.tooltip();
-    importantFrame.append(relativeIdentifiers);
+    addCheckElement(importantFrame, "R3", "after", false);
   }
   
   let grants = $( "dt:contains('Grants:')" );
@@ -355,8 +360,8 @@ function addButtons() {
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N2", "after");
-    addCheckElement(contentChecks, "N4", "after");
+    addCheckElement(contentChecks, "N2", "after", true);
+    addCheckElement(contentChecks, "N4", "after", true);
   }
   
   let thesisUniversity = $( "dt:contains('Awarding University:')" );
@@ -372,7 +377,7 @@ function addButtons() {
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N6", "after");
+    addCheckElement(contentChecks, "N6", "after", true);
   }
   
   let referencesElement = $("div#references");
