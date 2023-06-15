@@ -17,40 +17,74 @@
 
 const checklistData = {
   "M1": {"full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",
-         "category": "must"},                
+         "short": "<b>&nbsp;EPFL authors?</b>",
+         "category": "must",
+         "wrapper": "span"},                
   "M2": {"full": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired",
-         "category": "must"},   
+         "category": "must",
+         "short": "<b>&nbsp;Access to content?</b>",
+         "wrapper": "span"},   
   "M3": {"full": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
-         "category": "must"},
+         "category": "must",
+         "short": "<b>Sufficient abstract?</b>",
+         "wrapper": "div"},
   "M4": {"full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
-         "category": "must"},   
+         "category": "must",
+         "short": "<b>&nbsp;Email or ORCID for 1 author?</b>",
+         "wrapper": "span"},   
   "R1": {"full": "Authors are identified by their ORCID",
-         "category": "recommended"},   
+         "category": "recommended",
+         "short": "<b>&nbsp;Authors with ORCID?</b>",
+         "wrapper": "span"},   
   "R2": {"full": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
-         "category": "recommended"},   
+         "category": "recommended",
+         "short": "&nbsp;",
+         "wrapper": "span"},   
   "R3": {"full": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available',
-         "category": "recommended"},   
+         "category": "recommended",
+         "short": "TBD",
+         "wrapper": "dt"},   
   "R4": {"full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
-         "category": "recommended"},    
+         "category": "recommended",
+         "short": "&nbsp;<b>README present?</b>",
+         "wrapper": "span"},    
   "R5": {"full": "Any sensitive, personal data should have been anonymized",
-         "category": "recommended"},   
+         "category": "recommended",
+         "short": "&nbsp;<b>No sensitive data?</b>",
+         "wrapper": "span"},   
   "N1": {"full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields',
          "category": "nth",
-        "selector": "dt:contains('Grants:')"},   
+         "short":"TBD",
+         "wrapper": "dt",
+         "selector": "dt:contains('Grants:')"},   
   "N2": {"full": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
-         "category": "nth"},
+         "category": "nth",
+         "short": "<b>&nbsp;Clean content?</b> ",
+         "wrapper": "span"},
   "N3": {"full": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)",
-         "category": "nth"},
+         "category": "nth",
+         "short": "&nbsp;",
+         "wrapper": "span"},
   "N4": {"full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
-         "category": "nth"},
+         "category": "nth",
+         "wrapper": "<b>&nbsp;Good README?</b> ",
+         "wrapper": "span"},
   "N5": {"full": "If the submission is related to a PhD thesis, the supervisor should be specified",
-         "category": "nth"},
+         "category": "nth",
+         "short": "TBD",
+         "wrapper": "dt"},
   "N6": {"full": "Files should be available in open formats",
-         "category": "nth"},
+         "category": "nth",
+         "short": "<b>&nbsp;Open file formats?</b> ",
+         "wrapper": "span"},
   "N7": {"full": "Where applicable, sources from which the work is derived should be specified",
-         "category": "nth"},
+         "category": "nth",
+         "short": "TBD",
+         "wrapper": "span"},
   "N8": {"full": "Keywords should be entered as separated fields",
-         "category": "nth"}
+         "category": "nth",
+         "short": "TBD",
+         "wrapper": "dt"}
 };
 
 
@@ -108,6 +142,13 @@ function handleDtElement(importantFrame, criterion) {
   
 }
 */
+
+function addCheckElement(selector, checkCode) {
+  let checkElement = $(`<${checklistData[checkCode].wrapper}>No keywords here, is it OK? &nbsp;<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
+  checkElement.attr("title", checklistData[checkCode].full);
+  checkElement.tooltip();
+  return checkElement;
+}
 
 
 function addButtons() {
@@ -385,7 +426,7 @@ function addButtons() {
     keywords.append(keywordCheck);
   } else {
     let keywordCheck = $('<dt>No keywords here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
-    rkeywordCheck.attr("title", checklistData["N8"].full);
+    keywordCheck.attr("title", checklistData["N8"].full);
     keywordCheck.tooltip();
     importantFrame.append(keywordCheck);
   }
