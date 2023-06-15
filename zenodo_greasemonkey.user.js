@@ -22,7 +22,7 @@ const checklistData = {
          "wrapper": "span"},                
   "M2": {"full": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired",
          "category": "must",
-         "short": "<b>&nbsp;Access to content?</b>",
+         "short": "<b>Access to content?</b>",
          "wrapper": "span"},   
   "M3": {"full": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
          "category": "must",
@@ -67,7 +67,7 @@ const checklistData = {
          "wrapper": "span"},
   "N4": {"full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
          "category": "nth",
-         "wrapper": "<b>&nbsp;Good README?</b> ",
+         "short": "<b>&nbsp;Good README?</b> ",
          "wrapper": "span"},
   "N5": {"full": "If the submission is related to a PhD thesis, the supervisor should be specified",
          "category": "nth",
@@ -299,53 +299,35 @@ function addButtons() {
     contentElement = $("div#files");
   }
   if (contentElement.length) {
-    //let contentAccess = $('<span><b>&nbsp;Access to content?</b> <input type="checkbox" class="check" name="must" value="M2" /></span>');
-    //contentAccess.attr("title", checklistData["M2"].full);
-    //contentAccess.tooltip();
-    //contentChecks.append(contentAccess);
-    addCheckElement(contentElement, "M2", "after");
+    addCheckElement(contentChecks, "M2", "after");
   }
   
   let abstract = $("div.record-description");
   if (abstract.length) {
-    abstractCheck = $('<div><b>Sufficient abstract?</b> <input type="checkbox" class="check" name="must" value="M3" /></div>');
-    abstractCheck.attr("title", checklistData["M3"].full);
-    abstractCheck.tooltip();
-    abstract.prepend(abstractCheck);
+    addCheckElement(abstract, "M3", "before");
   }
  
   if (authorList.length) {
-    let contactAuthors = $('<span><b>&nbsp;Email or ORCID for 1 author?</b> <input type="checkbox" class="check" name="must" value="M4" /></span>');
-    contactAuthors.attr("title", checklistData["M4"].full);
-    contactAuthors.tooltip();
-    authorList.append(contactAuthors);
-    let orcidAuthors = $('<span><b>&nbsp;Authors with ORCID?</b> <input type="checkbox" class="check" name="recommended" value="R1" /></span>');
-    orcidAuthors.attr("title", checklistData["R1"].full);
-    orcidAuthors.tooltip();
-    authorList.append(orcidAuthors);
+    addCheckElement(authorList, "M4", "after");
+    addCheckElement(authorList, "R1", "after");
+    
+    
   }
   
   if (contentElement.length) {
-    let readmeExists = $('<span>&nbsp;<b>README present?</b> <input type="checkbox" class="check" name="recommended" value="R5" /></span>');
-    readmeExists.attr("title", checklistData["R5"].full);
-    readmeExists.tooltip();
-    contentChecks.append(readmeExists);
+    addCheckElement(contentChecks, "R4", "after");
+    addCheckElement(contentChecks, "R5", "after");
   }
   
   if (mainTitle.length) {
-    mainTitle.attr("title", checklistData["R2"].full);
-    mainTitle.tooltip();
-    mainTitle.append('&nbsp;<input type="checkbox" class="check" name="recommended" value="R2" />');
+    addCheckElement(mainTitle, "R2", "after");
   }
   
   // This one should always be there, let's use it as a reference point
   let license = $( "dt:contains('License (for files):')" );
   let importantFrame = license.parent();
   if (license.length) {
-    let licenseCheck = $('<span>&nbsp;<input type="checkbox" class="check" name="nth" value="N3" /></span>');
-    licenseCheck.attr("title", checklistData["N3"].full);
-    licenseCheck.tooltip();
-    license.append(licenseCheck);
+    addCheckElement(license, "N3", "after");
   }
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
@@ -373,17 +355,8 @@ function addButtons() {
   }
   
   if (contentElement.length) {
-    let cleanContent = $('<span><b>&nbsp;Clean content?</b> <input type="checkbox" class="check" name="nth" value="N2" /></span>');
-    cleanContent.attr("title", checklistData["N2"].full);
-    cleanContent.tooltip();
-    contentChecks.append(cleanContent);
-  }
-  
-  if (contentElement.length) {
-    let goodReadme = $('<span><b>&nbsp;Good README?</b> <input type="checkbox" class="check" name="nth" value="N4" /></span>');
-    goodReadme.attr("title", checklistData["N4"].full);
-    goodReadme.tooltip();
-    contentChecks.append(goodReadme);
+    addCheckElement(contentChecks, "N2", "after");
+    addCheckElement(contentChecks, "N4", "after");
   }
   
   let thesisUniversity = $( "dt:contains('Awarding University:')" );
@@ -399,10 +372,7 @@ function addButtons() {
   }
   
   if (contentElement.length) {
-    let openFormats = $('<span><b>&nbsp;Open file formats?</b> <input type="checkbox" class="check" name="nth" value="N6" /><span>');
-    openFormats.attr("title", checklistData["N6"].full);
-    openFormats.tooltip();
-    contentChecks.append(openFormats);
+    addCheckElement(contentChecks, "N6", "after");
   }
   
   let referencesElement = $("div#references");
