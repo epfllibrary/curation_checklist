@@ -143,11 +143,15 @@ function handleDtElement(importantFrame, criterion) {
 }
 */
 
-function addCheckElement(selector, checkCode) {
-  let checkElement = $(`<${checklistData[checkCode].wrapper}>No keywords here, is it OK? &nbsp;<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
+function addCheckElement(selector, checkCode, position) {
+  let checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
   checkElement.attr("title", checklistData[checkCode].full);
   checkElement.tooltip();
-  return checkElement;
+  if (position == "before") {
+    selector.prepend(checkElement);
+  } else {
+    selector.append(checkElement);
+  }
 }
 
 
@@ -285,10 +289,7 @@ function addButtons() {
   let mainTitle = $("h1");
   let authorList = mainTitle.next('p');
   if (authorList.length) {
-    let epflAuthors = $('<span><b>&nbsp;EPFL authors?</b> <input type="checkbox" class="check" name="must" value="M1" /></span>');
-    epflAuthors.attr("title", checklistData["M1"].full);
-    epflAuthors.tooltip();
-    authorList.append(epflAuthors);
+    addCheckElement(authorList, "M1", "after");
   }
   
   
@@ -298,10 +299,11 @@ function addButtons() {
     contentElement = $("div#files");
   }
   if (contentElement.length) {
-    let contentAccess = $('<span><b>&nbsp;Access to content?</b> <input type="checkbox" class="check" name="must" value="M2" /></span>');
-    contentAccess.attr("title", checklistData["M2"].full);
-    contentAccess.tooltip();
-    contentChecks.append(contentAccess);
+    //let contentAccess = $('<span><b>&nbsp;Access to content?</b> <input type="checkbox" class="check" name="must" value="M2" /></span>');
+    //contentAccess.attr("title", checklistData["M2"].full);
+    //contentAccess.tooltip();
+    //contentChecks.append(contentAccess);
+    addCheckElement(contentElement, "M2", "after");
   }
   
   let abstract = $("div.record-description");
