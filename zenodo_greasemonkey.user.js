@@ -66,7 +66,9 @@ const checklistData = {
   "N3": {"full": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)",
          "category": "nth",
          "short": "&nbsp;",
-         "wrapper": "span"},
+         "wrapper": "span",
+         "altshort": "<b>No license, probably wrong&nbsp;</b>",
+         "altwrapper": "dt"},
   "N4": {"full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
          "category": "nth",
          "short": "<b>&nbsp;Good README?</b> ",
@@ -130,20 +132,6 @@ $('head').append( checklistStyle );
 
 addButtons();
 
-/* TODO find out why this does crashes the script
-function handleDtElement(importantFrame, criterion) {
-  //let domElement = $( checklistData[criterion].selector );
-  var domElement = {};
-  if (domElement.length) {
-    domElement.attr("title", checklistData[criterion].full);
-    domElement.tooltip();
-    domElement.append('&nbsp;<input type="checkbox" class="check" name="' + checklistData[criterion] + 'value="' + criterion +'" />');
-  } else {
-    importantFrame.append('<dt>No XX here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="' + criterion '" /></dt>');
-  }
-  
-}
-*/
 
 function addCheckElement(selector, checkCode, position, normal) {
   let checkElement;
@@ -334,10 +322,11 @@ function addButtons() {
   
   let importantFrame = $( "dt:contains('Publication date:')" ).parent();
   
-  // TODO make license an optional element (for non-public uploads)
   let license = $( "dt:contains('License (for files):')" );
   if (license.length) {
     addCheckElement(license, "N3", "after", true);
+  } else {
+    addCheckElement(importantFrame, "N3", "after", false);
   }
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
