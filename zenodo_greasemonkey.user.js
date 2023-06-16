@@ -323,7 +323,7 @@ function addButtons() {
   }
   
   if (mainTitle.length) {
-    addCheckElement(mainTitle, "R2", "after");
+    addCheckElement(mainTitle, "R2", "after", true);
   }
   
   // This one should always be there, let's use it as a reference point
