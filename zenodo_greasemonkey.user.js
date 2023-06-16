@@ -56,8 +56,10 @@ const checklistData = {
          "wrapper": "span"},   
   "N1": {"full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields',
          "category": "nth",
-         "short":"TBD",
-         "wrapper": "dt",
+         "short":"&nbsp;",
+         "wrapper": "span",
+         "altshort": "No grants here, is it OK? &nbsp;",
+         "altwrapper": "dt",
          "selector": "dt:contains('Grants:')"},   
   "N2": {"full": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
          "category": "nth",
@@ -75,20 +77,26 @@ const checklistData = {
          "wrapper": "span"},
   "N5": {"full": "If the submission is related to a PhD thesis, the supervisor should be specified",
          "category": "nth",
-         "short": "TBD",
-         "wrapper": "dt"},
+         "short": "&nbsp;Supevisor listed?",
+         "wrapper": "span",
+         "altshort": "<b>No thesis indication, probably fine&nbsp;</b>",
+         "altwrapper": "dt"},
   "N6": {"full": "Files should be available in open formats",
          "category": "nth",
          "short": "<b>&nbsp;Open file formats?</b> ",
          "wrapper": "span"},
   "N7": {"full": "Where applicable, sources from which the work is derived should be specified",
          "category": "nth",
-         "short": "TBD",
-         "wrapper": "span"},
+         "short": "<b>&nbsp;Relevant sources?</b>",
+         "wrapper": "span",
+         "altshort": "<b>&nbsp;No \"References\" section, is this OK?</b>",
+         "altwrapper": "span"},
   "N8": {"full": "Keywords should be entered as separated fields",
          "category": "nth",
-         "short": "TBD",
-         "wrapper": "dt"}
+         "short": "&nbsp;",
+         "wrapper": "span",
+         "altshort": "No keywords here, is it OK? &nbsp;",
+         "altwrapper": "dt"}
 };
 
 
@@ -304,7 +312,7 @@ function addButtons() {
  
   if (authorList.length) {
     addCheckElement(authorList, "M4", "after", true);
-    addCheckElement(authorList, "R1", "after");
+    addCheckElement(authorList, "R1", "after", true);
     
     
   }
@@ -338,14 +346,9 @@ function addButtons() {
   
   let grants = $( "dt:contains('Grants:')" );
   if (grants.length) {
-    grants.attr("title", checklistData["N1"].full);
-    grants.tooltip();
-    grants.append('&nbsp;<input type="checkbox" class="check" name="nth" value="N1" />');
+    addCheckElement(grants, "N1", "after", true);
   } else {
-    grants = $('<dt>No grants here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N1" /></dt>');
-    grants.attr("title", checklistData["N1"].full);
-    grants.tooltip();
-    importantFrame.append(grants);
+    addCheckElement(importantFrame, "N1", "after", false);
   }
   
   if (contentElement.length) {
@@ -355,14 +358,9 @@ function addButtons() {
   
   let thesisUniversity = $( "dt:contains('Awarding University:')" );
   if (thesisUniversity.length) {
-    thesisUniversity.attr("title", checklistData["N5"].full);
-    thesisUniversity.tooltip();
-    thesisUniversity.append('&nbsp;Supevisor listed?<input type="checkbox" class="check" name="nth" value="N5" />');
+    addCheckElement(thesisUniversity, "N5", "after", true);
   } else {
-    thesisUniversity = $('<dt>No thesis indication, probably OK&nbsp;<input type="checkbox" name="nth" class="check" value="N5" /></dt>');
-    thesisUniversity.attr("title", checklistData["N5"].full);
-    thesisUniversity.tooltip();
-    importantFrame.append(thesisUniversity);
+    addCheckElement(importantFrame, "N5", "after", false);
   }
   
   if (contentElement.length) {
@@ -371,30 +369,18 @@ function addButtons() {
   
   let referencesElement = $("div#references");
   if (referencesElement.length) {
-    let referencesCheck = $('<span><b>&nbsp;Relevant sources?</b> <input type="checkbox" class="check" name="nth" value="N7" /><span>');
-    referencesCheck.attr("title", checklistData["N7"].full);
-    referencesCheck.tooltip();
-    referencesElement.append(referencesCheck);  
+    addCheckElement(referencesElement, "N7", "after", true);
   } else {
     referencesElement = $("div#citation");
-    let referencesCheck = $('<span><b>&nbsp;No "References" section, is this OK?</b> <input type="checkbox" class="check" name="nth" value="N7" /><span>');
-    referencesCheck.attr("title", checklistData["N7"].full);
-    referencesCheck.tooltip();
-    referencesElement.prepend(referencesCheck);
+    addCheckElement(referencesElement, "N7", "before", false);
   }
   
   let keywords = $( "dt:contains('Keyword(s):')" );
   console.log('Keywords', keywords);
   if (keywords.length) {
-    let keywordCheck = $('<span>&nbsp;<input type="checkbox" class="check" name="nth" value="N8" /><span>');
-    keywordCheck.attr("title", checklistData["N8"].full);
-    keywordCheck.tooltip();
-    keywords.append(keywordCheck);
+    addCheckElement(keywords, "N8", "after", true);
   } else {
-    let keywordCheck = $('<dt>No keywords here, is it OK? &nbsp;<input type="checkbox" name="nth" class="check" value="N8" /></dt>');
-    keywordCheck.attr("title", checklistData["N8"].full);
-    keywordCheck.tooltip();
-    importantFrame.append(keywordCheck);
+    addCheckElement(importantFrame, "N8", "after", false);
   }
   
   contentElement.prepend(contentChecks);
