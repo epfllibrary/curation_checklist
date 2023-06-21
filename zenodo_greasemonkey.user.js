@@ -10,7 +10,7 @@
 // @include     https://zenodo.org/record/*
 // @include     https://sandbox.zenodo.org/record/*
 // @grant       none
-// @version     1.1
+// @version     1.2beta
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery
@@ -38,25 +38,25 @@ const checklistData = {
          "wrapper": "span"},   
   "R2": {"full": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
          "category": "recommended",
-         "short": "&nbsp;",
+         "short": "<b>&nbsp;</b>",
          "wrapper": "span"},   
   "R3": {"full": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available',
          "category": "recommended",
-         "short": "&nbsp;",
+         "short": "<b>&nbsp</b>;",
          "wrapper": "span",
          "altspan": "dt",
          "altshort": "<b>No related identifiers here, is it OK?&nbsp;</b>"},   
   "R4": {"full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
          "category": "recommended",
-         "short": "&nbsp;<b>README present?</b>",
+         "short": "<b>&nbsp;README present?</b>",
          "wrapper": "span"},    
   "R5": {"full": "Any sensitive, personal data should have been anonymized",
          "category": "recommended",
-         "short": "&nbsp;<b>No sensitive data?</b>",
+         "short": "<b>&nbsp;No sensitive data?</b>",
          "wrapper": "span"},   
   "N1": {"full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields',
          "category": "nth",
-         "short":"&nbsp;",
+         "short":"<b>&nbsp;</b>",
          "wrapper": "span",
          "altshort": "No grants here, is it OK? &nbsp;",
          "altwrapper": "dt",
@@ -67,7 +67,7 @@ const checklistData = {
          "wrapper": "span"},
   "N3": {"full": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)",
          "category": "nth",
-         "short": "&nbsp;",
+         "short": "<b>&nbsp;</b>",
          "wrapper": "span",
          "altshort": "<b>No license, probably wrong&nbsp;</b>",
          "altwrapper": "dt"},
@@ -77,7 +77,7 @@ const checklistData = {
          "wrapper": "span"},
   "N5": {"full": "If the submission is related to a PhD thesis, the supervisor should be specified",
          "category": "nth",
-         "short": "&nbsp;Supevisor listed?",
+         "short": "<b>&nbsp;Supevisor listed?</b>",
          "wrapper": "span",
          "altshort": "<b>No thesis indication, probably fine&nbsp;</b>",
          "altwrapper": "dt"},
@@ -93,7 +93,7 @@ const checklistData = {
          "altwrapper": "span"},
   "N8": {"full": "Keywords should be entered as separated fields",
          "category": "nth",
-         "short": "&nbsp;",
+         "short": "<b>&nbsp;</b>",
          "wrapper": "span",
          "altshort": "No keywords here, is it OK? &nbsp;",
          "altwrapper": "dt"}
@@ -135,16 +135,44 @@ const checklistStyle = `
 
 this.$ = this.jQuery = jQuery.noConflict(true);
 $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css') );
+$('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css') );
+$('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css') );
+$('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css') );
 $('head').append( checklistStyle );
 
 
 addButtons();
 
+function myclick(clickedElement) {
+    console.log('click detected');
+    let code = clickedElement.parent().attr('id');
+    console.log(code, clickedElement.attr('id'));
+    if (clickedElement.next().text() != 'x') {
+      clickedElement.siblings().text(' ');
+      //Process button click event
+      clickedElement.next().text('x');
+    } else {
+      clickedElement.prop('checked', false);
+      clickedElement.next().text('?');
+    }
+}
+
+
 
 function addCheckElement(selector, checkCode, position, normal) {
   let checkElement;
   if (normal) {
-    checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
+    //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
+    let myHtml = $(`<div class="btn-group" id="${checkCode}" />`);
+    
+    myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}"> </label>`);
+    myHtml.append(`<label class="btn btn-secondary btn-neutral" id="undecided" name="${checklistData[checkCode].category}">?</label>`);
+    myHtml.append(`<label class="btn btn-success" id="ok" name="${checklistData[checkCode].category}"> </label>`);   
+    
+    checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}${myHtml}</${checklistData[checkCode].wrapper}>`);
+    checkElement = $(`<${checklistData[checkCode].wrapper}>`);
+    checkElement.append($(`${checklistData[checkCode].short}`));
+    checkElement.append(myHtml);
   } else {
     checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].altwrapper}>`);    
   }
@@ -186,16 +214,21 @@ function addButtons() {
     
     var text = '';
     event.preventDefault();
-    const MustCheckboxUnchecked = $('input[name="must"]:not(:checked)').tsort({attr:'value'});
-    const RecommendedCheckboxUnchecked = $('input[name="recommended"]:not(:checked)').tsort({attr:'value'});
-    const NTHCheckboxUnchecked = $('input[name="nth"]:not(:checked)').tsort({attr:'value'});
+    const MustCheckboxUnchecked = $('label[name="must"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
+    const MustCheckboxBad = $('label[name="must"][id="bad"]:contains("x")').tsort({attr:'value'});
+    const RecommendedCheckboxUnchecked = $('label[name="recommended"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
+    const RecommendedCheckboxBad = $('label[name="ecommended"][id="bad"]:contains("x")').tsort({attr:'value'});
+    const NTHCheckboxUnchecked = $('label[name="nth"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
+    const NTHCheckboxBad = $('label[name="nth"][id="bad"]:contains("x")').tsort({attr:'value'});
     
-    
-    if (MustCheckboxUnchecked.length) {
-      text += `Total ${MustCheckboxUnchecked.length} missing MUST criteria:\n`;
+    console.log(MustCheckboxBad.length, RecommendedCheckboxBad.length, NTHCheckboxBad.length);
+    console.log(MustCheckboxUnchecked.length, RecommendedCheckboxUnchecked.length, NTHCheckboxUnchecked.length);
+    if (MustCheckboxBad.length) {
+      text += `Total ${MustCheckboxBad.length} missing MUST criteria:\n`;
       
-      MustCheckboxUnchecked.each(function () {
-        let value = $(this).val();
+      MustCheckboxBad.each(function () {
+        let value = $(this).parent().attr('id');
+        console.log(value);
         text += `${value}: `;
         text += `${checklistData[value].full}\n`; 
         text += `=>\n\n`;
@@ -204,10 +237,10 @@ function addButtons() {
     }
 
     
-    if (RecommendedCheckboxUnchecked.length) {
-      text += `Total ${RecommendedCheckboxUnchecked.length} missing RECOMMENDED criteria:\n`;
-      RecommendedCheckboxUnchecked.each(function () {
-        let value = $(this).val();
+    if (RecommendedCheckboxBad.length) {
+      text += `Total ${RecommendedCheckboxBad.length} missing RECOMMENDED criteria:\n`;
+      RecommendedCheckboxBad.each(function () {
+        let value = $(this).parent().attr('id');
         text += `${value}: `;
         text += `${checklistData[value].full}\n`; 
         text += `=>\n\n`;
@@ -215,10 +248,10 @@ function addButtons() {
     }
 
     
-    if (NTHCheckboxUnchecked.length) {
-      text += `Total ${NTHCheckboxUnchecked.length} missing NICE TO HAVE criteria:\n`;
-      NTHCheckboxUnchecked.each(function () {
-        let value = $(this).val();
+    if (NTHCheckboxBad.length) {
+      text += `Total ${NTHCheckboxBad.length} missing NICE TO HAVE criteria:\n`;
+      NTHCheckboxBad.each(function () {
+        let value = $(this).parent().attr('id');
         text += `${value}: `;
         text += `${checklistData[value].full}\n`; 
         text += `=>\n\n`;
@@ -383,8 +416,19 @@ function addButtons() {
     addCheckElement(importantFrame, "N8", "after", false);
   }
   
-  contentElement.prepend(contentChecks);
+  contentElement.prepend(contentChecks); 
 
+  $('div.btn-group label.btn').on("click", function myclick(event) {
+      console.log('in group selector', $(this).parent().attr('id'), $(this).attr('id'));
+      if ($(this).text() == ' ') {
+        $(this).siblings().text(' ');
+        //Process button click event
+        $(this).text('x');
+      } else {
+        $(this).text('?');
+      }
+    });
+  
 }
 
 
