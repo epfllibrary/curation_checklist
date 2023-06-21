@@ -10,32 +10,32 @@
 // @include     https://zenodo.org/record/*
 // @include     https://sandbox.zenodo.org/record/*
 // @grant       none
-// @version     1.2beta
+// @version     1.1
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery
 
 const checklistData = {
   "M1": {"full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",
-         "short": "<b>&nbsp;EPFL authors?</b>",
+         "short": "<b>EPFL authors?</b>",
          "category": "must",
-         "wrapper": "span"},                
+         "wrapper": "div"},                
   "M2": {"full": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired",
          "category": "must",
          "short": "<b>Access to content?</b>",
-         "wrapper": "span"},   
+         "wrapper": "div"},   
   "M3": {"full": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
          "category": "must",
          "short": "<b>Sufficient abstract?</b>",
          "wrapper": "div"},
   "M4": {"full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
          "category": "must",
-         "short": "<b>&nbsp;Email or ORCID for 1 author?</b>",
-         "wrapper": "span"},   
+         "short": "<b>Email or ORCID for 1 author?</b>",
+         "wrapper": "div"},   
   "R1": {"full": "Authors are identified by their ORCID",
          "category": "recommended",
-         "short": "<b>&nbsp;Authors with ORCID?</b>",
-         "wrapper": "span"},   
+         "short": "<b>Authors with ORCID?</b>",
+         "wrapper": "div"},   
   "R2": {"full": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
          "category": "recommended",
          "short": "<b>&nbsp;</b>",
@@ -52,19 +52,19 @@ const checklistData = {
          "wrapper": "span"},    
   "R5": {"full": "Any sensitive, personal data should have been anonymized",
          "category": "recommended",
-         "short": "<b>&nbsp;No sensitive data?</b>",
-         "wrapper": "span"},   
+         "short": "<b>No sensitive data?</b>",
+         "wrapper": "div"},   
   "N1": {"full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields',
          "category": "nth",
          "short":"<b>&nbsp;</b>",
          "wrapper": "span",
-         "altshort": "No grants here, is it OK? &nbsp;",
+         "altshort": "<b>No grants here, is it OK? &nbsp;</b>",
          "altwrapper": "dt",
          "selector": "dt:contains('Grants:')"},   
   "N2": {"full": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
          "category": "nth",
-         "short": "<b>&nbsp;Clean content?</b> ",
-         "wrapper": "span"},
+         "short": "<b>Clean content?</b> ",
+         "wrapper": "div"},
   "N3": {"full": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)",
          "category": "nth",
          "short": "<b>&nbsp;</b>",
@@ -73,8 +73,8 @@ const checklistData = {
          "altwrapper": "dt"},
   "N4": {"full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
          "category": "nth",
-         "short": "<b>&nbsp;Good README?</b> ",
-         "wrapper": "span"},
+         "short": "<b>Good README?</b> ",
+         "wrapper": "div"},
   "N5": {"full": "If the submission is related to a PhD thesis, the supervisor should be specified",
          "category": "nth",
          "short": "<b>&nbsp;Supevisor listed?</b>",
@@ -83,8 +83,8 @@ const checklistData = {
          "altwrapper": "dt"},
   "N6": {"full": "Files should be available in open formats",
          "category": "nth",
-         "short": "<b>&nbsp;Open file formats?</b> ",
-         "wrapper": "span"},
+         "short": "<b>Open file formats?</b> ",
+         "wrapper": "div"},
   "N7": {"full": "Where applicable, sources from which the work is derived should be specified",
          "category": "nth",
          "short": "<b>&nbsp;Relevant sources?</b>",
@@ -95,7 +95,7 @@ const checklistData = {
          "category": "nth",
          "short": "<b>&nbsp;</b>",
          "wrapper": "span",
-         "altshort": "No keywords here, is it OK? &nbsp;",
+         "altshort": "<b>No keywords here, is it OK? &nbsp;</b>",
          "altwrapper": "dt"}
 };
 
@@ -169,12 +169,24 @@ function addCheckElement(selector, checkCode, position, normal) {
     myHtml.append(`<label class="btn btn-secondary btn-neutral" id="undecided" name="${checklistData[checkCode].category}">?</label>`);
     myHtml.append(`<label class="btn btn-success" id="ok" name="${checklistData[checkCode].category}"> </label>`);   
     
-    checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}${myHtml}</${checklistData[checkCode].wrapper}>`);
+    //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}${myHtml}</${checklistData[checkCode].wrapper}>`);
     checkElement = $(`<${checklistData[checkCode].wrapper}>`);
     checkElement.append($(`${checklistData[checkCode].short}`));
     checkElement.append(myHtml);
   } else {
-    checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].altwrapper}>`);    
+    //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].altwrapper}>`);    
+    myHtml = $(`<div class="btn-group" id="${checkCode}" />`);
+    
+    myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}"> </label>`);
+    myHtml.append(`<label class="btn btn-secondary btn-neutral" id="undecided" name="${checklistData[checkCode].category}">?</label>`);
+    myHtml.append(`<label class="btn btn-success" id="ok" name="${checklistData[checkCode].category}"> </label>`);   
+    
+    //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}${myHtml}</${checklistData[checkCode].wrapper}>`);
+    checkElement = $(`<${checklistData[checkCode].altwrapper}>`);
+    checkElement.append($(`${checklistData[checkCode].altshort}`));
+    checkElement.append(myHtml);
+
+  
   }
   checkElement.attr("title", checklistData[checkCode].full);
   checkElement.tooltip();
