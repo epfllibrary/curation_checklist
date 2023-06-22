@@ -446,6 +446,8 @@ function addButtons() {
   
   $('div.collapse').attr("aria-expanded","true");
   $('div.collapse').css("display","block");
+  // TODO if possible, find a better way to keep the footer out of the way when using mdb.css
+  $('footer.footer').css("display","none");
   
 }
 
