@@ -14,6 +14,7 @@
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery
+// TODO fix the dataset title (new checkbox content is leaking into the variable) and link (use a DOI) => access the Datacite metadata would be better, and useful in the future
 
 const checklistData = {
   "M1": {"full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",
