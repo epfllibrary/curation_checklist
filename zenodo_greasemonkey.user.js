@@ -48,7 +48,7 @@ const checklistData = {
          "altshort": "<b>No related identifiers here, is it OK?&nbsp;</b>"},   
   "R4": {"full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
          "category": "recommended",
-         "short": "<b>&nbsp;README present?</b>",
+         "short": "<b>README present?</b>",
          "wrapper": "span"},    
   "R5": {"full": "Any sensitive, personal data should have been anonymized",
          "category": "recommended",
@@ -130,6 +130,7 @@ const checklistStyle = `
   cursor: pointer; 
   opacity: 0.8;
 }
+
 </style>
 `;
 
@@ -138,6 +139,7 @@ $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'h
 $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css') );
 $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css') );
 $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css') );
+
 $('head').append( checklistStyle );
 
 
@@ -440,6 +442,9 @@ function addButtons() {
         $(this).text('?');
       }
     });
+  
+  $('div.collapse').attr("aria-expanded","true");
+  $('div.collapse').css("display","block");
   
 }
 
