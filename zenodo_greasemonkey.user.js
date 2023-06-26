@@ -15,7 +15,7 @@
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery
 
-// TODO fix the dataset title (new checkbox content is leaking into the variable) and link (use a DOI) => access the Datacite metadata would be better, and useful in the future
+// TODO fix the dataset  link (use a DOI) => access the Datacite metadata would be better, and useful in the future
 // URL locale, supprimer tout ce qui est après un #, + /export/json et ensuite parser le HTML. Inspiration Zotero:
 /*
 var cslURL = url.replace(/#.+/, "").replace(/\?.+/, "").replace(/\/export\/.+/, "") + "/export/csl";
