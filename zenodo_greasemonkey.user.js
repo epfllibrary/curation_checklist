@@ -112,6 +112,11 @@ const checklistData = {
          "altwrapper": "dt"}
 };
 
+const buttonValues = {'neutral': [' ', '?', ' '],
+                        'ok': [' ', ' ', 'x'],
+                        'bad': ['x', ' ', ' ']
+}
+  
 
 const checklistStyle = `
 <style>
@@ -161,9 +166,9 @@ $('head').append( checklistStyle );
 addButtons();
 
 function myclick(clickedElement) {
-    console.log('click detected');
+    //console.log('click detected');
     let code = clickedElement.parent().attr('id');
-    console.log(code, clickedElement.attr('id'));
+    //console.log(code, clickedElement.attr('id'));
     if (clickedElement.next().text() != 'x') {
       clickedElement.siblings().text(' ');
       //Process button click event
@@ -176,15 +181,17 @@ function myclick(clickedElement) {
 
 
 
-function addCheckElement(selector, checkCode, position, normal) {
+function addCheckElement(selector, checkCode, position, normal, status) {
   let checkElement;
+  //console.log(checkCode, status);
+  
   if (normal) {
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
     let myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
     
-    myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}"> </label>`);
-    myHtml.append(`<label class="btn btn-secondary btn-neutral" id="undecided" name="${checklistData[checkCode].category}">?</label>`);
-    myHtml.append(`<label class="btn btn-success" id="ok" name="${checklistData[checkCode].category}"> </label>`);   
+    myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
+    myHtml.append(`<label class="btn btn-secondary btn-neutral" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
+    myHtml.append(`<label class="btn btn-success" id="ok" name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);   
     
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}${myHtml}</${checklistData[checkCode].wrapper}>`);
     checkElement = $(`<${checklistData[checkCode].wrapper}>`);
@@ -194,9 +201,9 @@ function addCheckElement(selector, checkCode, position, normal) {
     //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].altwrapper}>`);    
     myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
     
-    myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}"> </label>`);
-    myHtml.append(`<label class="btn btn-secondary btn-neutral" id="undecided" name="${checklistData[checkCode].category}">?</label>`);
-    myHtml.append(`<label class="btn btn-success" id="ok" name="${checklistData[checkCode].category}"> </label>`);   
+    myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
+    myHtml.append(`<label class="btn btn-secondary btn-neutral" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
+    myHtml.append(`<label class="btn btn-success" id="ok" name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);   
     
     //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}${myHtml}</${checklistData[checkCode].wrapper}>`);
     checkElement = $(`<${checklistData[checkCode].altwrapper}>`);
@@ -218,13 +225,13 @@ function addCheckElement(selector, checkCode, position, normal) {
 function addButtons() {
   
   var btn = document.createElement('BUTTON');
-  var t = document.createTextNode('Prepare curation e-mail');
+  var t = document.createTextNode('Prepare curation feedback e-mail');
   var frm = document.createElement('FORM');
   var icn = document.createElement('I');
 
 
   icn.setAttribute('class', "fa fa-external-link");
-  btn.setAttribute('class', "btn btn-primary btn-block");
+  btn.setAttribute('class', "btn btn-danger btn-block");
   btn.appendChild(icn);
   btn.appendChild(t);
   frm.appendChild(btn);
@@ -360,7 +367,7 @@ function addButtons() {
   let mainTitle = $("h1");
   let authorList = mainTitle.next('p');
   if (authorList.length) {
-    addCheckElement(authorList, "M1", "after", true);
+    addCheckElement(authorList, "M1", "after", true, 'neutral');
   }
   
   
@@ -368,30 +375,30 @@ function addButtons() {
   let contentElement = $("div#preview");
   if (contentElement.length == 0) {
     contentElement = $("div#files");
+    console.log('contentElement:', contentElement);
   }
-  if (contentElement.length) {
-    addCheckElement(contentChecks, "M2", "after", true);
-  }
+  addCheckElement(contentChecks, "M2", "after", true, 'neutral');
   
   let abstract = $("div.record-description");
   if (abstract.length) {
-    addCheckElement(abstract, "M3", "before", true);
+    addCheckElement(abstract, "M3", "before", true, 'neutral');
+    abstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   }
  
   if (authorList.length) {
-    addCheckElement(authorList, "M4", "after", true);
-    addCheckElement(authorList, "R1", "after", true);
+    addCheckElement(authorList, "M4", "after", true, 'neutral');
+    addCheckElement(authorList, "R1", "after", true, 'neutral');
     
     
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "R4", "after", true);
-    addCheckElement(contentChecks, "R5", "after", true);
+    addCheckElement(contentChecks, "R4", "after", true, 'neutral');
+    addCheckElement(contentChecks, "R5", "after", true, 'neutral');
   }
   
   if (mainTitle.length) {
-    addCheckElement(mainTitle, "R2", "after", true);
+    addCheckElement(mainTitle, "R2", "after", true, 'neutral');
   }
   
   // This one should always be there, let's use it as a reference point
@@ -400,55 +407,55 @@ function addButtons() {
   
   let license = $( "dt:contains('License (for files):')" );
   if (license.length) {
-    addCheckElement(license, "N3", "after", true);
+    addCheckElement(license, "N3", "after", true, 'neutral');
   } else {
-    addCheckElement(importantFrame, "N3", "after", false);
+    addCheckElement(importantFrame, "N3", "after", false, 'neutral');
   }
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
   if (relativeIdentifiers.length) {
-    addCheckElement(relativeIdentifiers, "R3", "after", true);
+    addCheckElement(relativeIdentifiers, "R3", "after", true, 'neutral');
   } else {
-    addCheckElement(importantFrame, "R3", "after", false);
+    addCheckElement(importantFrame, "R3", "after", false, 'neutral');
   }
   
   let grants = $( "dt:contains('Grants:')" );
   if (grants.length) {
-    addCheckElement(grants, "N1", "after", true);
+    addCheckElement(grants, "N1", "after", true, 'neutral');
   } else {
-    addCheckElement(importantFrame, "N1", "after", false);
+    addCheckElement(importantFrame, "N1", "after", false, 'neutral');
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N2", "after", true);
-    addCheckElement(contentChecks, "N4", "after", true);
+    addCheckElement(contentChecks, "N2", "after", true, 'neutral');
+    addCheckElement(contentChecks, "N4", "after", true, 'neutral');
   }
   
   let thesisUniversity = $( "dt:contains('Awarding University:')" );
   if (thesisUniversity.length) {
-    addCheckElement(thesisUniversity, "N5", "after", true);
+    addCheckElement(thesisUniversity, "N5", "after", true, 'neutral');
   } else {
-    addCheckElement(importantFrame, "N5", "after", false);
+    addCheckElement(importantFrame, "N5", "after", false, 'neutral');
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N6", "after", true);
+    addCheckElement(contentChecks, "N6", "after", true, 'neutral');
   }
   
   let referencesElement = $("div#references");
   if (referencesElement.length) {
-    addCheckElement(referencesElement, "N7", "after", true);
+    addCheckElement(referencesElement, "N7", "after", true, 'neutral');
   } else {
     referencesElement = $("div#citation");
-    addCheckElement(referencesElement, "N7", "before", false);
+    addCheckElement(referencesElement, "N7", "before", false, 'neutral');
   }
   
   let keywords = $( "dt:contains('Keyword(s):')" );
   console.log('Keywords', keywords);
   if (keywords.length) {
-    addCheckElement(keywords, "N8", "after", true);
+    addCheckElement(keywords, "N8", "after", true, 'neutral');
   } else {
-    addCheckElement(importantFrame, "N8", "after", false);
+    addCheckElement(importantFrame, "N8", "after", false, 'neutral');
   }
   
   contentElement.prepend(contentChecks); 
