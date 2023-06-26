@@ -289,7 +289,8 @@ function addButtons() {
 
     console.log('variable URL at the end');
     // TODO adapt or replace entirely DOI detection
-    let doi = $('input[name="DOI"]').val();
+    let doi = $('h4 pre:first').text();
+    console.log('doi', doi);
     if (doi === '') {
       doi = 'dummy';
     }
@@ -307,7 +308,7 @@ function addButtons() {
       if ('data' in json) {
         console.log('And we have a winner!');
         // TODO check if only valid for the meta-DOI and not for versions
-        identifier = json.data.attributes.url;
+        identifier = 'https://doi.org/' + doi;
         title = json.data.attributes.titles[0].title;
         console.log(identifier, title);
       }
