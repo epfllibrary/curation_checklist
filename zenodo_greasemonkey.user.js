@@ -243,12 +243,6 @@ function addButtons() {
     
     var text = '';
     event.preventDefault();
-    /*const MustCheckboxUnchecked = $('label[name="must"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
-    const MustCheckboxBad = $('label[name="must"][id="bad"]:contains("x")').tsort({attr:'value'});
-    const RecommendedCheckboxUnchecked = $('label[name="recommended"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
-    const RecommendedCheckboxBad = $('label[name="recommended"][id="bad"]:contains("x")').tsort({attr:'value'});
-    const NTHCheckboxUnchecked = $('label[name="nth"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
-    const NTHCheckboxBad = $('label[name="nth"][id="bad"]:contains("x")').tsort({attr:'value'});*/
     
     const MustCheckboxUnchecked = $('label[name="must"][id="ok"]:not(:contains("x"))');
     const MustCheckboxBad = $('label[name="must"][id="bad"]:contains("x")');
@@ -303,9 +297,9 @@ function addButtons() {
     }
 
     console.log('variable URL at the end');
-    // TODO adapt or replace entirely DOI detection
     let doi = $('h4 pre:first').text();
     console.log('doi', doi);
+    let identifier = 'https://doi.org/' + doi;
     if (doi === '') {
       doi = 'dummy';
     }
@@ -319,13 +313,9 @@ function addButtons() {
     .then(resp => resp.json())
     .then(json => {
       console.log(json);
-      let identifier = 'XXXXXX';
       if ('data' in json) {
         console.log('And we have a winner!');
-        // TODO check if only valid for the meta-DOI and not for versions
-        identifier = 'https://doi.org/' + doi;
-        title = json.data.attributes.titles[0].title;
-        console.log(identifier, title);
+        // TODO move this inner block out of the message generation block in order to test some criteria automatically
       }
 
       let header = ""
@@ -341,7 +331,7 @@ function addButtons() {
         footer += "Best regards,\nZZZZZZ"
       } else {
         emailSub += encodeURIComponent(': '+title);
-        header += `Good XXX,\n\nYou are designated as EPFL creators for the dataset \"${title}\" (${zenodoURL}), which has been submitted to the EPFL Community.\n\n`;
+        header += `Good XXX,\n\nYou are designated as EPFL creators for the dataset \"${title}\" (${identifier}), which has been submitted to the EPFL Community.\n\n`;
         header += "Within our new curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
 
         footer += "With this curation procedure, we introduce new processes intended to add value to your results and potentially save some of your time:\n";
