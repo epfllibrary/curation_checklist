@@ -14,7 +14,19 @@
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery
+
 // TODO fix the dataset title (new checkbox content is leaking into the variable) and link (use a DOI) => access the Datacite metadata would be better, and useful in the future
+// URL locale, supprimer tout ce qui est après un #, + /export/json et ensuite parser le HTML. Inspiration Zotero:
+/*
+var cslURL = url.replace(/#.+/, "").replace(/\?.+/, "").replace(/\/export\/.+/, "") + "/export/csl";
+  // Z.debug(cslURL)
+  // use CSL JSON translator
+  ZU.processDocuments(cslURL, function (newDoc) {
+    var text = ZU.xpathText(newDoc, '//h3/following-sibling::pre');
+    // Z. debug(text);
+    text = text.replace(/publisher_place/, "publisher-place");
+    text = text.replace(/container_title/, "container-title");
+    */
 
 const checklistData = {
   "M1": {"full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",
@@ -132,14 +144,16 @@ const checklistStyle = `
   opacity: 0.8;
 }
 
+label.btn {
+  height: 4ch;
+  border: 1px solid gray
+}
+
 </style>
 `;
 
 this.$ = this.jQuery = jQuery.noConflict(true);
 $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css') );
-$('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css') );
-$('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css') );
-$('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css') );
 
 $('head').append( checklistStyle );
 
@@ -443,11 +457,6 @@ function addButtons() {
         $(this).text('?');
       }
     });
-  
-  $('div.collapse').attr("aria-expanded","true");
-  $('div.collapse').css("display","block");
-  // TODO if possible, find a better way to keep the footer out of the way when using mdb.css
-  $('footer.footer').css("display","none");
   
 }
 
