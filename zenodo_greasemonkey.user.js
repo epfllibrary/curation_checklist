@@ -30,24 +30,24 @@ var cslURL = url.replace(/#.+/, "").replace(/\?.+/, "").replace(/\/export\/.+/, 
 
 const checklistData = {
   "M1": {"full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",
-         "short": "<b>EPFL authors?</b>",
+         "short": "<b>EPFL authors?&nbsp;</b>",
          "category": "must",
          "wrapper": "div"},                
   "M2": {"full": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired",
          "category": "must",
-         "short": "<b>Access to content?</b>",
+         "short": "<b>Access to content?&nbsp;</b>",
          "wrapper": "div"},   
   "M3": {"full": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
          "category": "must",
-         "short": "<b>Sufficient abstract?</b>",
+         "short": "<b>Sufficient abstract?&nbsp;</b>",
          "wrapper": "div"},
   "M4": {"full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
          "category": "must",
-         "short": "<b>Email or ORCID for 1 author?</b>",
+         "short": "<b>Email or ORCID for 1 author?&nbsp;</b>",
          "wrapper": "div"},   
   "R1": {"full": "Authors are identified by their ORCID",
          "category": "recommended",
-         "short": "<b>Authors with ORCID?</b>",
+         "short": "<b>Authors with ORCID?&nbsp;</b>",
          "wrapper": "div"},   
   "R2": {"full": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
          "category": "recommended",
@@ -61,22 +61,22 @@ const checklistData = {
          "altshort": "<b>No related identifiers here, is it OK?&nbsp;</b>"},   
   "R4": {"full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
          "category": "recommended",
-         "short": "<b>README present?</b>",
+         "short": "<b>README present?&nbsp;</b>",
          "wrapper": "span"},    
   "R5": {"full": "Any sensitive, personal data should have been anonymized",
          "category": "recommended",
-         "short": "<b>No sensitive data?</b>",
+         "short": "<b>No sensitive data?&nbsp;</b>",
          "wrapper": "div"},   
   "N1": {"full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields',
          "category": "nth",
          "short":"<b>&nbsp;</b>",
          "wrapper": "span",
-         "altshort": "<b>No grants here, is it OK? &nbsp;</b>",
+         "altshort": "<b>No grants here, is it OK?&nbsp;</b>",
          "altwrapper": "dt",
          "selector": "dt:contains('Grants:')"},   
   "N2": {"full": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
          "category": "nth",
-         "short": "<b>Clean content?</b> ",
+         "short": "<b>Clean content?&nbsp;</b> ",
          "wrapper": "div"},
   "N3": {"full": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)",
          "category": "nth",
@@ -86,29 +86,29 @@ const checklistData = {
          "altwrapper": "dt"},
   "N4": {"full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
          "category": "nth",
-         "short": "<b>Good README?</b> ",
+         "short": "<b>Good README?&nbsp;</b> ",
          "wrapper": "div"},
   "N5": {"full": "If the submission is related to a PhD thesis, the supervisor should be specified",
          "category": "nth",
-         "short": "<b>&nbsp;Supevisor listed?</b>",
+         "short": "<b>&nbsp;Supevisor listed?&nbsp;</b>",
          "wrapper": "span",
          "altshort": "<b>No thesis indication, probably fine&nbsp;</b>",
          "altwrapper": "dt"},
   "N6": {"full": "Files should be available in open formats",
          "category": "nth",
-         "short": "<b>Open file formats?</b> ",
+         "short": "<b>Open file formats?&nbsp;</b> ",
          "wrapper": "div"},
   "N7": {"full": "Where applicable, sources from which the work is derived should be specified",
          "category": "nth",
-         "short": "<b>&nbsp;Relevant sources?</b>",
+         "short": "<b>&nbsp;Relevant sources?&nbsp;</b>",
          "wrapper": "span",
-         "altshort": "<b>&nbsp;No \"References\" section, is this OK?</b>",
+         "altshort": "<b>&nbsp;No \"References\" section, is this OK?&nbsp;</b>",
          "altwrapper": "span"},
   "N8": {"full": "Keywords should be entered as separated fields",
          "category": "nth",
          "short": "<b>&nbsp;</b>",
          "wrapper": "span",
-         "altshort": "<b>No keywords here, is it OK? &nbsp;</b>",
+         "altshort": "<b>No keywords here, is it OK?&nbsp;</b>",
          "altwrapper": "dt"}
 };
 
@@ -180,7 +180,7 @@ function addCheckElement(selector, checkCode, position, normal) {
   let checkElement;
   if (normal) {
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
-    let myHtml = $(`<div class="btn-group" id="${checkCode}" />`);
+    let myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
     
     myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}"> </label>`);
     myHtml.append(`<label class="btn btn-secondary btn-neutral" id="undecided" name="${checklistData[checkCode].category}">?</label>`);
@@ -192,7 +192,7 @@ function addCheckElement(selector, checkCode, position, normal) {
     checkElement.append(myHtml);
   } else {
     //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].altwrapper}>`);    
-    myHtml = $(`<div class="btn-group" id="${checkCode}" />`);
+    myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
     
     myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}"> </label>`);
     myHtml.append(`<label class="btn btn-secondary btn-neutral" id="undecided" name="${checklistData[checkCode].category}">?</label>`);
