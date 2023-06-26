@@ -234,7 +234,7 @@ function addButtons() {
     var collapse = document.getElementById('collapseTwo');
     
     var zenodoURL = window.location.href;
-    let title = $('h1').text();
+    let title = document.title.replace(' | Zenodo', '');
     console.log(title);
     console.log(zenodoURL);
     
@@ -448,6 +448,7 @@ function addButtons() {
   contentElement.prepend(contentChecks); 
 
   $('div.btn-group label.btn').on("click", function myclick(event) {
+      console.log('click detected');
       console.log('in group selector', $(this).parent().attr('id'), $(this).attr('id'));
       if ($(this).text() == ' ') {
         $(this).siblings().text(' ');
