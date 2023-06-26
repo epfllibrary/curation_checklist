@@ -164,6 +164,7 @@ $('head').append( checklistStyle );
 
 
 let doi = $('h4 pre:first').text();
+let recordJson;
 console.log('doi', doi);
 let identifier = 'https://doi.org/' + doi;
 if (doi === '') {
@@ -181,6 +182,7 @@ fetch('https://api.datacite.org/dois/' + doi, {
   console.log(json);
   if ('data' in json) {
     console.log('And we have a winner!');
+    recordJson = json;
   }
   addButtons();
 })
@@ -410,9 +412,9 @@ function addButtons() {
   
   let license = $( "dt:contains('License (for files):')" );
   if (license.length) {
-    addCheckElement(license, "N3", "after", true, 'neutral');
+    addCheckElement(license, "N3", "after", true,  policyCheck("N3"));
   } else {
-    addCheckElement(importantFrame, "N3", "after", false, 'neutral');
+    addCheckElement(importantFrame, "N3", "after", false, policyCheck("N3"));
   }
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
@@ -482,5 +484,17 @@ function openMailEditor(url) {
   location.href = url;
 }
 
-// wait for async elements to load
-//setTimeout(addButton, 1000);
+
+function policyCheck(checkCode) {
+  if (checkCode == 'N3') {
+    const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
+    console.log('will check the license');
+    if (recordJson.data.attributes.rightsList[0].rightsIdentifier) {
+      return 'ok';
+    }
+    
+  }
+
+  return 'neutral';
+  
+}
