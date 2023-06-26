@@ -243,48 +243,63 @@ function addButtons() {
     
     var text = '';
     event.preventDefault();
-    const MustCheckboxUnchecked = $('label[name="must"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
+    /*const MustCheckboxUnchecked = $('label[name="must"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
     const MustCheckboxBad = $('label[name="must"][id="bad"]:contains("x")').tsort({attr:'value'});
     const RecommendedCheckboxUnchecked = $('label[name="recommended"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
     const RecommendedCheckboxBad = $('label[name="recommended"][id="bad"]:contains("x")').tsort({attr:'value'});
     const NTHCheckboxUnchecked = $('label[name="nth"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
-    const NTHCheckboxBad = $('label[name="nth"][id="bad"]:contains("x")').tsort({attr:'value'});
+    const NTHCheckboxBad = $('label[name="nth"][id="bad"]:contains("x")').tsort({attr:'value'});*/
+    
+    const MustCheckboxUnchecked = $('label[name="must"][id="ok"]:not(:contains("x"))');
+    const MustCheckboxBad = $('label[name="must"][id="bad"]:contains("x")');
+    const RecommendedCheckboxUnchecked = $('label[name="recommended"][id="ok"]:not(:contains("x"))');
+    const RecommendedCheckboxBad = $('label[name="recommended"][id="bad"]:contains("x")');
+    const NTHCheckboxUnchecked = $('label[name="nth"][id="ok"]:not(:contains("x"))');
+    const NTHCheckboxBad = $('label[name="nth"][id="bad"]:contains("x")');
     
     console.log(MustCheckboxBad.length, RecommendedCheckboxBad.length, NTHCheckboxBad.length);
     console.log(MustCheckboxUnchecked.length, RecommendedCheckboxUnchecked.length, NTHCheckboxUnchecked.length);
     if (MustCheckboxBad.length) {
       text += `Total ${MustCheckboxBad.length} missing MUST criteria:\n`;
-      
+      let mustArray = [];
       MustCheckboxBad.each(function () {
         let value = $(this).parent().attr('id');
-        console.log(value);
-        text += `${value}: `;
-        text += `${checklistData[value].full}\n`; 
-        text += `=>\n\n`;
-      })
-      
+        mustArray.push([value, checklistData[value].full]);
+      });
+      mustArray.sort();
+      console.log(mustArray);
+      for (let element of mustArray) {
+        text += `${element[0]}: ${element[1]}\n\n`;
+      }
     }
-
     
     if (RecommendedCheckboxBad.length) {
       text += `Total ${RecommendedCheckboxBad.length} missing RECOMMENDED criteria:\n`;
+      let recommArray = [];
       RecommendedCheckboxBad.each(function () {
         let value = $(this).parent().attr('id');
-        text += `${value}: `;
-        text += `${checklistData[value].full}\n`; 
-        text += `=>\n\n`;
-      })
+        recommArray.push([value, checklistData[value].full]);
+      });
+      recommArray.sort();
+      console.log(recommArray);
+      for (let element of recommArray) {
+        text += `${element[0]}: ${element[1]}\n\n`;
+      }
     }
 
     
     if (NTHCheckboxBad.length) {
       text += `Total ${NTHCheckboxBad.length} missing NICE TO HAVE criteria:\n`;
+      let nthArray = [];
       NTHCheckboxBad.each(function () {
         let value = $(this).parent().attr('id');
-        text += `${value}: `;
-        text += `${checklistData[value].full}\n`; 
-        text += `=>\n\n`;
-      })
+        nthArray.push([value, checklistData[value].full]);
+      });
+      nthArray.sort();
+      console.log(nthArray);
+      for (let element of nthArray) {
+        text += `${element[0]}: ${element[1]}\n\n`;
+      }
     }
 
     console.log('variable URL at the end');
