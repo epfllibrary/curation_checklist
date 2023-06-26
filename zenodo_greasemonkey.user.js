@@ -489,7 +489,7 @@ function policyCheck(checkCode) {
   if (checkCode == 'N3') {
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
     console.log('will check the license');
-    if (recordJson.data.attributes.rightsList[0].rightsIdentifier) {
+    if (goodLicenses.includes(recordJson.data.attributes.rightsList[0].rightsIdentifier)) {
       return 'ok';
     }
     
