@@ -246,7 +246,7 @@ function addButtons() {
     const MustCheckboxUnchecked = $('label[name="must"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
     const MustCheckboxBad = $('label[name="must"][id="bad"]:contains("x")').tsort({attr:'value'});
     const RecommendedCheckboxUnchecked = $('label[name="recommended"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
-    const RecommendedCheckboxBad = $('label[name="ecommended"][id="bad"]:contains("x")').tsort({attr:'value'});
+    const RecommendedCheckboxBad = $('label[name="recommended"][id="bad"]:contains("x")').tsort({attr:'value'});
     const NTHCheckboxUnchecked = $('label[name="nth"][id="ok"]:not(:contains("x"))').tsort({attr:'value'});
     const NTHCheckboxBad = $('label[name="nth"][id="bad"]:contains("x")').tsort({attr:'value'});
     
