@@ -163,7 +163,30 @@ $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'h
 $('head').append( checklistStyle );
 
 
-addButtons();
+let doi = $('h4 pre:first').text();
+console.log('doi', doi);
+let identifier = 'https://doi.org/' + doi;
+if (doi === '') {
+  doi = 'dummy';
+}
+console.log('https://api.datacite.org/dois/' + doi);
+fetch('https://api.datacite.org/dois/' + doi, {
+  method: 'GET', 
+  headers: {
+    accept: 'application/json'
+  }
+})
+.then(resp => resp.json())
+.then(json => {
+  console.log(json);
+  if ('data' in json) {
+    console.log('And we have a winner!');
+  }
+  addButtons();
+})
+.catch(err => console.error(err));
+//TODO maybe do something even if there is a Datacite error. We'll see
+
 
 function myclick(clickedElement) {
     //console.log('click detected');
@@ -304,26 +327,7 @@ function addButtons() {
     }
 
     console.log('variable URL at the end');
-    let doi = $('h4 pre:first').text();
-    console.log('doi', doi);
-    let identifier = 'https://doi.org/' + doi;
-    if (doi === '') {
-      doi = 'dummy';
-    }
-    console.log('https://api.datacite.org/dois/' + doi);
-    fetch('https://api.datacite.org/dois/' + doi, {
-      method: 'GET', 
-      headers: {
-        accept: 'application/json'
-      }
-    })
-    .then(resp => resp.json())
-    .then(json => {
-      console.log(json);
-      if ('data' in json) {
-        console.log('And we have a winner!');
-        // TODO move this inner block out of the message generation block in order to test some criteria automatically
-      }
+    
 
       let header = ""
       let footer = ""
@@ -353,9 +357,8 @@ function addButtons() {
       console.log(finalURL);
       openMailEditor(finalURL);
     })
-    .catch(err => console.error(err));
+    
 
-  }); 
 
   var menu = document.getElementsByClassName("col-sm-4 col-md-4 col-right")[0];
   var metadata = document.getElementsByClassName("well metadata")[0];
