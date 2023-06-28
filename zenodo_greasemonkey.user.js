@@ -167,7 +167,7 @@ let doi = $('h4 pre:first').text();
 let recordJson;
 console.log('doi', doi);
 let identifier = 'https://doi.org/' + doi;
-if (doi === '') {
+if (!doi.startsWith('10.5281/zenodo.')) {
   doi = 'dummy';
 }
 console.log('https://api.datacite.org/dois/' + doi);
@@ -486,6 +486,9 @@ function openMailEditor(url) {
 
 
 function policyCheck(checkCode) {
+  if (checkCode == 'M1') {
+    
+  }
   if (checkCode == 'N3') {
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
     console.log('will check the license');
