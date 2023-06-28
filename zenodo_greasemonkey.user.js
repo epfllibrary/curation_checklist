@@ -392,7 +392,7 @@ function addButtons() {
   }
  
   if (authorList.length) {
-    addCheckElement(authorList, "M4", "after", true, 'neutral');
+    addCheckElement(authorList, "M4", "after", true,  policyCheck('M4'));
     addCheckElement(authorList, "R1", "after", true, policyCheck('R1'));
     
     
@@ -507,7 +507,30 @@ function policyCheck(checkCode) {
     let embargoAccess = $('div.panel-body:contains("Files are currently under embargo")');
     if (noAccess.length || embargoAccess.length) {
       return 'bad';
-    }   
+    } else {
+      // we might have password-protected files - be careful
+      return 'maybe';
+    }
+  }
+  
+  if (checkCode == 'M4') {
+    let orcidEpflCreators = 0;
+    for (let creator of recordJson.data.attributes.creators) {
+      if (creator.affiliation.includes('EPFL')) {
+        for (let identifier of creator.nameIdentifiers) { 
+          if (identifier.nameIdentifierScheme == 'ORCID') {
+            orcidEpflCreators += 1;
+          }
+        }
+      }
+    }
+    console.log('epfl orcids', orcidEpflCreators);
+    if (orcidEpflCreators) {
+      return 'ok';
+    }
+    if (recordJson.data.attributes.descriptions[0].description.includes('@epfl.ch')) {
+      return 'maybe';
+    }
   }
   
   if (checkCode == 'R1') {
@@ -529,7 +552,6 @@ function policyCheck(checkCode) {
   
   if (checkCode == 'N3') {
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
-    console.log('will check the license');
     try {
       if (goodLicenses.includes(recordJson.data.attributes.rightsList[0].rightsIdentifier.toLowerCase())) {
         return 'ok';
