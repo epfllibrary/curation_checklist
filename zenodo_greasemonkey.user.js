@@ -114,6 +114,7 @@ const checklistData = {
 
 const buttonValues = {'neutral': [' ', '?', ' '],
                         'ok': [' ', ' ', 'x'],
+                        'maybe': [' ', ' ', '?'],
                         'bad': ['x', ' ', ' ']
 }
   
@@ -372,7 +373,7 @@ function addButtons() {
   let mainTitle = $("h1");
   let authorList = mainTitle.next('p');
   if (authorList.length) {
-    addCheckElement(authorList, "M1", "after", true, 'neutral');
+    addCheckElement(authorList, "M1", "after", true, policyCheck('M1'));
   }
   
   
@@ -487,7 +488,18 @@ function openMailEditor(url) {
 
 function policyCheck(checkCode) {
   if (checkCode == 'M1') {
-    
+    let epflCreators = 0;
+    for (let creator of recordJson.data.attributes.creators) {
+      if (creator.affiliation.includes('EPFL')) {
+        epflCreators += 1;
+      }
+    }
+    if (epflCreators == recordJson.data.attributes.creators.length) {
+      return 'ok';
+    }
+    if (epflCreators) {
+      return 'maybe';
+    }
   }
   
   if (checkCode == 'M2') {
