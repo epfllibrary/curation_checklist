@@ -115,7 +115,8 @@ const checklistData = {
 const buttonValues = {'neutral': [' ', '?', ' '],
                         'ok': [' ', ' ', 'x'],
                         'maybe': [' ', ' ', '?'],
-                        'bad': ['x', ' ', ' ']
+                        'bad': ['x', ' ', ' '],
+                        'meh': ['?', ' ', ' ']
 }
   
 
@@ -458,7 +459,6 @@ function addButtons() {
   }
   
   let keywords = $( "dt:contains('Keyword(s):')" );
-  console.log('Keywords', keywords);
   if (keywords.length) {
     addCheckElement(keywords, "N8", "after", true);
   } else {
@@ -574,6 +574,30 @@ function policyCheck(checkCode) {
     } catch (error) {
       console.log('License check error', error);
       return 'bad';
+    }
+    
+  }
+  
+  if (checkCode == 'N8') {
+    //let kw = $( "dd a.label-link span.label" );
+    try {
+      let kw = recordJson.data.attributes.subjects;
+      console.log(kw);
+      if (kw.length == 0) {
+        return 'meh';
+      }
+      if (kw.length == 1) {
+        if (kw[0].includes(',')) {
+          return 'bad';
+        }
+        if (kw[0].includes(';')) {
+          return 'bad';
+        }
+      }
+      if (kw.length > 2) {
+        return 'ok';
+      }
+    } catch {
     }
     
   }
