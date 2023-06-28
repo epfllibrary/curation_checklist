@@ -551,6 +551,20 @@ function policyCheck(checkCode) {
     }
   }
   
+  if (checkCode == 'R4') {
+    let readmeFound = 'neutral';
+    $('a.filename').each(function () {
+      let f = $(this).text().toLowerCase();
+      console.log([f], f.indexOf('readme'));
+      if ((f.indexOf('readme') >= 0) && (f.indexOf('readme') < 4)) {
+        console.log('should be OK');
+        return readmeFound = 'ok';
+      }
+    });
+    return readmeFound;
+  }
+  
+  
   if (checkCode == 'N3') {
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
     try {
@@ -564,6 +578,7 @@ function policyCheck(checkCode) {
     
   }
 
+  // Default value if nothing else was noticed
   return 'neutral';
   
 }
