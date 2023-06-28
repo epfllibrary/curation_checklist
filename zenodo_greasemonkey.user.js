@@ -207,9 +207,10 @@ function myclick(clickedElement) {
 
 
 
-function addCheckElement(selector, checkCode, position, normal, status) {
+function addCheckElement(selector, checkCode, position, normal) {
   let checkElement;
-  //console.log(checkCode, status);
+  // see if we can get a non-neutral answer for the current criterion
+  let status = policyCheck(checkCode);
   
   if (normal) {
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
@@ -373,7 +374,7 @@ function addButtons() {
   let mainTitle = $("h1");
   let authorList = mainTitle.next('p');
   if (authorList.length) {
-    addCheckElement(authorList, "M1", "after", true, policyCheck('M1'));
+    addCheckElement(authorList, "M1", "after", true);
   }
   
   
@@ -383,28 +384,28 @@ function addButtons() {
     contentElement = $("div#files");
     console.log('contentElement:', contentElement);
   }
-  addCheckElement(contentChecks, "M2", "after", true, policyCheck('M2'));
+  addCheckElement(contentChecks, "M2", "after", true);
   
   let abstract = $("div.record-description");
   if (abstract.length) {
-    addCheckElement(abstract, "M3", "before", true, 'neutral');
+    addCheckElement(abstract, "M3", "before", true);
     abstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   }
  
   if (authorList.length) {
-    addCheckElement(authorList, "M4", "after", true,  policyCheck('M4'));
-    addCheckElement(authorList, "R1", "after", true, policyCheck('R1'));
+    addCheckElement(authorList, "M4", "after", true);
+    addCheckElement(authorList, "R1", "after", true);
     
     
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "R4", "after", true, 'neutral');
-    addCheckElement(contentChecks, "R5", "after", true, 'neutral');
+    addCheckElement(contentChecks, "R4", "after", true);
+    addCheckElement(contentChecks, "R5", "after", true);
   }
   
   if (mainTitle.length) {
-    addCheckElement(mainTitle, "R2", "after", true, 'neutral');
+    addCheckElement(mainTitle, "R2", "after", true);
   }
   
   // This one should always be there, let's use it as a reference point
@@ -413,55 +414,55 @@ function addButtons() {
   
   let license = $( "dt:contains('License (for files):')" );
   if (license.length) {
-    addCheckElement(license, "N3", "after", true,  policyCheck("N3"));
+    addCheckElement(license, "N3", "after", true);
   } else {
-    addCheckElement(importantFrame, "N3", "after", false, policyCheck("N3"));
+    addCheckElement(importantFrame, "N3", "after", false);
   }
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
   if (relativeIdentifiers.length) {
-    addCheckElement(relativeIdentifiers, "R3", "after", true, 'neutral');
+    addCheckElement(relativeIdentifiers, "R3", "after", true);
   } else {
-    addCheckElement(importantFrame, "R3", "after", false, 'neutral');
+    addCheckElement(importantFrame, "R3", "after", false);
   }
   
   let grants = $( "dt:contains('Grants:')" );
   if (grants.length) {
-    addCheckElement(grants, "N1", "after", true, 'neutral');
+    addCheckElement(grants, "N1", "after", true);
   } else {
-    addCheckElement(importantFrame, "N1", "after", false, 'neutral');
+    addCheckElement(importantFrame, "N1", "after", false);
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N2", "after", true, 'neutral');
-    addCheckElement(contentChecks, "N4", "after", true, 'neutral');
+    addCheckElement(contentChecks, "N2", "after", true);
+    addCheckElement(contentChecks, "N4", "after", true);
   }
   
   let thesisUniversity = $( "dt:contains('Awarding University:')" );
   if (thesisUniversity.length) {
-    addCheckElement(thesisUniversity, "N5", "after", true, 'neutral');
+    addCheckElement(thesisUniversity, "N5", "after", true);
   } else {
-    addCheckElement(importantFrame, "N5", "after", false, 'neutral');
+    addCheckElement(importantFrame, "N5", "after", false);
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N6", "after", true, 'neutral');
+    addCheckElement(contentChecks, "N6", "after", true);
   }
   
   let referencesElement = $("div#references");
   if (referencesElement.length) {
-    addCheckElement(referencesElement, "N7", "after", true, 'neutral');
+    addCheckElement(referencesElement, "N7", "after", true);
   } else {
     referencesElement = $("div#citation");
-    addCheckElement(referencesElement, "N7", "before", false, 'neutral');
+    addCheckElement(referencesElement, "N7", "before", false);
   }
   
   let keywords = $( "dt:contains('Keyword(s):')" );
   console.log('Keywords', keywords);
   if (keywords.length) {
-    addCheckElement(keywords, "N8", "after", true, 'neutral');
+    addCheckElement(keywords, "N8", "after", true);
   } else {
-    addCheckElement(importantFrame, "N8", "after", false, 'neutral');
+    addCheckElement(importantFrame, "N8", "after", false);
   }
   
   contentElement.prepend(contentChecks); 
