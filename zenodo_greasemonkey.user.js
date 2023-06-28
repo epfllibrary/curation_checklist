@@ -440,6 +440,8 @@ function addButtons() {
   
   if (contentElement.length) {
     addCheckElement(contentChecks, "N6", "after", true);
+    let referencesWarning ='<div><b>Do not forget to check the references box at the bottom of the page...</b></div>';
+    contentChecks.append(referencesWarning);  
   }
   
   let referencesElement = $("div#references");
