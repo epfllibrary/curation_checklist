@@ -393,7 +393,7 @@ function addButtons() {
  
   if (authorList.length) {
     addCheckElement(authorList, "M4", "after", true, 'neutral');
-    addCheckElement(authorList, "R1", "after", true, 'neutral');
+    addCheckElement(authorList, "R1", "after", true, policyCheck('R1'));
     
     
   }
@@ -508,6 +508,23 @@ function policyCheck(checkCode) {
     if (noAccess.length || embargoAccess.length) {
       return 'bad';
     }   
+  }
+  
+  if (checkCode == 'R1') {
+    let orcidCreators = 0;
+    for (let creator of recordJson.data.attributes.creators) {
+      for (let identifier of creator.nameIdentifiers) {   
+        if (identifier.nameIdentifierScheme == 'ORCID') {
+          orcidCreators += 1;
+        }
+      }
+    }
+    if (orcidCreators == recordJson.data.attributes.creators.length) {
+      return 'ok';
+    }
+    if (orcidCreators) {
+      return 'maybe';
+    }
   }
   
   if (checkCode == 'N3') {
