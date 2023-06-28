@@ -13,20 +13,10 @@
 // @version     1.1
 // ==/UserScript==
 
-// TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery
+// TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
 
-// TODO fix the dataset  link (use a DOI) => access the Datacite metadata would be better, and useful in the future
-// URL locale, supprimer tout ce qui est après un #, + /export/json et ensuite parser le HTML. Inspiration Zotero:
-/*
-var cslURL = url.replace(/#.+/, "").replace(/\?.+/, "").replace(/\/export\/.+/, "") + "/export/csl";
-  // Z.debug(cslURL)
-  // use CSL JSON translator
-  ZU.processDocuments(cslURL, function (newDoc) {
-    var text = ZU.xpathText(newDoc, '//h3/following-sibling::pre');
-    // Z. debug(text);
-    text = text.replace(/publisher_place/, "publisher-place");
-    text = text.replace(/container_title/, "container-title");
-    */
+// TODO: find ideas to check criteria M3, R3, N2, N6
+// R5, N4 better left out of automatic checking
 
 const checklistData = {
   "M1": {"full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",
@@ -574,6 +564,15 @@ function policyCheck(checkCode) {
     } catch (error) {
       console.log('License check error', error);
       return 'bad';
+    }
+    
+  }
+  
+  if (checkCode == 'N5') {
+    if ( $( "dt:contains('Awarding University:')" ).length ) {
+      if ( $( "h5:contains('Thesis supervisor(s)')").nextAll('p').html().match(/<span/g).length ) {
+        return 'ok';
+      }
     }
     
   }
