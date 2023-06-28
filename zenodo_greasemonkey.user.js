@@ -382,7 +382,7 @@ function addButtons() {
     contentElement = $("div#files");
     console.log('contentElement:', contentElement);
   }
-  addCheckElement(contentChecks, "M2", "after", true, 'neutral');
+  addCheckElement(contentChecks, "M2", "after", true, policyCheck('M2'));
   
   let abstract = $("div.record-description");
   if (abstract.length) {
@@ -489,11 +489,25 @@ function policyCheck(checkCode) {
   if (checkCode == 'M1') {
     
   }
+  
+  if (checkCode == 'M2') {
+    let noAccess = $('div.panel-body:contains("Files are not publicly accessible.")');
+    let embargoAccess = $('div.panel-body:contains("Files are currently under embargo")');
+    if (noAccess.length || embargoAccess.length) {
+      return 'bad';
+    }   
+  }
+  
   if (checkCode == 'N3') {
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
     console.log('will check the license');
-    if (goodLicenses.includes(recordJson.data.attributes.rightsList[0].rightsIdentifier.toLowerCase())) {
-      return 'ok';
+    try {
+      if (goodLicenses.includes(recordJson.data.attributes.rightsList[0].rightsIdentifier.toLowerCase())) {
+        return 'ok';
+      } 
+    } catch (error) {
+      console.log('License check error', error);
+      return 'bad';
     }
     
   }
