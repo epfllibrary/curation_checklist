@@ -478,7 +478,7 @@ function addButtons() {
   $('div.btn-group label.btn').on("click", function myclick(event) {
       console.log('click detected');
       console.log('in group selector', $(this).parent().attr('id'), $(this).attr('id'));
-      if ($(this).text() == ' ') {
+      if ($(this).text() != 'x') {
         $(this).siblings().text(' ');
         //Process button click event
         $(this).text('x');
