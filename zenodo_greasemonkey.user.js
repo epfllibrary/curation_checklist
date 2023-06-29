@@ -15,7 +15,7 @@
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
 
-// TODO get some functionality on the Zenodo sandbox (no longer working due to relying on Datacite metadata...
+// TESTING get some functionality on the Zenodo sandbox (no longer working due to relying on Datacite metadata...
 
 // TODO: find ideas to check criteria M3, R3 (look for patterns in the description?), N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
 // R5, N4 better left out of automatic checking
@@ -35,7 +35,7 @@ const checklistData = {
          "wrapper": "div"},
   "M4": {"full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
          "category": "must",
-         "short": "<b>Email or ORCID for 1 author?&nbsp;</b>",
+         "short": "<b>Email or ORCID for 1 EPFL author?&nbsp;</b>",
          "wrapper": "div"},   
   "R1": {"full": "Authors are identified by their ORCID",
          "category": "recommended",
