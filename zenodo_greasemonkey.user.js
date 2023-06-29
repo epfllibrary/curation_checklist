@@ -13,20 +13,12 @@
 // @version     1.1
 // ==/UserScript==
 
-// TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery
+// TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
 
-// TODO fix the dataset  link (use a DOI) => access the Datacite metadata would be better, and useful in the future
-// URL locale, supprimer tout ce qui est après un #, + /export/json et ensuite parser le HTML. Inspiration Zotero:
-/*
-var cslURL = url.replace(/#.+/, "").replace(/\?.+/, "").replace(/\/export\/.+/, "") + "/export/csl";
-  // Z.debug(cslURL)
-  // use CSL JSON translator
-  ZU.processDocuments(cslURL, function (newDoc) {
-    var text = ZU.xpathText(newDoc, '//h3/following-sibling::pre');
-    // Z. debug(text);
-    text = text.replace(/publisher_place/, "publisher-place");
-    text = text.replace(/container_title/, "container-title");
-    */
+// TESTING get some functionality on the Zenodo sandbox (no longer working due to relying on Datacite metadata...
+
+// TODO: find ideas to check criteria M3, R3 (look for patterns in the description?), N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
+// R5, N4 better left out of automatic checking
 
 const checklistData = {
   "M1": {"full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",
@@ -43,7 +35,7 @@ const checklistData = {
          "wrapper": "div"},
   "M4": {"full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
          "category": "must",
-         "short": "<b>Email or ORCID for 1 author?&nbsp;</b>",
+         "short": "<b>Email or ORCID for 1 EPFL author?&nbsp;</b>",
          "wrapper": "div"},   
   "R1": {"full": "Authors are identified by their ORCID",
          "category": "recommended",
@@ -114,7 +106,9 @@ const checklistData = {
 
 const buttonValues = {'neutral': [' ', '?', ' '],
                         'ok': [' ', ' ', 'x'],
-                        'bad': ['x', ' ', ' ']
+                        'maybe': [' ', ' ', '?'],
+                        'bad': ['x', ' ', ' '],
+                        'meh': ['?', ' ', ' ']
 }
   
 
@@ -164,10 +158,41 @@ $('head').append( checklistStyle );
 
 
 let doi = $('h4 pre:first').text();
-let recordJson;
+let recordJson = {
+  "identifier": {
+    "identifier": "dummy",
+    "identifierType": "DOI"
+  },
+  "creators": [],
+  "titles": [
+    {
+      "title": "XXX DUMMY XXXX",
+      "lang": "en-us"
+    }
+  ],
+  "publisher": "DataCite",
+  "publicationYear": "2014",
+  "subjects": [],
+  "contributors": [],
+  "dates": [],
+  "language": "en-us",
+  "resourceType": {
+    "resourceTypeGeneral": "Dataset",
+    "resourceType": "Dataset"
+  },
+  "alternateIdentifiers": [],
+  "relatedIdentifiers": [],
+  "sizes": [],
+  "formats": [],
+  "version": "4.1",
+  "rightsList": [],
+  "descriptions": [],
+  "fundingReferences": [],
+  "geoLocations": []
+};
 console.log('doi', doi);
 let identifier = 'https://doi.org/' + doi;
-if (doi === '') {
+if (!doi.startsWith('10.5281/zenodo.')) {
   doi = 'dummy';
 }
 console.log('https://api.datacite.org/dois/' + doi);
@@ -187,28 +212,12 @@ fetch('https://api.datacite.org/dois/' + doi, {
   addButtons();
 })
 .catch(err => console.error(err));
-//TODO maybe do something even if there is a Datacite error. We'll see
 
 
-function myclick(clickedElement) {
-    //console.log('click detected');
-    let code = clickedElement.parent().attr('id');
-    //console.log(code, clickedElement.attr('id'));
-    if (clickedElement.next().text() != 'x') {
-      clickedElement.siblings().text(' ');
-      //Process button click event
-      clickedElement.next().text('x');
-    } else {
-      clickedElement.prop('checked', false);
-      clickedElement.next().text('?');
-    }
-}
-
-
-
-function addCheckElement(selector, checkCode, position, normal, status) {
+function addCheckElement(selector, checkCode, position, normal) {
   let checkElement;
-  //console.log(checkCode, status);
+  // see if we can get a non-neutral answer for the current criterion
+  let status = policyCheck(checkCode);
   
   if (normal) {
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
@@ -372,7 +381,7 @@ function addButtons() {
   let mainTitle = $("h1");
   let authorList = mainTitle.next('p');
   if (authorList.length) {
-    addCheckElement(authorList, "M1", "after", true, 'neutral');
+    addCheckElement(authorList, "M1", "after", true);
   }
   
   
@@ -382,28 +391,28 @@ function addButtons() {
     contentElement = $("div#files");
     console.log('contentElement:', contentElement);
   }
-  addCheckElement(contentChecks, "M2", "after", true, 'neutral');
+  addCheckElement(contentChecks, "M2", "after", true);
   
   let abstract = $("div.record-description");
   if (abstract.length) {
-    addCheckElement(abstract, "M3", "before", true, 'neutral');
+    addCheckElement(abstract, "M3", "before", true);
     abstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   }
  
   if (authorList.length) {
-    addCheckElement(authorList, "M4", "after", true, 'neutral');
-    addCheckElement(authorList, "R1", "after", true, 'neutral');
+    addCheckElement(authorList, "M4", "after", true);
+    addCheckElement(authorList, "R1", "after", true);
     
     
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "R4", "after", true, 'neutral');
-    addCheckElement(contentChecks, "R5", "after", true, 'neutral');
+    addCheckElement(contentChecks, "R4", "after", true);
+    addCheckElement(contentChecks, "R5", "after", true);
   }
   
   if (mainTitle.length) {
-    addCheckElement(mainTitle, "R2", "after", true, 'neutral');
+    addCheckElement(mainTitle, "R2", "after", true);
   }
   
   // This one should always be there, let's use it as a reference point
@@ -412,55 +421,56 @@ function addButtons() {
   
   let license = $( "dt:contains('License (for files):')" );
   if (license.length) {
-    addCheckElement(license, "N3", "after", true,  policyCheck("N3"));
+    addCheckElement(license, "N3", "after", true);
   } else {
-    addCheckElement(importantFrame, "N3", "after", false, policyCheck("N3"));
+    addCheckElement(importantFrame, "N3", "after", false);
   }
   
   let relativeIdentifiers = $( "dt:contains('Related identifiers:')" );
   if (relativeIdentifiers.length) {
-    addCheckElement(relativeIdentifiers, "R3", "after", true, 'neutral');
+    addCheckElement(relativeIdentifiers, "R3", "after", true);
   } else {
-    addCheckElement(importantFrame, "R3", "after", false, 'neutral');
+    addCheckElement(importantFrame, "R3", "after", false);
   }
   
   let grants = $( "dt:contains('Grants:')" );
   if (grants.length) {
-    addCheckElement(grants, "N1", "after", true, 'neutral');
+    addCheckElement(grants, "N1", "after", true);
   } else {
-    addCheckElement(importantFrame, "N1", "after", false, 'neutral');
+    addCheckElement(importantFrame, "N1", "after", false);
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N2", "after", true, 'neutral');
-    addCheckElement(contentChecks, "N4", "after", true, 'neutral');
+    addCheckElement(contentChecks, "N2", "after", true);
+    addCheckElement(contentChecks, "N4", "after", true);
   }
   
   let thesisUniversity = $( "dt:contains('Awarding University:')" );
   if (thesisUniversity.length) {
-    addCheckElement(thesisUniversity, "N5", "after", true, 'neutral');
+    addCheckElement(thesisUniversity, "N5", "after", true);
   } else {
-    addCheckElement(importantFrame, "N5", "after", false, 'neutral');
+    addCheckElement(importantFrame, "N5", "after", false);
   }
   
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N6", "after", true, 'neutral');
+    addCheckElement(contentChecks, "N6", "after", true);
+    let referencesWarning ='<div><b>Do not forget to check the references box at the bottom of the page...</b></div>';
+    contentChecks.append(referencesWarning);  
   }
   
   let referencesElement = $("div#references");
   if (referencesElement.length) {
-    addCheckElement(referencesElement, "N7", "after", true, 'neutral');
+    addCheckElement(referencesElement, "N7", "after", true);
   } else {
     referencesElement = $("div#citation");
-    addCheckElement(referencesElement, "N7", "before", false, 'neutral');
+    addCheckElement(referencesElement, "N7", "before", false);
   }
   
   let keywords = $( "dt:contains('Keyword(s):')" );
-  console.log('Keywords', keywords);
   if (keywords.length) {
-    addCheckElement(keywords, "N8", "after", true, 'neutral');
+    addCheckElement(keywords, "N8", "after", true);
   } else {
-    addCheckElement(importantFrame, "N8", "after", false, 'neutral');
+    addCheckElement(importantFrame, "N8", "after", false);
   }
   
   contentElement.prepend(contentChecks); 
@@ -469,10 +479,6 @@ function addButtons() {
       console.log('click detected');
       console.log('in group selector', $(this).parent().attr('id'), $(this).attr('id'));
       if ($(this).text() == ' ') {
-        $(this).siblings().text(' ');
-        //Process button click event
-        $(this).text('x');
-      } else if ($(this).text() == '?') {
         $(this).siblings().text(' ');
         //Process button click event
         $(this).text('x');
@@ -490,15 +496,130 @@ function openMailEditor(url) {
 
 
 function policyCheck(checkCode) {
+  if (checkCode == 'M1') {
+    let epflCreators = 0;
+    for (let creator of recordJson.data.attributes.creators) {
+      if (creator.affiliation.includes('EPFL')) {
+        epflCreators += 1;
+      }
+    }
+    if (epflCreators == recordJson.data.attributes.creators.length) {
+      return 'ok';
+    }
+    if (epflCreators) {
+      return 'maybe';
+    }
+  }
+  
+  if (checkCode == 'M2') {
+    let noAccess = $('div.panel-body:contains("Files are not publicly accessible.")');
+    let embargoAccess = $('div.panel-body:contains("Files are currently under embargo")');
+    if (noAccess.length || embargoAccess.length) {
+      return 'bad';
+    } else {
+      // we might have password-protected files - be careful
+      return 'maybe';
+    }
+  }
+  
+  if (checkCode == 'M4') {
+    let orcidEpflCreators = 0;
+    for (let creator of recordJson.data.attributes.creators) {
+      if (creator.affiliation.includes('EPFL')) {
+        for (let identifier of creator.nameIdentifiers) { 
+          if (identifier.nameIdentifierScheme == 'ORCID') {
+            orcidEpflCreators += 1;
+          }
+        }
+      }
+    }
+    console.log('epfl orcids', orcidEpflCreators);
+    if (orcidEpflCreators) {
+      return 'ok';
+    }
+    if (recordJson.data.attributes.descriptions[0].description.includes('@epfl.ch')) {
+      return 'maybe';
+    }
+  }
+  
+  if (checkCode == 'R1') {
+    let orcidCreators = 0;
+    for (let creator of recordJson.data.attributes.creators) {
+      for (let identifier of creator.nameIdentifiers) {   
+        if (identifier.nameIdentifierScheme == 'ORCID') {
+          orcidCreators += 1;
+        }
+      }
+    }
+    if (orcidCreators == recordJson.data.attributes.creators.length) {
+      return 'ok';
+    }
+    if (orcidCreators) {
+      return 'maybe';
+    }
+  }
+  
+  if (checkCode == 'R4') {
+    let readmeFound = 'neutral';
+    $('a.filename').each(function () {
+      let f = $(this).text().toLowerCase();
+      console.log([f], f.indexOf('readme'));
+      if ((f.indexOf('readme') >= 0) && (f.indexOf('readme') < 4)) {
+        console.log('should be OK');
+        return readmeFound = 'ok';
+      }
+    });
+    return readmeFound;
+  }
+  
+  
   if (checkCode == 'N3') {
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
-    console.log('will check the license');
-    if (goodLicenses.includes(recordJson.data.attributes.rightsList[0].rightsIdentifier)) {
-      return 'ok';
+    try {
+      if (goodLicenses.includes(recordJson.data.attributes.rightsList[0].rightsIdentifier.toLowerCase())) {
+        return 'ok';
+      } 
+    } catch (error) {
+      console.log('License check error', error);
+      return 'bad';
+    }
+    
+  }
+  
+  if (checkCode == 'N5') {
+    if ( $( "dt:contains('Awarding University:')" ).length ) {
+      if ( $( "h5:contains('Thesis supervisor(s)')").nextAll('p').html().match(/<span/g).length ) {
+        return 'ok';
+      }
+    }
+    
+  }
+  
+  if (checkCode == 'N8') {
+    //let kw = $( "dd a.label-link span.label" );
+    try {
+      let kw = recordJson.data.attributes.subjects;
+      console.log(kw);
+      if (kw.length == 0) {
+        return 'meh';
+      }
+      if (kw.length == 1) {
+        if (kw[0].includes(',')) {
+          return 'bad';
+        }
+        if (kw[0].includes(';')) {
+          return 'bad';
+        }
+      }
+      if (kw.length > 2) {
+        return 'ok';
+      }
+    } catch {
     }
     
   }
 
+  // Default value if nothing else was noticed
   return 'neutral';
   
 }
