@@ -158,7 +158,38 @@ $('head').append( checklistStyle );
 
 
 let doi = $('h4 pre:first').text();
-let recordJson;
+let recordJson = {
+  "identifier": {
+    "identifier": "dummy",
+    "identifierType": "DOI"
+  },
+  "creators": [],
+  "titles": [
+    {
+      "title": "XXX DUMMY XXXX",
+      "lang": "en-us"
+    }
+  ],
+  "publisher": "DataCite",
+  "publicationYear": "2014",
+  "subjects": [],
+  "contributors": [],
+  "dates": [],
+  "language": "en-us",
+  "resourceType": {
+    "resourceTypeGeneral": "Dataset",
+    "resourceType": "Dataset"
+  },
+  "alternateIdentifiers": [],
+  "relatedIdentifiers": [],
+  "sizes": [],
+  "formats": [],
+  "version": "4.1",
+  "rightsList": [],
+  "descriptions": [],
+  "fundingReferences": [],
+  "geoLocations": []
+};
 console.log('doi', doi);
 let identifier = 'https://doi.org/' + doi;
 if (!doi.startsWith('10.5281/zenodo.')) {
