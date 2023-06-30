@@ -17,6 +17,7 @@
 
 // TESTING get some functionality on the Zenodo sandbox (no longer working due to relying on Datacite metadata...
 
+// TODO add standardized comments for non-compliant results where possible
 // TODO: find ideas to check criteria M3, R3 (look for patterns in the description?), N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
 // R5, N4 better left out of automatic checking
 
