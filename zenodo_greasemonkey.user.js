@@ -349,7 +349,7 @@ function addButtons() {
         header += "XXX CHECK IF APPLICABLE XXX "
         header += "Furthermore, considering that the dataset is linked to a publication, we will also archive a copy of the dataset for long-time preservation in EPFL's ACOUA platform (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info).\n"
         header += "\n\n"
-        header += "If you have any question about these steps, do not hesitate to ask!"
+        header += "If you have any question about these steps, do not hesitate to ask!\n"
 
         footer += "Best regards,\nZZZZZZ"
       } else {
