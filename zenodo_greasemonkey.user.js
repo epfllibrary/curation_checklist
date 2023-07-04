@@ -24,7 +24,7 @@
 const checklistData = {
   "M1": {"full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",
          "short": "<b>EPFL authors?&nbsp;</b>",
-         "likelyProblem": "",
+         "likelyProblem": "There is not enough evidence that the authors are or were affiliated with EPFL, we would be grateful for more details (for example an e-mail address or ORCID identifier)",
          "category": "must",
          "wrapper": "div"},                
   "M2": {"full": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired",
@@ -33,7 +33,7 @@ const checklistData = {
          "short": "<b>Access to content?&nbsp;</b>",
          "wrapper": "div"},   
   "M3": {"full": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
-         "likelyProblem": "",
+         "likelyProblem": "For example, a few sentences explaining how the files were generated or used would be helpful for a potential user. If the data was used in a publication, you could also include part of the article abstract, to make the scientific context more immediately apparent.",
          "category": "must",
          "short": "<b>Sufficient abstract?&nbsp;</b>",
          "wrapper": "div"},
@@ -43,7 +43,7 @@ const checklistData = {
          "short": "<b>Email or ORCID for 1 EPFL author?&nbsp;</b>",
          "wrapper": "div"},   
   "R1": {"full": "Authors are identified by their ORCID",
-         "likelyProblem": "",
+         "likelyProblem": "By listing all authors with their respective ORCID, you make sure that they can be recognized unambiguously. If an EPFL author has no ORCID yet, we strongly suggest to create one, see e strongly suggest you to create one: see https://actu.epfl.ch/news/link-your-orcid-profile-with-epfl/ for more info",
          "category": "recommended",
          "short": "<b>Authors with ORCID?&nbsp;</b>",
          "wrapper": "div"},   
@@ -317,12 +317,12 @@ function addButtons() {
       let mustArray = [];
       MustCheckboxBad.each(function () {
         let value = $(this).parent().attr('id');
-        mustArray.push([value, checklistData[value].full]);
+        mustArray.push([value, checklistData[value].full, checklistData[value].likelyProblem]);
       });
       mustArray.sort();
       console.log(mustArray);
       for (let element of mustArray) {
-        text += `${element[0]}: ${element[1]}\n\n`;
+        text += `${element[0]}: ${element[1]}\n=>${element[2]}\n\n`;
       }
     }
     
@@ -331,12 +331,12 @@ function addButtons() {
       let recommArray = [];
       RecommendedCheckboxBad.each(function () {
         let value = $(this).parent().attr('id');
-        recommArray.push([value, checklistData[value].full]);
+        recommArray.push([value, checklistData[value].full, checklistData[value].likelyProblem]);
       });
       recommArray.sort();
       console.log(recommArray);
       for (let element of recommArray) {
-        text += `${element[0]}: ${element[1]}\n\n`;
+        text += `${element[0]}: ${element[1]}\n=>${element[2]}\n\n`;
       }
     }
 
@@ -346,12 +346,12 @@ function addButtons() {
       let nthArray = [];
       NTHCheckboxBad.each(function () {
         let value = $(this).parent().attr('id');
-        nthArray.push([value, checklistData[value].full]);
+        nthArray.push([value, checklistData[value].full, checklistData[value].likelyProblem]);
       });
       nthArray.sort();
       console.log(nthArray);
       for (let element of nthArray) {
-        text += `${element[0]}: ${element[1]}\n\n`;
+        text += `${element[0]}: ${element[1]}\n=>${element[2]}\n\n`;
       }
     }
 
