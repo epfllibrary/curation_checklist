@@ -133,7 +133,7 @@ const checklistData = {
   "R5": {
     "full": "Any sensitive, personal data should have been anonymized",
     "answers": {
-      "bad": "",
+      "bad": "The dataset contains personal data about human research subjects, which is forbidden by various laws. Make sure the access is strictly limited and/or replace the data with an anonymized version",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -146,7 +146,7 @@ const checklistData = {
   "N1": {
     "full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields',
     "answers": {
-      "bad": "",
+      "bad": "There are specific fields to list grants, it is better to use them than to write an acknowledgement in the description: it facilitates the automatic retrieval of that information on the funders' platfoms",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -175,8 +175,8 @@ const checklistData = {
   "N3": {
     "full": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)",
     "answers": {
-      "bad": "",
-      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "bad": "Limited access and re-usability are against the principles of Open Science endorsed by EPFL. Are you sure you cannot use a more liberal license?",
+      "meh": "The chosen license limits the potential re-use of your data by others. There can be valid reasons for that, but in general we encourage the most open options",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
@@ -190,7 +190,7 @@ const checklistData = {
   "N4": {
     "full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
     "answers": {
-      "bad": "",
+      "bad": "A good README can significantly improve a potential user's understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/record/298249 ",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -203,7 +203,7 @@ const checklistData = {
   "N5": {
     "full": "If the submission is related to a PhD thesis, the supervisor should be specified",
     "answers": {
-      "bad": "",
+      "bad": "There are mentions of a PhD thesis, this should be formally declared using the relevant input field with the supervisor name and institution",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -231,7 +231,7 @@ const checklistData = {
   "N7": {
     "full": "Where applicable, sources from which the work is derived should be specified",
     "answers": {
-      "bad": "",
+      "bad": "I DO NOT KNOW WHAT TO SAY HERE",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -247,7 +247,7 @@ const checklistData = {
     "full": "Keywords should be entered as separated fields",
     "answers": {
       "bad": "To maximize the effectiveness of keywords, each concept must be listed a distinct entity: each entity will have its own link that leads to other records tagged with the same concept. This will not work if all keywords are combined as one single text entry.",
-      "meh": "No keywords are listed, you might consider adding some. It makes it easier for potential users to find the dataset, and then to understand its context",
+      "meh": "No keywords are listed, you might consider adding some. It will make it easier for potential users to discover the dataset (through search results or links from other datasets with the same keywords), and then to understand its context",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
