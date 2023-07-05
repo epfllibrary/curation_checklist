@@ -29,7 +29,7 @@ const checklistData = {
       "bad": "There is not enough evidence that the authors are or were affiliated with EPFL, we would be grateful for more details (for example an e-mail address or ORCID identifier)",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "must",
@@ -41,7 +41,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "must",
@@ -54,7 +54,7 @@ const checklistData = {
       "bad": "For example, a few sentences explaining how the files were generated or used would be helpful for a potential user. If the data was used in a publication, you could also include part of the article abstract, to make the scientific context more immediately apparent.",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "must",
@@ -67,7 +67,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "must",
@@ -80,7 +80,7 @@ const checklistData = {
       "bad": "By listing all authors with their respective ORCID, you make sure that they can be recognized unambiguously. If an EPFL author has no ORCID yet, we strongly suggest to create one, see e strongly suggest you to create one: see https://actu.epfl.ch/news/link-your-orcid-profile-with-epfl/ for more info",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "recommended",
@@ -93,7 +93,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "recommended",
@@ -106,7 +106,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "recommended",
@@ -121,7 +121,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "recommended",
@@ -134,7 +134,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "recommended",
@@ -147,7 +147,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "nth",
@@ -163,7 +163,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "nth",
@@ -176,7 +176,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "nth",
@@ -191,7 +191,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "nth",
@@ -204,7 +204,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "nth",
@@ -219,7 +219,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "nth",
@@ -232,7 +232,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "nth",
@@ -247,7 +247,7 @@ const checklistData = {
       "bad": "",
       "meh": "",
       "maybe": "",
-      "neutral": "",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "nth",
