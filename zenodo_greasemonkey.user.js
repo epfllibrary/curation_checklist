@@ -472,7 +472,7 @@ function addButtons() {
         checkArray.sort();
         text += `Total ${checkArray.length} ${checkLevel.full} criteria not fully met:\n`;
         for (let element of checkArray) {
-          text += `${element[0]}: ${element[1]}\n=>${element[2]}\n\n`;
+          text += `**${element[0]}: ${element[1]}**\n=> ${element[2]}\n\n`;
         }
       }
     }
