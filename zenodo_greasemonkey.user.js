@@ -10,7 +10,7 @@
 // @include     https://zenodo.org/record/*
 // @include     https://sandbox.zenodo.org/record/*
 // @grant       none
-// @version     1.1
+// @version     1.2
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -29,8 +29,8 @@ const checklistData = {
     "short": "<b>EPFL authors?&nbsp;</b>",
     "answers": {
       "bad": "There is not enough evidence that the authors are or were affiliated with EPFL, we would be grateful for more details (for example an e-mail address or ORCID identifier)",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -41,8 +41,8 @@ const checklistData = {
     "full": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -54,8 +54,8 @@ const checklistData = {
     "full": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
     "answers": {
       "bad": "For example, a few sentences explaining how the files were generated or used would be helpful for a potential user. If the data was used in a publication, you could also include part of the article abstract, to make the scientific context more immediately apparent.",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -67,8 +67,8 @@ const checklistData = {
     "full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -80,8 +80,8 @@ const checklistData = {
     "full": "Authors are identified by their ORCID",
     "answers": {
       "bad": "By listing all authors with their respective ORCID, you make sure that they can be recognized unambiguously. If an EPFL author has no ORCID yet, we strongly suggest to create one, see e strongly suggest you to create one: see https://actu.epfl.ch/news/link-your-orcid-profile-with-epfl/ for more info",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -93,8 +93,8 @@ const checklistData = {
     "full": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -106,8 +106,8 @@ const checklistData = {
     "full": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available',
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -121,8 +121,8 @@ const checklistData = {
     "full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -134,8 +134,8 @@ const checklistData = {
     "full": "Any sensitive, personal data should have been anonymized",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -147,8 +147,8 @@ const checklistData = {
     "full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields',
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -163,8 +163,8 @@ const checklistData = {
     "full": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -176,8 +176,8 @@ const checklistData = {
     "full": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -191,8 +191,8 @@ const checklistData = {
     "full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -204,8 +204,8 @@ const checklistData = {
     "full": "If the submission is related to a PhD thesis, the supervisor should be specified",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -219,8 +219,8 @@ const checklistData = {
     "full": "Files should be available in open formats",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -232,8 +232,8 @@ const checklistData = {
     "full": "Where applicable, sources from which the work is derived should be specified",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -247,8 +247,8 @@ const checklistData = {
     "full": "Keywords should be entered as separated fields",
     "answers": {
       "bad": "",
-      "meh": "",
-      "maybe": "",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
