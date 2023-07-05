@@ -21,6 +21,8 @@
 // TODO: find ideas to check criteria M3, R3 (look for patterns in the description?), N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
 // R5, N4 better left out of automatic checking
 
+const checkLevels = [{"short": "must", "full": "MUST"}, {"short": "recommended", "full": "RECOMMENDED"}, {"short": "nth", "full": "NICE-TO-HAVE"}];
+
 const checklistData = {
   "M1": {
     "full": "At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work",
@@ -266,6 +268,14 @@ const buttonValues = {
   'meh': ['?', ' ', ' ']
 }
 
+function state2checkValue(buttonID, value) {
+  if (buttonID == 'bad' && value == 'x') {return "bad"};
+  if (buttonID == 'bad' && value == '?') {return "meh"};
+  if (buttonID == 'ok' && value == '?') {return "maybe"};
+  if (buttonID == 'ok' && value == 'x') {return "ok"};
+  return "neutral";
+}
+
 
 const checklistStyle = `
 <style>
@@ -438,61 +448,35 @@ function addButtons() {
     var text = '';
     event.preventDefault();
 
-    // TODO handle other non-OK values; checklistData[value].answers should become checklistData[value].answers[id] for the relevant button id.
-
     const MustCheckboxUnchecked = $('label[name="must"][id="ok"]:not(:contains("x"))');
     const MustCheckboxBad = $('label[name="must"][id="bad"]:contains("x")');
     const RecommendedCheckboxUnchecked = $('label[name="recommended"][id="ok"]:not(:contains("x"))');
     const RecommendedCheckboxBad = $('label[name="recommended"][id="bad"]:contains("x")');
     const NTHCheckboxUnchecked = $('label[name="nth"][id="ok"]:not(:contains("x"))');
     const NTHCheckboxBad = $('label[name="nth"][id="bad"]:contains("x")');
-
-    console.log(MustCheckboxBad.length, RecommendedCheckboxBad.length, NTHCheckboxBad.length);
-    console.log(MustCheckboxUnchecked.length, RecommendedCheckboxUnchecked.length, NTHCheckboxUnchecked.length);
-    if (MustCheckboxBad.length) {
-      text += `Total ${MustCheckboxBad.length} missing MUST criteria:\n`;
-      let mustArray = [];
-      MustCheckboxBad.each(function() {
-        let value = $(this).parent().attr('id');
-        mustArray.push([value, checklistData[value].full, checklistData[value].answers.bad]);
+    
+    for (let checkLevel of checkLevels) {
+      console.log('check level', checkLevel.short); 
+      let checkArray = [];
+      let checkBoxUnchecked = $(`label[name="${checkLevel.short}"][id="ok"]:not(:contains("x"))`);
+      let checktArray = [];
+      checkBoxUnchecked.each(function() {
+        let checkID = $(this).parent().attr('id');
+        let actualButton = $(this).parent().children('label:not(:contains(" "))');
+        let actualValue1 = actualButton.attr('id');
+        let actualValue2 = actualButton.text();
+        console.log(checkID, actualValue1, actualValue2, '==>', state2checkValue(actualValue1, actualValue2));
+        checkArray.push([checkID, checklistData[checkID].full, checklistData[checkID].answers[state2checkValue(actualValue1, actualValue2)]]);
       });
-      mustArray.sort();
-      console.log(mustArray);
-      for (let element of mustArray) {
-        text += `${element[0]}: ${element[1]}\n=>${element[2]}\n\n`;
+      if (checkArray.length) {
+        checkArray.sort();
+        text += `Total ${checkArray.length} ${checkLevel.full} criteria not fully met:\n`;
+        for (let element of checkArray) {
+          text += `${element[0]}: ${element[1]}\n=>${element[2]}\n\n`;
+        }
       }
     }
 
-    if (RecommendedCheckboxBad.length) {
-      text += `Total ${RecommendedCheckboxBad.length} missing RECOMMENDED criteria:\n`;
-      let recommArray = [];
-      RecommendedCheckboxBad.each(function() {
-        let value = $(this).parent().attr('id');
-        recommArray.push([value, checklistData[value].full, checklistData[value].answers.bad]);
-      });
-      recommArray.sort();
-      console.log(recommArray);
-      for (let element of recommArray) {
-        text += `${element[0]}: ${element[1]}\n=>${element[2]}\n\n`;
-      }
-    }
-
-
-    if (NTHCheckboxBad.length) {
-      text += `Total ${NTHCheckboxBad.length} missing NICE TO HAVE criteria:\n`;
-      let nthArray = [];
-      NTHCheckboxBad.each(function() {
-        let value = $(this).parent().attr('id');
-        nthArray.push([value, checklistData[value].full, checklistData[value].answers.bad]);
-      });
-      nthArray.sort();
-      console.log(nthArray);
-      for (let element of nthArray) {
-        text += `${element[0]}: ${element[1]}\n=>${element[2]}\n\n`;
-      }
-    }
-
-    console.log('variable URL at the end');
 
 
     let header = ""
@@ -520,7 +504,7 @@ function addButtons() {
 
     text = header + text + footer;
     let finalURL = "mailto:" + emailTo + '?&subject=' + emailSub + '&body=' + encodeURIComponent(text);
-    console.log(finalURL);
+    // console.log(finalURL);
     openMailEditor(finalURL);
   })
 
