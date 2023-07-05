@@ -246,8 +246,8 @@ const checklistData = {
   "N8": {
     "full": "Keywords should be entered as separated fields",
     "answers": {
-      "bad": "",
-      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "bad": "To maximize the effectiveness of keywords, each concept must be listed a distinct entity: each entity will have its own link that leads to other records tagged with the same concept. This will not work if all keywords are combined as one single text entry.",
+      "meh": "No keywords are listed, you might consider adding some. It makes it easier for potential users to find the dataset, and then to understand its context",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
