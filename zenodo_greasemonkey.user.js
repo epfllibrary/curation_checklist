@@ -695,8 +695,10 @@ function policyCheck(checkCode) {
   if (checkCode == 'M1') {
     let epflCreators = 0;
     for (let creator of recordJson.data.attributes.creators) {
-      if (creator.affiliation.includes('EPFL')) {
-        epflCreators += 1;
+      for (let affiliation of creator.affiliation) {
+        if (affiliation.includes('EPFL')) {
+          epflCreators += 1;
+        }
       }
     }
     if (epflCreators == recordJson.data.attributes.creators.length) {
@@ -736,6 +738,7 @@ function policyCheck(checkCode) {
     if (recordJson.data.attributes.descriptions[0].description.includes('@epfl.ch')) {
       return 'maybe';
     }
+    return 'bad';
   }
 
   if (checkCode == 'R1') {
