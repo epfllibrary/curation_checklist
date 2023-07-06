@@ -324,34 +324,91 @@ $('head').append(checklistStyle);
 
 let doi = $('h4 pre:first').text();
 let recordJson = {
-  "identifier": {
-    "identifier": "dummy",
-    "identifierType": "DOI"
-  },
-  "creators": [],
-  "titles": [{
-    "title": "XXX DUMMY XXXX",
-    "lang": "en-us"
-  }],
-  "publisher": "DataCite",
-  "publicationYear": "2014",
-  "subjects": [],
-  "contributors": [],
-  "dates": [],
-  "language": "en-us",
-  "resourceType": {
-    "resourceTypeGeneral": "Dataset",
-    "resourceType": "Dataset"
-  },
-  "alternateIdentifiers": [],
-  "relatedIdentifiers": [],
-  "sizes": [],
-  "formats": [],
-  "version": "4.1",
-  "rightsList": [],
-  "descriptions": [],
-  "fundingReferences": [],
-  "geoLocations": []
+  "data": {
+    "id": "XXX",
+    "type": "dummy",
+    "attributes": {
+      "doi": "XXX",
+      "prefix": "XXX",
+      "suffix": "",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [],
+      "titles": [
+        {
+          "title": "DUMMY TITLE"
+        }
+      ],
+      "publisher": "",
+      "container": {},
+      "publicationYear": 2023,
+      "subjects": [],
+      "contributors": [],
+      "dates": [{ "date": "2023", "dateType": "Issued" }],
+      "language": "en",
+      "types": {
+        "ris": "RPRT",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "Documentation",
+        "resourceTypeGeneral": "Text"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [{"rights": "none", "rightsIdentifier": "none"}],
+      "descriptions": [{
+                "description": "empty",
+                "descriptionType": "Abstract"
+            }],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "",
+      "url": "",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": null,
+      "source": null,
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 2,
+      "citationCount": 6,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2023-07-06T07:00:00.000Z",
+      "registered": "2023-07-06T07:00:00.000Z",
+      "published": "2023",
+      "updated": "2023-07-06T07:00:00.001Z"
+    },
+    "relationships": {
+      "client": {
+        "data": { "id": "datacite.datacite", "type": "clients" }
+      },
+      "provider": { "data": { "id": "datacite", "type": "providers" } },
+      "media": { "data": { "id": "XXX", "type": "media" } },
+      "references": {
+        "data": []
+      },
+      "citations": {
+        "data": []
+      },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
 };
 console.log('doi', doi);
 let identifier = 'https://doi.org/' + doi;
