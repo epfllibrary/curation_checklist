@@ -723,10 +723,12 @@ function policyCheck(checkCode) {
   if (checkCode == 'M4') {
     let orcidEpflCreators = 0;
     for (let creator of recordJson.data.attributes.creators) {
-      if (creator.affiliation.includes('EPFL')) {
-        for (let identifier of creator.nameIdentifiers) {
-          if (identifier.nameIdentifierScheme == 'ORCID') {
-            orcidEpflCreators += 1;
+      for (let affiliation of creator.affiliation) {
+        if (affiliation.includes('EPFL')) {
+          for (let identifier of creator.nameIdentifiers) {
+            if (identifier.nameIdentifierScheme == 'ORCID') {
+              orcidEpflCreators += 1;
+            }
           }
         }
       }
