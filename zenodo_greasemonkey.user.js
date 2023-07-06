@@ -40,7 +40,7 @@ const checklistData = {
   "M2": {
     "full": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired",
     "answers": {
-      "bad": "",
+      "bad": "THIS ONE IS BAD",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -66,7 +66,7 @@ const checklistData = {
   "M4": {
     "full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
     "answers": {
-      "bad": "",
+      "bad": "THIS ONE IS BAD",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -92,7 +92,7 @@ const checklistData = {
   "R2": {
     "full": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
     "answers": {
-      "bad": "",
+      "bad": "THIS ONE IS BAD",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -105,7 +105,7 @@ const checklistData = {
   "R3": {
     "full": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available',
     "answers": {
-      "bad": "",
+      "bad": "THIS ONE IS BAD",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -120,7 +120,7 @@ const checklistData = {
   "R4": {
     "full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
     "answers": {
-      "bad": "",
+      "bad": "THIS ONE IS BAD",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -162,7 +162,7 @@ const checklistData = {
   "N2": {
     "full": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
     "answers": {
-      "bad": "",
+      "bad": "THIS ONE IS BAD",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -218,7 +218,7 @@ const checklistData = {
   "N6": {
     "full": "Files should be available in open formats",
     "answers": {
-      "bad": "",
+      "bad": "THIS ONE IS BAD",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
