@@ -121,7 +121,7 @@ const checklistData = {
     "full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
     "answers": {
       "bad": "Such a file really facilitates a potential user's understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. The point of keeping it outside of a compressed file is to make sure that it can be accessed without downloading gigabytes of data (in your case it took me 4 hours, I think we can agree it is not very efficient. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL's ACOUA system (further info at the end of this message).",
-      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "meh": "Such a file really facilitates a potential user's understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. The point of keeping it outside of a compressed file is to make sure that it can be accessed without downloading gigabytes of data (in your case it took me 4 hours, I think we can agree it is not very efficient. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL's ACOUA system (further info at the end of this message).",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
@@ -147,7 +147,7 @@ const checklistData = {
     "full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields',
     "answers": {
       "bad": "There are specific fields to list grants, it is better to use them than to write an acknowledgement in the description: it facilitates the automatic retrieval of that information on the funders' platfoms",
-      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "meh": "There is no mention of specific funding, which is fine if the project is operated using EPFL budget only. However, if some funding body (such as the Swiss National Science Foundation, some European program or other) is acknowledged in the publication it should be listed here as well.",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
@@ -191,7 +191,7 @@ const checklistData = {
     "full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
     "answers": {
       "bad": "A good README can significantly improve a potential user's understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/record/298249 ",
-      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "meh": "A good README can significantly improve a potential user's understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/record/298249 ",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
@@ -218,7 +218,7 @@ const checklistData = {
   "N6": {
     "full": "Files should be available in open formats",
     "answers": {
-      "bad": "THIS ONE IS BAD",
+      "bad": "A potential user is more likely to be able to work with your data if it is available in open formats, since they will less restricted by some specific software choice. You can check our Fast Guide for examples https://infoscience.epfl.ch/record/265349/files/04_Formats_EPFL_Library_RDM_FastGuide.pdf",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
