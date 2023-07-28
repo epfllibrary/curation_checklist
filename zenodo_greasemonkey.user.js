@@ -10,7 +10,7 @@
 // @include     https://zenodo.org/record/*
 // @include     https://sandbox.zenodo.org/record/*
 // @grant       none
-// @version     1.2
+// @version     1.2.1
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -38,9 +38,9 @@ const checklistData = {
     "wrapper": "div"
   },
   "M2": {
-    "full": "The content of the dataset must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed datasets will be reviewed after the embargo has expired",
+    "full": "The content of the upload must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed uploads will be reviewed after the embargo has expired",
     "answers": {
-      "bad": "THIS ONE IS BAD",
+      "bad": "If we cannot access the content of the dataset, we cannot chec",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -51,7 +51,7 @@ const checklistData = {
     "wrapper": "div"
   },
   "M3": {
-    "full": "The Description of the submitted dataset must be  sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
+    "full": "The Description of the submitted upload must be sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
     "answers": {
       "bad": "For example, a few sentences explaining how the files were generated or used would be helpful for a potential user. If the data was used in a publication, you could also include part of the article abstract, to make the scientific context more immediately apparent.",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
@@ -120,7 +120,7 @@ const checklistData = {
   "R4": {
     "full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
     "answers": {
-      "bad": "THIS ONE IS BAD",
+      "bad": "Such a file really facilitates a potential user's understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. The point of keeping it outside of a compressed file is to make sure that it can be accessed without downloading gigabytes of data (in your case it took me 4 hours, I think we can agree it is not very efficient. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL's ACOUA system (further info at the end of this message).",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -133,7 +133,7 @@ const checklistData = {
   "R5": {
     "full": "Any sensitive, personal data should have been anonymized",
     "answers": {
-      "bad": "The dataset contains personal data about human research subjects, which is forbidden by various laws. Make sure the access is strictly limited and/or replace the data with an anonymized version",
+      "bad": "The upload contains personal data about human research subjects, which is forbidden by various laws. Make sure the access is strictly limited and/or replace the data with an anonymized version",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -160,7 +160,7 @@ const checklistData = {
     "selector": "dt:contains('Grants:')"
   },
   "N2": {
-    "full": "Dataset should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
+    "full": "The upload should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
     "answers": {
       "bad": "THIS ONE IS BAD",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
@@ -539,7 +539,7 @@ function addButtons() {
     let header = ""
     let footer = ""
     if (text == "") {
-      header += `Good XXX,\n\nYou are designated as EPFL creators for the dataset \"${title}\" (${identifier}), which has been submitted to the EPFL Community. It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
+      header += `Good XXX,\n\nYou are designated as EPFL creators for \"${title}\" (${identifier}), which has been submitted to the EPFL Community on Zenodo. It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
       header += "As per our new workflow, the dataset will also be listed on Infoscience by our staff. The record will be submitted for approval to your laboratory, similar to the process followed by publications imported from the Web of Science.\n\n"
       header += "XXX CHECK IF APPLICABLE XXX "
       header += "Furthermore, considering that the dataset is linked to a publication, we will also archive a copy of the dataset for long-time preservation in EPFL's ACOUA platform (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info).\n"
@@ -549,12 +549,12 @@ function addButtons() {
       footer += "Best regards,\nZZZZZZ"
     } else {
       emailSub += encodeURIComponent(': ' + title);
-      header += `Good XXX,\n\nYou are designated as EPFL creators for the dataset \"${title}\" (${identifier}), which has been submitted to the EPFL Community.\n\n`;
-      header += "Within our new curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
+      header += `Good XXX,\n\nYou are designated as EPFL creators for \"${title}\" (${identifier}), which has been submitted to the EPFL Community on Zenodo.\n\n`;
+      header += "Within our curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
 
-      footer += "With this curation procedure, we introduce new processes intended to add value to your results and potentially save some of your time:\n";
-      footer += "- we create Infoscience records for datasets newly accepted into the EPFL community, so that they are available for web pages, activity reports, etc.\n";
-      footer += "- if the dataset is related with a publication and if the distribution license allows it, we can take advantage of this situation to copy the dataset into EPFL's long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n";
+      footer += "When the above feedback is addressed, we will be able to add value to your results and potentially save some of your time:\n";
+      footer += "    •   we create Infoscience records for datasets newly accepted into the EPFL community, so that they are available for web pages, activity reports, etc.\n";
+      footer += "    •   if the upload is related with a publication and if the distribution license allows it, we can take advantage of this situation to copy the data into EPFL's long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n";
       footer += "\n\nIf you have any questions or comments about this service, do not hesitate to ask. We will be glad to answer or receive your feedback.\n\n"
       footer += "Best regards,\nZZZZZZ"
     }
