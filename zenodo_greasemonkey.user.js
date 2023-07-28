@@ -21,7 +21,7 @@
 // TODO: find ideas to check criteria M3, R3 (look for patterns in the description?), N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
 // R5, N4 better left out of automatic checking
 
-const checkLevels = [{"short": "must", "full": "MUST"}, {"short": "recommended", "full": "RECOMMENDED"}, {"short": "nth", "full": "NICE-TO-HAVE"}];
+const checkLevels = [{"short": "must", "full": "MUST (mandatory for acceptance into the collection)"}, {"short": "recommended", "full": "RECOMMENDED"}, {"short": "nth", "full": "NICE-TO-HAVE"}];
 
 const checklistData = {
   "M1": {
@@ -66,7 +66,7 @@ const checklistData = {
   "M4": {
     "full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
     "answers": {
-      "bad": "THIS ONE IS BAD",
+      "bad": "Minimal contact information for an EPFL author must be available, please add it either using ORCID or in the Description.",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -92,7 +92,7 @@ const checklistData = {
   "R2": {
     "full": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
     "answers": {
-      "bad": "THIS ONE IS BAD",
+      "bad": "As for any scientific output, a good title is the first place where others will learn about the nature and purpose of your research. The same principles as for scientific papers are applicable.",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -105,7 +105,7 @@ const checklistData = {
   "R3": {
     "full": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available',
     "answers": {
-      "bad": "THIS ONE IS BAD",
+      "bad": "The upload appears to related with a publication. If the final publication or a version of the manuscript is available online, it should be listed it in the 'Related/alternate identifiers' section - preferably using a DOI but a URL is fine if no DOI has been assigned to the publication. If no online version exists yet, it can easily be added later, and we definitely recommend to do this when the time comes.",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
