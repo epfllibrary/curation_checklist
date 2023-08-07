@@ -538,6 +538,7 @@ function addButtons() {
 
     let header = ""
     let footer = ""
+    emailSub += encodeURIComponent(': ' + title);
     if (text == "") {
       header += `Good XXX,\n\nYou are designated as EPFL creators for \"${title}\" (${identifier}), which has been submitted to the EPFL Community on Zenodo. It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
       header += "As per our new workflow, the dataset will also be listed on Infoscience by our staff. The record will be submitted for approval to your laboratory, similar to the process followed by publications imported from the Web of Science.\n\n"
@@ -546,9 +547,7 @@ function addButtons() {
       header += "\n\n"
       header += "If you have any question about these steps, do not hesitate to ask!\n"
 
-      footer += "Best regards,\nZZZZZZ"
     } else {
-      emailSub += encodeURIComponent(': ' + title);
       header += `Good XXX,\n\nYou are designated as EPFL creators for \"${title}\" (${identifier}), which has been submitted to the EPFL Community on Zenodo.\n\n`;
       header += "Within our curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
 
@@ -556,8 +555,8 @@ function addButtons() {
       footer += "    •   we create Infoscience records for datasets newly accepted into the EPFL community, so that they are available for web pages, activity reports, etc.\n";
       footer += "    •   if the upload is related with a publication and if the distribution license allows it, we can take advantage of this situation to copy the data into EPFL's long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n";
       footer += "\n\nIf you have any questions or comments about this service, do not hesitate to ask. We will be glad to answer or receive your feedback.\n\n"
-      footer += "Best regards,\nZZZZZZ"
     }
+    footer += "Best regards,\nZZZZZZ"
 
     text = header + text + footer;
     let finalURL = "mailto:" + emailTo + '?&subject=' + emailSub + '&body=' + encodeURIComponent(text);
