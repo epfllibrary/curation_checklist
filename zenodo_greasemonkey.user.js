@@ -120,8 +120,8 @@ const checklistData = {
   "R4": {
     "full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
     "answers": {
-      "bad": "Such a file really facilitates a potential user's understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. The point of keeping it outside of a compressed file is to make sure that it can be accessed without downloading gigabytes of data (in your case it took me 4 hours, I think we can agree it is not very efficient. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL's ACOUA system (further info at the end of this message).",
-      "meh": "Such a file really facilitates a potential user's understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. The point of keeping it outside of a compressed file is to make sure that it can be accessed without downloading gigabytes of data (in your case it took me 4 hours, I think we can agree it is not very efficient. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL's ACOUA system (further info at the end of this message).",
+      "bad": "Such a file really facilitates a potential user's understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL's ACOUA system (further info at the end of this message).",
+      "meh": "Such a file really facilitates a potential user's understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL's ACOUA system (further info at the end of this message).",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
@@ -548,7 +548,8 @@ function addButtons() {
       header += "If you have any question about these steps, do not hesitate to ask!\n"
 
     } else {
-      header += `Good XXX,\n\nYou are designated as EPFL creators for \"${title}\" (${identifier}), which has been submitted to the EPFL Community on Zenodo.\n\n`;
+      header += `Good XXX,\n\nYou are designated as EPFL creators for \"${title}\" (${identifier}), which has been submitted to the EPFL Community on Zenodo.`;
+      header += "We thank you and your coworkers for this contribution.\n\n"
       header += "Within our curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
 
       footer += "When the above feedback is addressed, we will be able to add value to your results and potentially save some of your time:\n";
