@@ -40,7 +40,7 @@ const checklistData = {
   "M2": {
     "full": "The content of the upload must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed uploads will be reviewed after the embargo has expired",
     "answers": {
-      "bad": "If we cannot access the content of the dataset, we cannot chec",
+      "bad": "If we cannot access the content of the dataset, we cannot check its compliance with our curation criteria. Would it be possible to make it at least Restricted?",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -162,7 +162,7 @@ const checklistData = {
   "N2": {
     "full": "The upload should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
     "answers": {
-      "bad": "THIS ONE IS BAD",
+      "bad": "[POSSIBLE CASE]This is just a suggestion at this point but is quite a frequent one for us: in the future, you might want to exclude .DS_Store and other similar MacOS files in your archives. The otherwise very convenient "Compress" command in the OSX Finder makes it difficult to avoid this, but there are other tools that you could use instead, see https://apple.stackexchange.com/questions/239578/compress-without-ds-store-and-macosx for a few possible options.",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -231,7 +231,7 @@ const checklistData = {
   "N7": {
     "full": "Where applicable, sources from which the work is derived should be specified",
     "answers": {
-      "bad": "I DO NOT KNOW WHAT TO SAY HERE",
+      "bad": "It seems that the upload is derived from existing data. In such a case, the source of that data is best acknowledged using structured metadata: the 'Related/alternate identifiers' section is generally intended for digitial sources, the 'References' section can be used for other sources",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
