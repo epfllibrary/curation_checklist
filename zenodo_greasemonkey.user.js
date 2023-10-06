@@ -53,7 +53,7 @@ const checklistData = {
   "M3": {
     "full": "The Description of the submitted upload must be sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
     "answers": {
-      "bad": "For example, a few sentences explaining how the files were generated or used would be helpful for a potential user. If the data was used in a publication, you could also include part of the article abstract, to make the scientific context more immediately apparent.",
+      "bad": "For example, a few sentences explaining how the files were generated or used would be very helpful for a potential user. If the data was used in a publication, you could also include part of the article abstract, to make the scientific context more immediately apparent.",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
@@ -134,8 +134,8 @@ const checklistData = {
     "full": "Any sensitive, personal data should have been anonymized",
     "answers": {
       "bad": "The upload contains personal data about human research subjects, which is forbidden by various laws. Make sure the access is strictly limited and/or replace the data with an anonymized version",
-      "meh": "NOT TOTALLY WRONG, BUT STILL...",
-      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
+      "meh": "THIS IS NOT GREY AREA: IF YOU SUSPECT II IS WRONG, IT IS PROBABLY WRONG",
+      "maybe": "THIS IS NOT GREY AREA: IF YOU SUSPECT II IS WRONG, IT IS PROBABLY WRONG",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -177,7 +177,7 @@ const checklistData = {
     "answers": {
       "bad": "Limited access and re-usability are against the principles of Open Science endorsed by EPFL. Are you sure you cannot use a more liberal license?",
       "meh": "The chosen license limits the potential re-use of your data by others. There can be valid reasons for that, but in general we encourage the most open options",
-      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
+      "maybe": "An unusual license was chosen for this upload, is there a reason why it was preferred over the better-known options?",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -204,8 +204,8 @@ const checklistData = {
     "full": "If the submission is related to a PhD thesis, the supervisor should be specified",
     "answers": {
       "bad": "There are mentions of a PhD thesis, this should be formally declared using the relevant input field with the supervisor name and institution",
-      "meh": "NOT TOTALLY WRONG, BUT STILL...",
-      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
+      "meh": "THIS IS NOT GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.",
+      "maybe": "THIS IS NOT GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
@@ -232,8 +232,8 @@ const checklistData = {
     "full": "Where applicable, sources from which the work is derived should be specified",
     "answers": {
       "bad": "It seems that the upload is derived from existing data. In such a case, the source of that data is best acknowledged using structured metadata: the 'Related/alternate identifiers' section is generally intended for digitial sources, the 'References' section can be used for other sources",
-      "meh": "NOT TOTALLY WRONG, BUT STILL...",
-      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
+      "meh": "THIS IS NOT GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.",
+      "maybe": "THIS IS NOT GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
