@@ -10,7 +10,7 @@
 // @include     https://zenodo.org/record/*
 // @include     https://sandbox.zenodo.org/record/*
 // @grant       none
-// @version     1.2.1
+// @version     1.2.2
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -555,6 +555,9 @@ function addButtons() {
       footer += "When the above feedback is addressed, we will be able to add value to your results and potentially save some of your time:\n";
       footer += "    •   we create Infoscience records for datasets newly accepted into the EPFL community, so that they are available for web pages, activity reports, etc.\n";
       footer += "    •   if the upload is related with a publication and if the distribution license allows it, we can take advantage of this situation to copy the data into EPFL's long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n";
+      footer += "Please note that we cannot keep a case open for an indefinite time: we need your input regarding the possible delays."
+      footer += " If our messages are left unanswered for too long, we will process the submission according its current state."
+      footer += " If you would like us to re-open the case after an update on your side, just let us know and we will be happy to do so."
       footer += "\n\nIf you have any questions or comments about this service, do not hesitate to ask. We will be glad to answer or receive your feedback.\n\n"
     }
     footer += "Best regards,\nZZZZZZ"
