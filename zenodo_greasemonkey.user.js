@@ -587,10 +587,10 @@ function addButtons() {
 
 
   let contentChecks = $('<div>');
-  let contentElement = $("h2#files-heading");
+  let contentElement = $("div#files-list-accordion-trigger");
   console.log('files heading?', contentElement);
   if (contentElement.length == 0) {
-    contentElement = $("h2#files-heading");
+    contentElement = $("div#files-list-accordion-trigger");
     console.log('contentElement:', contentElement);
   }
   addCheckElement(contentChecks, "M2", "after", true);
@@ -621,7 +621,7 @@ function addButtons() {
 
   let importantFrame = $("dt:contains('Publication date:')").parent();
 
-  let license = $("dt:contains('License (for files):')");
+  let license = $("div#licenses");
   if (license.length) {
     addCheckElement(license, "N3", "after", true);
   } else {
