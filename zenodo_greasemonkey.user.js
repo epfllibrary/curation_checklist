@@ -458,7 +458,6 @@ function addCheckElement(selector, checkCode, position, normal) {
 
     myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
     myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
-    myHtml.append(`<label class="btn btn-success" id="ok" name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
 
     //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}${myHtml}</${checklistData[checkCode].wrapper}>`);
     checkElement = $(`<${checklistData[checkCode].altwrapper}>`);
@@ -580,7 +579,7 @@ function addButtons() {
   menu.insertBefore(frm, metadata);
 
   let mainTitle = $("h1");
-  let authorList = mainTitle.next('p');
+  let authorList = $('section#creatibutors');
   if (authorList.length) {
     addCheckElement(authorList, "M1", "after", true);
   }
@@ -595,7 +594,7 @@ function addButtons() {
   }
   addCheckElement(contentChecks, "M2", "after", true);
 
-  let abstract = $("div.record-description");
+  let abstract = $("section#description");
   if (abstract.length) {
     addCheckElement(abstract, "M3", "before", true);
     abstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
