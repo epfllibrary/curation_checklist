@@ -209,7 +209,7 @@ const checklistData = {
       "ok": ""
     },
     "category": "nth",
-    "short": "<b>&nbsp;Supevisor listed?&nbsp;</b>",
+    "short": "<b>&nbsp;| Supervisor listed?&nbsp;</b>",
     "wrapper": "span",
     "altshort": "<b>No thesis indication, probably fine&nbsp;</b>",
     "altwrapper": "dt"
@@ -636,8 +636,7 @@ function addButtons() {
     addCheckElement(importantFrame, "R3", "after", false);
   }
 
-  // TODO change this one when an example can be accessed
-  let grants = $("dt:contains('Grants:')");
+  let grants = $("h3:contains('Funding')");
   if (grants.length) {
     addCheckElement(grants, "N1", "after", true);
   } else {
@@ -649,8 +648,7 @@ function addButtons() {
     addCheckElement(contentChecks, "N4", "after", true);
   }
 
-  // TODO change this one when an example can be accessed
-  let thesisUniversity = $("dt:contains('Awarding University:')");
+  let thesisUniversity = $("dt:contains('Awarding university')");
   if (thesisUniversity.length) {
     addCheckElement(thesisUniversity, "N5", "after", true);
   } else {
