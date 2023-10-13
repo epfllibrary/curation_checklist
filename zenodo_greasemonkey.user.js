@@ -486,7 +486,7 @@ function addButtons() {
 
 
   icn.setAttribute('class', "fa fa-external-link");
-  btn.setAttribute('class', "btn btn-danger btn-block");
+  btn.setAttribute('class', "btn btn-danger btn-block sidebar-container");
   btn.appendChild(icn);
   btn.appendChild(t);
   frm.appendChild(btn);
@@ -660,15 +660,15 @@ function addButtons() {
     contentChecks.append(referencesWarning);
   }
 
-  let referencesElement = $("div#references");
+  let referencesElement = $("div#references-accordion-trigger");
   if (referencesElement.length) {
     addCheckElement(referencesElement, "N7", "after", true);
   } else {
-    referencesElement = $("div#citation");
+    referencesElement = $("div#references-accordion-trigger");
     addCheckElement(referencesElement, "N7", "before", false);
   }
 
-  let keywords = $("dt:contains('Keyword(s):')");
+  let keywords = $("h2:contains('Keywords and subjects')");
   if (keywords.length) {
     addCheckElement(keywords, "N8", "after", true);
   } else {
