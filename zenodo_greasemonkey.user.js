@@ -458,6 +458,7 @@ function addCheckElement(selector, checkCode, position, normal) {
 
     myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
     myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
+    myHtml.append(`<label class="btn btn-success" id="ok" name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
 
     //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}${myHtml}</${checklistData[checkCode].wrapper}>`);
     checkElement = $(`<${checklistData[checkCode].altwrapper}>`);
