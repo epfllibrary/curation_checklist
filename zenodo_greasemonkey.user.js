@@ -618,6 +618,7 @@ function addButtons() {
   }
 
   // This one should always be there, let's use it as a reference point
+  // TODO find another one! 2023-10-13
 
   let importantFrame = $("dt:contains('Publication date:')").parent();
 
@@ -628,13 +629,14 @@ function addButtons() {
     addCheckElement(importantFrame, "N3", "after", false);
   }
 
-  let relativeIdentifiers = $("dt:contains('Related identifiers:')");
+  let relativeIdentifiers = $("div#related-works-accordion-trigger");
   if (relativeIdentifiers.length) {
     addCheckElement(relativeIdentifiers, "R3", "after", true);
   } else {
     addCheckElement(importantFrame, "R3", "after", false);
   }
 
+  // TODO change this one when an example can be accessed
   let grants = $("dt:contains('Grants:')");
   if (grants.length) {
     addCheckElement(grants, "N1", "after", true);
@@ -647,6 +649,7 @@ function addButtons() {
     addCheckElement(contentChecks, "N4", "after", true);
   }
 
+  // TODO change this one when an example can be accessed
   let thesisUniversity = $("dt:contains('Awarding University:')");
   if (thesisUniversity.length) {
     addCheckElement(thesisUniversity, "N5", "after", true);
