@@ -445,7 +445,7 @@ function addCheckElement(selector, checkCode, position, normal) {
     let myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
 
     myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
-    myHtml.append(`<label class="btn btn-secondary btn-neutral" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
+    myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
     myHtml.append(`<label class="btn btn-success" id="ok" name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
 
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}${myHtml}</${checklistData[checkCode].wrapper}>`);
@@ -457,7 +457,7 @@ function addCheckElement(selector, checkCode, position, normal) {
     myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
 
     myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
-    myHtml.append(`<label class="btn btn-secondary btn-neutral" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
+    myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
     myHtml.append(`<label class="btn btn-success" id="ok" name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
 
     //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}${myHtml}</${checklistData[checkCode].wrapper}>`);
