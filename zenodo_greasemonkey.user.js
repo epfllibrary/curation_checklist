@@ -1,16 +1,15 @@
 // ==UserScript==
 // @name        Zenodo Curation Checklist
-// @resource    jqueryUiCss https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js
 // @require     https://far-nyon.ch/assets/js/tinysort/src/jquery.tinysort.min.js
 // @namespace   curation.epflrdm.zenodo
 // @author      Alain Borel
-// @include     https://zenodo.org/record/*
-// @include     https://sandbox.zenodo.org/record/*
+// @include     https://zenodo.org/records/*
+// @include     https://sandbox.zenodo.org/records/*
 // @grant       none
-// @version     1.2.2
+// @version     1.2.3
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -318,11 +317,13 @@ label.btn {
 
 this.$ = this.jQuery = jQuery.noConflict(true);
 $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css'));
+$('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css'));
 
 $('head').append(checklistStyle);
 
 
 let doi = $('h4 pre:first').text();
+
 let recordJson = {
   "data": {
     "id": "XXX",
@@ -492,7 +493,7 @@ function addButtons() {
 
   frm.addEventListener("click", function(event) {
 
-    var collapse = document.getElementById('collapseTwo');
+    var collapse = document.getElementById('collapseTwo'); 
 
     var zenodoURL = window.location.href;
     let title = document.title.replace(' | Zenodo', '');
@@ -570,8 +571,9 @@ function addButtons() {
 
 
 
-  var menu = document.getElementsByClassName("col-sm-4 col-md-4 col-right")[0];
-  var metadata = document.getElementsByClassName("well metadata")[0];
+  var menu = document.getElementsByClassName("sixteen wide tablet five wide computer column sidebar")[0];
+  console.log(menu);
+  var metadata = document.getElementById("metrics");
 
   //menu.appendChild(btn);
 
@@ -585,9 +587,10 @@ function addButtons() {
 
 
   let contentChecks = $('<div>');
-  let contentElement = $("div#preview");
+  let contentElement = $("h2#files-heading");
+  console.log('files heading?', contentElement);
   if (contentElement.length == 0) {
-    contentElement = $("div#files");
+    contentElement = $("h2#files-heading");
     console.log('contentElement:', contentElement);
   }
   addCheckElement(contentChecks, "M2", "after", true);
