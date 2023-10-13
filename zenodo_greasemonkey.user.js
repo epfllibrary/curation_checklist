@@ -617,9 +617,9 @@ function addButtons() {
   }
 
   // This one should always be there, let's use it as a reference point
-  // TODO find another one! 2023-10-13
+  // TODO still buggy, the green checkbox element is missing when using the importantFrame fallback
 
-  let importantFrame = $("dt:contains('Publication date:')").parent();
+  let importantFrame = $("section#metrics");
 
   let license = $("div#licenses");
   if (license.length) {
