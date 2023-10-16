@@ -239,7 +239,7 @@ const checklistData = {
     "category": "nth",
     "short": "<b>&nbsp;Relevant sources?&nbsp;</b>",
     "wrapper": "span",
-    "altshort": "<b>&nbsp;No \"References\" section, is this OK?&nbsp;</b>",
+    "altshort": "<b>No \"References\" section, is this OK?&nbsp;</b>",
     "altwrapper": "span"
   },
   "N8": {
@@ -629,7 +629,7 @@ function addButtons() {
     addCheckElement(importantFrame, "N3", "after", false);
   }
 
-  let relativeIdentifiers = $("div#related-works-accordion-trigger");
+  let relativeIdentifiers = $("h3:contains('Related works')");
   if (relativeIdentifiers.length) {
     addCheckElement(relativeIdentifiers, "R3", "after", true);
   } else {
