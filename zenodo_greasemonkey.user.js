@@ -587,7 +587,7 @@ function addButtons() {
 
 
   let contentChecks = $('<div>');
-  let contentElement = $("div#files-list-accordion-trigger");
+  let contentElement = $("section#record-files");
   console.log('files heading?', contentElement);
   if (contentElement.length == 0) {
     contentElement = $("div#files-list-accordion-trigger");
