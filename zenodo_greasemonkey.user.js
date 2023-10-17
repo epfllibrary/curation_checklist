@@ -413,7 +413,7 @@ let recordJson = {
 };
 console.log('doi', doi);
 let identifier = 'https://doi.org/' + doi;
-if (!doi.startsWith('10.5281/zenodo.')) {
+if (!doi.startsWith('10.5281/zenodo.') && !doi.startsWith('10.5061/dryad')) {
   doi = 'dummy';
 }
 console.log('https://api.datacite.org/dois/' + doi);
@@ -806,7 +806,7 @@ function policyCheck(checkCode) {
     //let kw = $( "dd a.label-link span.label" );
     try {
       let kw = recordJson.data.attributes.subjects;
-      console.log(kw);
+      console.log('kw', kw);
       if (kw.length == 0) {
         return 'meh';
       }
