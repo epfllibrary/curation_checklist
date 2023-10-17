@@ -768,7 +768,7 @@ function policyCheck(checkCode) {
 
   if (checkCode == 'R4') {
     let readmeFound = 'neutral';
-    $('a.filename').each(function() {
+    $('a[href*="/files/"]').each(function() {
       let f = $(this).text().toLowerCase();
       console.log([f], f.indexOf('readme'));
       if ((f.indexOf('readme') >= 0) && (f.indexOf('readme') < 4)) {
