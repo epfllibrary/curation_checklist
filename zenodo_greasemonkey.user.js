@@ -14,11 +14,11 @@
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
 
-// TESTING get some functionality on the Zenodo sandbox (no longer working due to relying on Datacite metadata...
-
 // TODO add standardized comments for non-compliant results where possible
 // TODO: find ideas to check criteria M3, R3 (look for patterns in the description?), N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
 // R5, N4 better left out of automatic checking
+
+// TODO also support record viewing on the new Zenodo request management interface such as https://zenodo.org/communities/epfl/requests/ce456964-fbf2-4f0b-a8ec-34d3cfd62f58
 
 const checkLevels = [{"short": "must", "full": "MUST (mandatory for acceptance into the collection)"}, {"short": "recommended", "full": "RECOMMENDED"}, {"short": "nth", "full": "NICE-TO-HAVE"}];
 
