@@ -11,7 +11,7 @@
 // @include     https://zenodo.org/communities/epfl/requests/*
 // @include     https://sandbox.zenodo.org/communities/epfl/requests/*
 // @grant       none
-// @version     1.3
+// @version     1.3.1
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -420,7 +420,7 @@ if (!doi.startsWith('10.5281/zenodo.')) {
   doi = 'dummy';
 }
 console.log('https://api.datacite.org/dois/' + doi);
-addRequestRecordTab(doi);
+addRequestRecordTab(identifier);
 fetch('https://api.datacite.org/dois/' + doi, {
     method: 'GET',
     headers: {
@@ -481,9 +481,9 @@ function addCheckElement(selector, checkCode, position, normal) {
   }
 }
 
-function addRequestRecordTab(doi) {
+function addRequestRecordTab(doiId) {
   var requestCommunitySubmissionTab = $('div#request-community-submission-tab');
-  var fullRecordTabHtml = '<a href="https://doi.org/' + doi + '" target="_blank" role="tab" class="item" data-tab="fullrecord" aria-selected="false" aria-controls="full-record-tab-panel" id="full-record-tab">[SISB-RDM]Full record view</a>';
+  var fullRecordTabHtml = '<a href="' + doiId + '" target="_blank" role="tab" class="item" data-tab="fullrecord" aria-selected="false" aria-controls="full-record-tab-panel" id="full-record-tab">[SISB-RDM]Full record view</a>';
   requestCommunitySubmissionTab.append($(fullRecordTabHtml));
 
 }
