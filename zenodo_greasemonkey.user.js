@@ -8,18 +8,19 @@
 // @author      Alain Borel
 // @include     https://zenodo.org/records/*
 // @include     https://sandbox.zenodo.org/records/*
+// @include     https://zenodo.org/communities/epfl/requests/*
+// @include     https://sandbox.zenodo.org/communities/epfl/requests/*
 // @grant       none
 // @version     1.3
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
 
+// TESTING get some functionality on the Zenodo sandbox (no longer working due to relying on Datacite metadata...
+
 // TODO add standardized comments for non-compliant results where possible
 // TODO: find ideas to check criteria M3, R3 (look for patterns in the description?), N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
 // R5, N4 better left out of automatic checking
-
-// TODO also support record viewing on the new Zenodo request management interface such as https://zenodo.org/communities/epfl/requests/ce456964-fbf2-4f0b-a8ec-34d3cfd62f58
-// IDEA add tab with link to the normal record view. recid in the DOM: meta name=citation_abstract_html_url content=https://zenodo.org/records/7489244
 
 const checkLevels = [{"short": "must", "full": "MUST (mandatory for acceptance into the collection)"}, {"short": "recommended", "full": "RECOMMENDED"}, {"short": "nth", "full": "NICE-TO-HAVE"}];
 
@@ -321,6 +322,9 @@ $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', 'ht
 $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css'));
 
 $('head').append(checklistStyle);
+console.log('greasemonkey_checklist active');
+
+
 
 
 let doi = $('h4 pre:first').text();
@@ -414,10 +418,11 @@ let recordJson = {
 };
 console.log('doi', doi);
 let identifier = 'https://doi.org/' + doi;
-if (!doi.startsWith('10.5281/zenodo.') && !doi.startsWith('10.5061/dryad')) {
+if (!doi.startsWith('10.5281/zenodo.')) {
   doi = 'dummy';
 }
 console.log('https://api.datacite.org/dois/' + doi);
+addRequestRecordTab(doi);
 fetch('https://api.datacite.org/dois/' + doi, {
     method: 'GET',
     headers: {
@@ -434,6 +439,7 @@ fetch('https://api.datacite.org/dois/' + doi, {
     addButtons();
   })
   .catch(err => console.error(err));
+
 
 
 function addCheckElement(selector, checkCode, position, normal) {
@@ -477,6 +483,12 @@ function addCheckElement(selector, checkCode, position, normal) {
   }
 }
 
+function addRequestRecordTab(doi) {
+  var requestCommunitySubmissionTab = $('div#request-community-submission-tab');
+  var fullRecordTabHtml = '<a href="https://doi.org/' + doi + '" target="_blank" role="tab" class="item" data-tab="fullrecord" aria-selected="false" aria-controls="full-record-tab-panel" id="full-record-tab">[SISB-RDM]Full record view</a>';
+  requestCommunitySubmissionTab.append($(fullRecordTabHtml));
+
+}
 
 function addButtons() {
 
@@ -551,16 +563,16 @@ function addButtons() {
 
     } else {
       header += `Good XXX,\n\nYou are designated as EPFL creators for \"${title}\" (${identifier}), which has been submitted to the EPFL Community on Zenodo.`;
-      header += " We thank you and your coworkers for this contribution.\n\n"
+      header += "We thank you and your coworkers for this contribution.\n\n"
       header += "Within our curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
 
       footer += "When the above feedback is addressed, we will be able to add value to your results and potentially save some of your time:\n";
       footer += "    •   we create Infoscience records for datasets newly accepted into the EPFL community, so that they are available for web pages, activity reports, etc.\n";
       footer += "    •   if the upload is related with a publication and if the distribution license allows it, we can take advantage of this situation to copy the data into EPFL's long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n";
       footer += "Please note that we cannot keep a case open for an indefinite time: we need your input regarding the possible delays."
-      footer += " If our messages are left unanswered for too long, we will process the submission according its state by then."
-      footer += " Of course, if you would like us to re-open the case at a later time, just let us know and we will be happy to do so."
-      footer += "\n\nIf you have any questions or comments about this service, do not hesitate to ask. We look forward to your feedback.\n\n"
+      footer += " If our messages are left unanswered for too long, we will process the submission according its current state."
+      footer += " If you would like us to re-open the case after an update on your side, just let us know and we will be happy to do so."
+      footer += "\n\nIf you have any questions or comments about this service, do not hesitate to ask. We will be glad to answer or receive your feedback.\n\n"
     }
     footer += "Best regards,\nZZZZZZ"
 
@@ -588,6 +600,7 @@ function addButtons() {
 
 
   let contentChecks = $('<div>');
+  // let contentElement = $("div#files-list-accordion-trigger");
   let contentElement = $("section#record-files");
   console.log('files heading?', contentElement);
   if (contentElement.length == 0) {
@@ -769,7 +782,7 @@ function policyCheck(checkCode) {
 
   if (checkCode == 'R4') {
     let readmeFound = 'neutral';
-    $('a[href*="/files/"]').each(function() {
+    $('a.filename').each(function() {
       let f = $(this).text().toLowerCase();
       console.log([f], f.indexOf('readme'));
       if ((f.indexOf('readme') >= 0) && (f.indexOf('readme') < 4)) {
@@ -807,7 +820,7 @@ function policyCheck(checkCode) {
     //let kw = $( "dd a.label-link span.label" );
     try {
       let kw = recordJson.data.attributes.subjects;
-      console.log('kw', kw);
+      console.log(kw);
       if (kw.length == 0) {
         return 'meh';
       }
