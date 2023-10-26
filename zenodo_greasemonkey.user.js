@@ -19,6 +19,7 @@
 // R5, N4 better left out of automatic checking
 
 // TODO also support record viewing on the new Zenodo request management interface such as https://zenodo.org/communities/epfl/requests/ce456964-fbf2-4f0b-a8ec-34d3cfd62f58
+// IDEA add tab with link to the normal record view. recid in the DOM: meta name=citation_abstract_html_url content=https://zenodo.org/records/7489244
 
 const checkLevels = [{"short": "must", "full": "MUST (mandatory for acceptance into the collection)"}, {"short": "recommended", "full": "RECOMMENDED"}, {"short": "nth", "full": "NICE-TO-HAVE"}];
 
