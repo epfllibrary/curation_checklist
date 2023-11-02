@@ -10,8 +10,10 @@
 // @include     https://sandbox.zenodo.org/records/*
 // @include     https://zenodo.org/communities/epfl/requests/*
 // @include     https://sandbox.zenodo.org/communities/epfl/requests/*
+// @include     https://zenodo.org/me/requests/*
+// @include     https://sandbox.zenodo.org/me/requests/*
 // @grant       none
-// @version     1.3.1
+// @version     1.3.2
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
