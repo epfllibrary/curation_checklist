@@ -23,6 +23,7 @@
 // R5, N4 better left out of automatic checking
 
 // TODO not all non-mandatory elements are handled in the new curation view: R3, N5, N7 are missing. R2 appears twice???
+// TODO the title and link to the dataset is also broken in that case...
 
 const checkLevels = [{"short": "must", "full": "MUST (mandatory for acceptance into the collection)"}, {"short": "recommended", "full": "RECOMMENDED"}, {"short": "nth", "full": "NICE-TO-HAVE"}];
 
