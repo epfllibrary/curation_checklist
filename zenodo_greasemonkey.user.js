@@ -13,7 +13,7 @@
 // @include     https://zenodo.org/me/requests/*
 // @include     https://sandbox.zenodo.org/me/requests/*
 // @grant       none
-// @version     1.3.2
+// @version     1.3.3
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -22,8 +22,8 @@
 // TODO: find ideas to check criteria M3, R3 (look for patterns in the description?), N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
 // R5, N4 better left out of automatic checking
 
-// TODO not all non-mandatory elements are handled in the new curation view: R3, N5, N7 are missing. R2 appears twice???
-// TODO the title and link to the dataset is also broken in that case...
+// TODO R2 appears twice in the feedback message???
+// TODO the title and link to the dataset is broken for records that are not published yet
 
 const checkLevels = [{"short": "must", "full": "MUST (mandatory for acceptance into the collection)"}, {"short": "recommended", "full": "RECOMMENDED"}, {"short": "nth", "full": "NICE-TO-HAVE"}];
 
@@ -586,8 +586,15 @@ function addButtons() {
   })
 
 
+  let menu;
+  if (document.URL.match(/record/g)) {
+    menu = document.getElementsByClassName("sixteen wide tablet five wide computer column sidebar")[0];
+  }
+  if (document.URL.match(/request/g)) {
+    // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
+    menu = document.getElementById("record-manage-menu");
+  }
 
-  var menu = document.getElementsByClassName("sixteen wide tablet five wide computer column sidebar")[0];
   console.log(menu);
   var metadata = document.getElementById("metrics");
 
@@ -635,9 +642,15 @@ function addButtons() {
   }
 
   // This one should always be there, let's use it as a reference point
-  // TODO still buggy, the green checkbox element is missing when using the importantFrame fallback
 
-  let importantFrame = $("section#metrics");
+  let importantFrame;
+  if (document.URL.match(/record/g)) {
+    importantFrame = $("section#metrics");
+  }
+  if (document.URL.match(/request/g)) {
+    // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
+    importantFrame = $("h2:contains('Versions')");
+  }
 
   let license = $("div#licenses");
   if (license.length) {
