@@ -649,7 +649,7 @@ function addButtons() {
   }
   if (document.URL.match(/request/g)) {
     // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
-    importantFrame = $("h2:contains('Versions')");
+    importantFrame = $("h2:contains('Versions')").parent();
   }
 
   let license = $("div#licenses");
