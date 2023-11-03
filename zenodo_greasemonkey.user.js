@@ -23,7 +23,6 @@
 // R5, N4 better left out of automatic checking
 
 // TODO R2 appears twice in the feedback message???
-// TODO the title and link to the dataset is broken for records that are not published yet
 
 const checkLevels = [{"short": "must", "full": "MUST (mandatory for acceptance into the collection)"}, {"short": "recommended", "full": "RECOMMENDED"}, {"short": "nth", "full": "NICE-TO-HAVE"}];
 
@@ -513,6 +512,13 @@ function addButtons() {
 
     var zenodoURL = window.location.href;
     let title = document.title.replace(' | Zenodo', '');
+    if (title == "Zenodo") {
+      possibleTitle = $("h2.request-header");
+      if (possibleTitle.length) {
+        title = possibleTitle.text();
+        identifier = "unpublished"
+      }
+    }
     console.log(title);
     console.log(zenodoURL);
 
