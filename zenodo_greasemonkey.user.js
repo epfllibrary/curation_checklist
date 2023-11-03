@@ -118,7 +118,7 @@ const checklistData = {
     "category": "recommended",
     "short": "<b>&nbsp</b>;",
     "wrapper": "span",
-    "altspan": "dt",
+    "altwrapper": "dt",
     "altshort": "<b>No related identifiers here, is it OK?&nbsp;</b>"
   },
   "R4": {
