@@ -13,7 +13,7 @@
 // @include     https://zenodo.org/me/requests/*
 // @include     https://sandbox.zenodo.org/me/requests/*
 // @grant       none
-// @version     1.3.3
+// @version     1.3.4
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -566,7 +566,7 @@ function addButtons() {
 
     } else {
       header += `Good XXX,\n\nYou are designated as EPFL creators for \"${title}\" (${identifier}), which has been submitted to the EPFL Community on Zenodo.`;
-      header += "We thank you and your coworkers for this contribution.\n\n"
+      header += " We thank you and your coworkers for this contribution.\n\n"
       header += "Within our curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
 
       footer += "When the above feedback is addressed, we will be able to add value to your results and potentially save some of your time:\n";
