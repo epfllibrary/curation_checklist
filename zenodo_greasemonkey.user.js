@@ -22,8 +22,6 @@
 // TODO: find ideas to check criteria M3, R3 (look for patterns in the description?), N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
 // R5, N4 better left out of automatic checking
 
-// TODO R2 appears twice in the feedback message???
-
 const checkLevels = [{"short": "must", "full": "MUST (mandatory for acceptance into the collection)"}, {"short": "recommended", "full": "RECOMMENDED"}, {"short": "nth", "full": "NICE-TO-HAVE"}];
 
 const checklistData = {
@@ -608,7 +606,7 @@ function addButtons() {
 
   menu.insertBefore(frm, metadata);
 
-  let mainTitle = $("h1");
+  let mainTitle = $("h1#record-title");
   let authorList = $('section#creatibutors');
   if (authorList.length) {
     addCheckElement(authorList, "M1", "after", true);
