@@ -592,7 +592,7 @@ function addButtons() {
   }
   if (document.URL.match(/request/g)) {
     // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
-    menu = document.getElementById("record-manage-menu");
+    menu = document.getElementById("request-actions");
   }
 
   console.log(menu);
