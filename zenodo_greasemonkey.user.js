@@ -502,7 +502,7 @@ function addButtons() {
 
 
   icn.setAttribute('class', "fa fa-external-link");
-  btn.setAttribute('class', "btn btn-danger btn-block sidebar-container");
+  btn.setAttribute('class', "btn btn-info btn-block sidebar-container");
   btn.appendChild(icn);
   btn.appendChild(t);
   frm.appendChild(btn);
