@@ -571,7 +571,7 @@ function addButtons() {
     } else {
       header += `Good XXX,\n\nYou are designated as EPFL creators for \"${title}\" (${identifier}), which has been submitted to the EPFL Community on Zenodo.`;
       header += " We thank you and your coworkers for this contribution.\n\n"
-      header += "Within our curation procedure ( https://zenodo.org/communities/epfl/about/ ), we have identified a few details that could be improved:\n\n";
+      header += "Within our curation procedure ( https://zenodo.org/communities/epfl/about ), we have identified a few details that could be improved:\n\n";
 
       footer += "When the above feedback is addressed, we will be able to add value to your results and potentially save some of your time:\n";
       footer += "    •   we create Infoscience records for datasets newly accepted into the EPFL community, so that they are available for web pages, activity reports, etc.\n";
