@@ -16,7 +16,7 @@ let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split
 
 let metadataUrl = baseUrl + '/export/xm';
 
-alert(metadataUrl);
+// alert(metadataUrl);
 
 let actionMenu = $('div#actions');
 
