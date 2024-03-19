@@ -16,8 +16,6 @@ let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split
 
 let metadataUrl = baseUrl + '/export/xm';
 
-// alert(metadataUrl);
-
 let actionMenu = $('div#actions');
 
 fetch(metadataUrl)
@@ -28,6 +26,7 @@ fetch(metadataUrl)
     for (let field of xml.getElementsByTagName('datafield')) {
       if (field.getAttribute('tag') == '999') {
         for (let subfield of field.getElementsByTagName('subfield')) {
+          // TODO is this OK when there are several $m subfields?
           if (subfield.getAttribute('code') == 'm') {
             let contactInfo = $('<div class="panel action-item">lab validator:<br/>' + subfield.innerHTML + '</div>');
             actionMenu.prepend(contactInfo);
@@ -36,6 +35,5 @@ fetch(metadataUrl)
         
       }
     }
-    // TODO find 999C0p
   })
   .catch(console.error);
