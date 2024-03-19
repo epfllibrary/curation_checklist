@@ -18,6 +18,7 @@ let metadataUrl = baseUrl + '/export/xm';
 
 alert(metadataUrl);
 
+let actionMenu = $('div#actions');
 
 fetch(metadataUrl)
   .then(response => response.text())
@@ -28,7 +29,8 @@ fetch(metadataUrl)
       if (field.getAttribute('tag') == '999') {
         for (let subfield of field.getElementsByTagName('subfield')) {
           if (subfield.getAttribute('code') == 'm') {
-            alert(subfield.innerHTML);
+            let contactInfo = $('<div class="panel action-item">lab validator:<br/>' + subfield.innerHTML + '</div>');
+            actionMenu.prepend(contactInfo);
           }
         }
         
