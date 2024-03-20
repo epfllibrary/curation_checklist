@@ -25,10 +25,15 @@ fetch(metadataUrl)
     //console.log(xml.innerHTML);
     for (let field of xml.getElementsByTagName('datafield')) {
       if (field.getAttribute('tag') == '999') {
+        let lab = 'UNKNOWN_LAB'
         for (let subfield of field.getElementsByTagName('subfield')) {
-          // TODO is this OK when there are several $m subfields?
+          if (subfield.getAttribute('code') == 'p') {
+            lab = subfield.innerHTML;
+          }
+        }
+        for (let subfield of field.getElementsByTagName('subfield')) {
           if (subfield.getAttribute('code') == 'm') {
-            let contactInfo = $('<div class="panel action-item">lab validator:<br/>' + subfield.innerHTML + '</div>');
+            let contactInfo = $('<div class="panel action-item">' + lab + ' validator:<br/>' + subfield.innerHTML + '</div>');
             actionMenu.prepend(contactInfo);
           }
         }
