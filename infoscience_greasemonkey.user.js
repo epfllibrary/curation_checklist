@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 let getUrl = window.location;
-let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1] + "/" + getUrl.pathname.split('/')[2];;
+let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1] + "/" + getUrl.pathname.split('/')[2];
 
 let metadataUrl = baseUrl + '/export/xm';
 

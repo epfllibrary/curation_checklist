@@ -270,10 +270,18 @@ const buttonValues = {
 }
 
 function state2checkValue(buttonID, value) {
-  if (buttonID == 'bad' && value == 'x') {return "bad"};
-  if (buttonID == 'bad' && value == '?') {return "meh"};
-  if (buttonID == 'ok' && value == '?') {return "maybe"};
-  if (buttonID == 'ok' && value == 'x') {return "ok"};
+  if (buttonID == 'bad' && value == 'x') {
+    return "bad";
+  }
+  if (buttonID == 'bad' && value == '?') {
+    return "meh";
+  }
+  if (buttonID == 'ok' && value == '?') {
+    return "maybe";
+  }
+  if (buttonID == 'ok' && value == 'x') {
+    return "ok";
+  }
   return "neutral";
 }
 
@@ -556,12 +564,11 @@ function addButtons() {
     }
 
 
-
     let header = ""
     let footer = ""
     emailSub += encodeURIComponent(': ' + title);
     if (text == "") {
-      header += `Good XXX,\n\nYou are designated as EPFL creators for \"${title}\" (${identifier}), which has been submitted to the EPFL Community on Zenodo. Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
+      header += `Good XXX,\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo. Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
       header += "As per our new workflow, the dataset will also be listed on Infoscience by our staff. The record will be submitted for approval to your laboratory, similar to the process followed by publications imported from the Web of Science.\n\n"
       header += "XXX CHECK IF APPLICABLE XXX "
       header += "Furthermore, considering that the dataset is linked to a publication, we will also archive a copy of the dataset for long-time preservation in EPFL's ACOUA platform (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info).\n"
@@ -569,7 +576,7 @@ function addButtons() {
       header += "If you have any question about these steps, do not hesitate to ask!\n"
 
     } else {
-      header += `Good XXX,\n\nYou are designated as EPFL creators for \"${title}\" (${identifier}), which has been submitted to the EPFL Community on Zenodo.`;
+      header += `Good XXX,\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo.`;
       header += " We thank you and your coworkers for this contribution.\n\n"
       header += "Within our curation procedure ( https://zenodo.org/communities/epfl/about ), we have identified a few details that could be improved:\n\n";
 
@@ -855,7 +862,10 @@ function policyCheck(checkCode) {
       if (kw.length > 2) {
         return 'ok';
       }
-    } catch {}
+    } catch (error) {
+      console.log('Keyword check error', error);
+      return 'bad';
+    }
 
   }
 
