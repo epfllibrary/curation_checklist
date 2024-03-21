@@ -455,9 +455,11 @@ function addCheckElement(selector, checkCode, position, normal) {
   // see if we can get a non-neutral answer for the current criterion
   let status = policyCheck(checkCode);
 
+  let myHtml;
+
   if (normal) {
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
-    let myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
+    myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
 
     myHtml.append(`<label class="btn btn-danger" id="bad" name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
     myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
@@ -514,12 +516,12 @@ function addButtons() {
 
   frm.addEventListener("click", function(event) {
 
-    var collapse = document.getElementById('collapseTwo'); 
+    //var collapse = document.getElementById('collapseTwo'); 
 
     var zenodoURL = window.location.href;
     let title = document.title.replace(' | Zenodo', '');
     if (title == "Zenodo") {
-      possibleTitle = $("h2.request-header");
+      let possibleTitle = $("h2.request-header");
       if (possibleTitle.length) {
         title = possibleTitle.text();
         identifier = "unpublished"
@@ -534,18 +536,19 @@ function addButtons() {
     var text = '';
     event.preventDefault();
 
+    /*
     const MustCheckboxUnchecked = $('label[name="must"][id="ok"]:not(:contains("x"))');
     const MustCheckboxBad = $('label[name="must"][id="bad"]:contains("x")');
     const RecommendedCheckboxUnchecked = $('label[name="recommended"][id="ok"]:not(:contains("x"))');
     const RecommendedCheckboxBad = $('label[name="recommended"][id="bad"]:contains("x")');
     const NTHCheckboxUnchecked = $('label[name="nth"][id="ok"]:not(:contains("x"))');
     const NTHCheckboxBad = $('label[name="nth"][id="bad"]:contains("x")');
+    */
     
     for (let checkLevel of checkLevels) {
       console.log('check level', checkLevel.short); 
       let checkArray = [];
       let checkBoxUnchecked = $(`label[name="${checkLevel.short}"][id="ok"]:not(:contains("x"))`);
-      let checktArray = [];
       checkBoxUnchecked.each(function() {
         let checkID = $(this).parent().attr('id');
         let actualButton = $(this).parent().children('label:not(:contains(" "))');
@@ -719,7 +722,7 @@ function addButtons() {
   contentElement.prepend(contentChecks);
 
   $('div.btn-group label.btn').on("click", function myclick(event) {
-    console.log('click detected');
+    console.log('click detected', event);
     console.log('in group selector', $(this).parent().attr('id'), $(this).attr('id'));
     if ($(this).text() != 'x') {
       $(this).siblings().text(' ');
