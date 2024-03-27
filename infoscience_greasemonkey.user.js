@@ -33,7 +33,7 @@ fetch(metadataUrl)
         }
         for (let subfield of field.getElementsByTagName('subfield')) {
           if (subfield.getAttribute('code') == 'm') {
-            let contactInfo = $('<div class="panel action-item">' + lab + ' validator:<br/>' + subfield.innerHTML + '</div>');
+            let contactInfo = $('<div class="panel action-item">' + lab + ' validator:<br/><b>' + subfield.innerHTML + '</b></div>');
             actionMenu.prepend(contactInfo);
           }
         }
