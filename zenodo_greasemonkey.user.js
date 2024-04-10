@@ -102,7 +102,7 @@ const checklistData = {
       "ok": ""
     },
     "category": "must",
-    "short": "&nbsp;<b>No DOI problem?&nbsp;</b>",
+    "short": "<b>&nbsp;No DOI problem?&nbsp;</b>",
     "wrapper": "span"
   },
   "R1": {
@@ -624,7 +624,7 @@ function addButtons() {
     menu = document.getElementById("request-actions");
   }
 
-  console.log(menu);
+  // console.log(menu);
   var metadata = document.getElementById("metrics");
 
   //menu.appendChild(btn);
@@ -664,9 +664,9 @@ function addButtons() {
     addCheckElement(contentChecks, "R5", "after", true);
   }
 
-  let doiElement = $('h2:contains("Versions")');
+  let doiElement = $('div#record-versions');
   if (doiElement.length) {
-    addCheckElement(doiElement, "M6", "after", true);
+    addCheckElement(doiElement, "M6", "before", true);
   }
 
   if (mainTitle.length) {
