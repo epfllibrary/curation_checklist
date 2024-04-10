@@ -41,7 +41,20 @@ const checklistData = {
     "wrapper": "div"
   },
   "M2": {
-    "full": "The content of the upload must be accessible for review, i.e. Open Access, or Restricted after an access request has been completed. Embargoed uploads will be reviewed after the embargo has expired",
+    "full": "Contact information for at least one EPFL author is provided, preferably through an ORCID identifier",
+    "answers": {
+      "bad": "Minimal contact information for an EPFL author must be available, please add it either using ORCID or in the Description.",
+      "meh": "NOT TOTALLY WRONG, BUT STILL...",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
+      "ok": ""
+    },
+    "category": "must",
+    "short": "<b>ORCID or email for 1 EPFL author?&nbsp;</b>",
+    "wrapper": "div"
+  },
+  "M3": {
+    "full": "The content of the submitted work must be accessible for review, i.e. Open Access, or Restricted after an access request has been granted to the reviewers. Embargoed works will be reviewed after the embargo expires",
     "answers": {
       "bad": "If we cannot access the content of the dataset, we cannot check its compliance with our curation criteria. Would it be possible to make it at least Restricted?",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
@@ -53,8 +66,8 @@ const checklistData = {
     "short": "<b>Access to content?&nbsp;</b>",
     "wrapper": "div"
   },
-  "M3": {
-    "full": "The Description of the submitted upload must be sufficiently detailed. Mere references to external articles or other resources are not a sufficient description",
+  "M4": {
+    "full": "The Description of the submitted work is sufficiently detailed. Mere references to external articles or to other external resources are not sufficient descriptions",
     "answers": {
       "bad": "For example, a few sentences explaining how the files were generated or used would be very helpful for a potential user. If the data was used in a publication, you could also include part of the article abstract, to make the scientific context more immediately apparent.",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
@@ -66,21 +79,34 @@ const checklistData = {
     "short": "<b>Sufficient abstract?&nbsp;</b>",
     "wrapper": "div"
   },
-  "M4": {
-    "full": "If no ORCID is listed, the name and surname and EPFL email address of at least one author must be specified in the Description",
+  "M5": {
+    "full": "The submitted work includes a clearly identifiable README file, typically in the root directory. This is not required for works consisting in one single document (ex. publications, posters, or presentation slides)",
     "answers": {
-      "bad": "Minimal contact information for an EPFL author must be available, please add it either using ORCID or in the Description.",
+      "bad": "Such a file really facilitates a potential user's understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL's ACOUA system (further info at the end of this message).",
+      "meh": "Such a file really facilitates a potential user's understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL's ACOUA system (further info at the end of this message).",
+      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
+      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
+      "ok": ""
+    },
+    "category": "must",
+    "short": "<b>README present?&nbsp;</b>",
+    "wrapper": "span"
+  },
+  "M6": {
+    "full": "The main DOI has been assigned by Zenodo",
+    "answers": {
+      "bad": "Entering an existing DOI as the main identifier is allowed only if the submitted work is an exact copy of a digital object that has already received its DOI on another platform. Typically, supplementary data to a journal article should NOT re-use the journal article DOI.",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "must",
-    "short": "<b>Email or ORCID for 1 EPFL author?&nbsp;</b>",
-    "wrapper": "div"
+    "short": "&nbsp;<b>No DOI problem?&nbsp;</b>",
+    "wrapper": "span"
   },
   "R1": {
-    "full": "Authors are identified by their ORCID",
+    "full": "All authors are identified by their ORCID",
     "answers": {
       "bad": "By listing all authors with their respective ORCID, you make sure that they can be recognized unambiguously. If an EPFL author has no ORCID yet, we strongly suggest to create one: see https://actu.epfl.ch/news/link-your-orcid-profile-with-epfl/ for more info",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
@@ -93,7 +119,7 @@ const checklistData = {
     "wrapper": "div"
   },
   "R2": {
-    "full": "The title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
+    "full": "The main title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated",
     "answers": {
       "bad": "As for any scientific output, a good title is the first place where others will learn about the nature and purpose of your research. The same principles as for scientific papers are applicable.",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
@@ -106,7 +132,7 @@ const checklistData = {
     "wrapper": "span"
   },
   "R3": {
-    "full": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) should specified in the "Related/alternate identifiers" field, using a DOI if available',
+    "full": 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) are specified in the "Related works" field. If available, references are designated by their respective DOIs',
     "answers": {
       "bad": "The upload appears to related with a publication. If the final publication or a version of the manuscript is available online, it should be listed it in the 'Related/alternate identifiers' section - preferably using a DOI but a URL is fine if no DOI has been assigned to the publication. If no online version exists yet (even a preprint), can you give us an estimated time for the expected publication?",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
@@ -121,20 +147,23 @@ const checklistData = {
     "altshort": "<b>No related identifiers here, is it OK?&nbsp;</b>"
   },
   "R4": {
-    "full": "In general, a README file should be present in the root directory, and in case the submission consists of a compressed file then it is external. The README file is not needed for records consisting in one single document which already contains enough information (such as publications, posters and presentation slides)",
+    "full": 'If related grants require an acknowledgement, they are listed using “Funding/Grants” fields',
     "answers": {
-      "bad": "Such a file really facilitates a potential user's understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL's ACOUA system (further info at the end of this message).",
-      "meh": "Such a file really facilitates a potential user's understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL's ACOUA system (further info at the end of this message).",
+      "bad": "There are specific fields to list grants, it is better to use them than to write an acknowledgement in the description: it facilitates the automatic retrieval of that information on the funders' platfoms",
+      "meh": "There is no mention of specific funding, which is fine if the project is operated using EPFL budget only. However, if some funding body (such as the Swiss National Science Foundation, some European program or other) is acknowledged in the publication it should be listed here as well.",
       "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
       "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
       "ok": ""
     },
     "category": "recommended",
-    "short": "<b>README present?&nbsp;</b>",
-    "wrapper": "span"
+    "short": "<b>&nbsp;</b>",
+    "wrapper": "span",
+    "altshort": "<b>No grants here, is it OK?&nbsp;</b>",
+    "altwrapper": "dt",
+    "selector": "dt:contains('Grants:')"
   },
   "R5": {
-    "full": "Any sensitive, personal data should have been anonymized",
+    "full": "Any sensitive, personal data has been anonymized",
     "answers": {
       "bad": "The upload contains personal data about human research subjects, which is forbidden by various laws. Make sure the access is strictly limited and/or replace the data with an anonymized version",
       "meh": "THIS IS NOT GREY AREA: IF YOU SUSPECT IT IS WRONG, IT IS PROBABLY WRONG",
@@ -147,23 +176,7 @@ const checklistData = {
     "wrapper": "div"
   },
   "N1": {
-    "full": 'If applicable, related grants should acknowledged using “Funding/Grants” fields',
-    "answers": {
-      "bad": "There are specific fields to list grants, it is better to use them than to write an acknowledgement in the description: it facilitates the automatic retrieval of that information on the funders' platfoms",
-      "meh": "There is no mention of specific funding, which is fine if the project is operated using EPFL budget only. However, if some funding body (such as the Swiss National Science Foundation, some European program or other) is acknowledged in the publication it should be listed here as well.",
-      "maybe": "NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE",
-      "neutral": "OUBLI DANS LA CURATION: A VERIFIER! :-)",
-      "ok": ""
-    },
-    "category": "nth",
-    "short": "<b>&nbsp;</b>",
-    "wrapper": "span",
-    "altshort": "<b>No grants here, is it OK?&nbsp;</b>",
-    "altwrapper": "dt",
-    "selector": "dt:contains('Grants:')"
-  },
-  "N2": {
-    "full": "The upload should have been cleaned up (e.g., there are no temporary or unnecessary empty files or folders, no superfluous file versions, etc.)",
+    "full": "The submitted work has been cleaned up (e.g., there are no temporary files, no unnecessary empty files or folders, no superfluous file versions, etc.)",
     "answers": {
       "bad": "[ONE POSSIBLE CASE]This is just a suggestion at this point but is quite a frequent one for us: in the future, you might want to exclude .DS_Store and other similar MacOS files in your archives. The otherwise very convenient 'Compress' command in the OSX Finder makes it difficult to avoid this, but there are other tools that you could use instead, see https://apple.stackexchange.com/questions/239578/compress-without-ds-store-and-macosx for a few possible options.",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
@@ -175,8 +188,8 @@ const checklistData = {
     "short": "<b>Clean content?&nbsp;</b> ",
     "wrapper": "div"
   },
-  "N3": {
-    "full": "Permissive licenses are preferred (order of preference: CC0, CC-BY-4.0, CC-BY-SA-4.0 for data; MIT, BSD, GPL for code)",
+  "N2": {
+    "full": "Permissive licenses are preferred. CC0, CC-BY-4.0, CC-BY-SA-4.0 for data and MIT, BSD, GPL for code are suggested",
     "answers": {
       "bad": "Limited access and re-usability are against the principles of Open Science endorsed by EPFL. Are you sure you cannot use a more liberal license?",
       "meh": "The chosen license limits the potential re-use of your data by others. There can be valid reasons for that, but in general we encourage the most open options",
@@ -190,8 +203,8 @@ const checklistData = {
     "altshort": "<b>No license, probably wrong&nbsp;</b>",
     "altwrapper": "dt"
   },
-  "N4": {
-    "full": "When a README file is advised, it could contain information such as the convention for files and folders naming, possible ontologies or controlled vocabularies, etc.",
+  "N3": {
+    "full": "The README file contains detailed information about the work creation (authors, time, place, methodologies…), content (file organization and naming, formats, relevant standards…), sharing and access, etc.",
     "answers": {
       "bad": "A good README can significantly improve a potential user's understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/record/298249 ",
       "meh": "A good README can significantly improve a potential user's understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/record/298249 ",
@@ -203,8 +216,8 @@ const checklistData = {
     "short": "<b>Good README?&nbsp;</b> ",
     "wrapper": "div"
   },
-  "N5": {
-    "full": "If the submission is related to a PhD thesis, the supervisor should be specified",
+  "N4": {
+    "full": "If the submission is related to a PhD thesis, the supervisor is specified",
     "answers": {
       "bad": "There are mentions of a PhD thesis, this should be formally declared using the relevant input field with the supervisor name and institution",
       "meh": "THIS IS NOT GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.",
@@ -218,8 +231,8 @@ const checklistData = {
     "altshort": "<b>No thesis indication, probably fine&nbsp;</b>",
     "altwrapper": "dt"
   },
-  "N6": {
-    "full": "Files should be available in open formats",
+  "N5": {
+    "full": "Files are available in open formats. If proprietary formats are present, the work also includes versions of the files converted to open formats, with the least possible loss of information",
     "answers": {
       "bad": "A potential user is more likely to be able to work with your data if it is available in open formats, since they will less restricted by some specific software choice. You can check our Fast Guide for examples https://infoscience.epfl.ch/record/265349/files/04_Formats_EPFL_Library_RDM_FastGuide.pdf",
       "meh": "NOT TOTALLY WRONG, BUT STILL...",
@@ -231,8 +244,8 @@ const checklistData = {
     "short": "<b>Open file formats?&nbsp;</b> ",
     "wrapper": "div"
   },
-  "N7": {
-    "full": "Where applicable, sources from which the work is derived should be specified",
+  "N6": {
+    "full": "Where applicable, sources from which the work is derived are specified in the “References” field",
     "answers": {
       "bad": "It seems that the upload is derived from existing data. In such a case, the source of that data is best acknowledged using structured metadata: the 'Related/alternate identifiers' section is generally intended for digitial sources, the 'References' section can be used for other sources",
       "meh": "THIS IS NOT GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.",
@@ -243,11 +256,11 @@ const checklistData = {
     "category": "nth",
     "short": "<b>&nbsp;Relevant sources?&nbsp;</b>",
     "wrapper": "span",
-    "altshort": "<b>No \"References\" section, is this OK?&nbsp;</b>",
+    "altshort": '<b>No "References" section, is this OK?&nbsp;</b>',
     "altwrapper": "span"
   },
-  "N8": {
-    "full": "Keywords should be entered as separated fields",
+  "N7": {
+    "full": 'Keywords are entered as separated fields in the “Keywords and subjects” field',
     "answers": {
       "bad": "To maximize the effectiveness of keywords, each concept must be listed a distinct entity: each entity will have its own link that leads to other records tagged with the same concept. This will not work if all keywords are combined as one single text entry.",
       "meh": "No keywords are listed, you might consider adding some. It will make it easier for potential users to discover the dataset (through search results or links from other datasets with the same keywords), and then to understand its context",
@@ -633,24 +646,27 @@ function addButtons() {
     contentElement = $("div#files-list-accordion-trigger");
     console.log('contentElement:', contentElement);
   }
-  addCheckElement(contentChecks, "M2", "after", true);
+  addCheckElement(contentChecks, "M3", "after", true);
 
   let abstract = $("section#description");
   if (abstract.length) {
-    addCheckElement(abstract, "M3", "before", true);
+    addCheckElement(abstract, "M4", "before", true);
     abstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   }
 
   if (authorList.length) {
-    addCheckElement(authorList, "M4", "after", true);
+    addCheckElement(authorList, "M2", "after", true);
     addCheckElement(authorList, "R1", "after", true);
-
-
   }
 
   if (contentElement.length) {
-    addCheckElement(contentChecks, "R4", "after", true);
+    addCheckElement(contentChecks, "M5", "after", true);
     addCheckElement(contentChecks, "R5", "after", true);
+  }
+
+  let doiElement = $('h2:contains("Versions")');
+  if (doiElement.length) {
+    addCheckElement(doiElement, "M6", "after", true);
   }
 
   if (mainTitle.length) {
@@ -670,9 +686,9 @@ function addButtons() {
 
   let license = $("div#licenses");
   if (license.length) {
-    addCheckElement(license, "N3", "after", true);
+    addCheckElement(license, "N2", "after", true);
   } else {
-    addCheckElement(importantFrame, "N3", "after", false);
+    addCheckElement(importantFrame, "N2", "after", false);
   }
 
   let relativeIdentifiers = $("h3:contains('Related works')");
@@ -684,41 +700,41 @@ function addButtons() {
 
   let grants = $("h3:contains('Funding')");
   if (grants.length) {
-    addCheckElement(grants, "N1", "after", true);
+    addCheckElement(grants, "R4", "after", true);
   } else {
-    addCheckElement(importantFrame, "N1", "after", false);
+    addCheckElement(importantFrame, "R4", "after", false);
   }
 
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N2", "after", true);
-    addCheckElement(contentChecks, "N4", "after", true);
+    addCheckElement(contentChecks, "N1", "after", true);
+    addCheckElement(contentChecks, "N3", "after", true);
   }
 
   let thesisUniversity = $("dt:contains('Awarding university')");
   if (thesisUniversity.length) {
-    addCheckElement(thesisUniversity, "N5", "after", true);
+    addCheckElement(thesisUniversity, "N4", "after", true);
   } else {
-    addCheckElement(importantFrame, "N5", "after", false);
+    addCheckElement(importantFrame, "N4", "after", false);
   }
 
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N6", "after", true);
+    addCheckElement(contentChecks, "N5", "after", true);
     let referencesWarning = '<div><b>Do not forget to check the references box at the bottom of the page...</b></div>';
     contentChecks.append(referencesWarning);
   }
 
   let referencesElement = $("div#references-accordion-trigger");
   if (referencesElement.length) {
-    addCheckElement(referencesElement, "N7", "after", true);
+    addCheckElement(referencesElement, "N6", "after", true);
   } else {
-    addCheckElement(importantFrame, "N7", "after", false);
+    addCheckElement(importantFrame, "N6", "after", false);
   }
 
   let keywords = $("h2:contains('Keywords and subjects')");
   if (keywords.length) {
-    addCheckElement(keywords, "N8", "after", true);
+    addCheckElement(keywords, "N7", "after", true);
   } else {
-    addCheckElement(importantFrame, "N8", "after", false);
+    addCheckElement(importantFrame, "N7", "after", false);
   }
 
   contentElement.prepend(contentChecks);
