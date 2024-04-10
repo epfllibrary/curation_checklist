@@ -102,7 +102,7 @@ const checklistData = {
       "ok": ""
     },
     "category": "must",
-    "short": "<b>&nbsp;No DOI problem?&nbsp;</b>",
+    "short": "<b>&nbsp;Original (Zenodo) DOI?&nbsp;</b>",
     "wrapper": "span"
   },
   "R1": {
@@ -841,6 +841,25 @@ function policyCheck(checkCode) {
     return readmeFound;
   }
 
+  if (checkCode == "M6") {
+    let doiOK = 'ok';
+    // Dryad and Figshare are probably OK but deserve a check
+    const acceptableSources = ["^10.5061\/dryad", "10.6084\/m9.figshare"];
+    const acceptableSourcesRegex = new RegExp(acceptableSources.join("|"), "i");
+    const zenodoRegex = new RegExp("^10.5281\/zenodo");
+    const doi = $('h4 pre:first').text().toLowerCase();
+    // console.log('will check DOI', doi, zenodoRegex.test(doi), acceptableSourcesRegex.test(doi));
+    if (!zenodoRegex.test(doi)) {
+      if (acceptableSourcesRegex.test(doi)) {
+        doiOK = 'maybe'
+      }
+      else {
+        doiOK = 'bad'
+      }
+    }
+    
+    return doiOK;
+  }
 
   if (checkCode == 'N2') {
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
