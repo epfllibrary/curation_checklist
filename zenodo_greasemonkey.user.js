@@ -777,7 +777,7 @@ function policyCheck(checkCode) {
     }
   }
 
-  if (checkCode == 'M2') {
+  if (checkCode == 'M3') {
     let noAccess = $('div.panel-body:contains("Files are not publicly accessible.")');
     let embargoAccess = $('div.panel-body:contains("Files are currently under embargo")');
     if (noAccess.length || embargoAccess.length) {
@@ -788,7 +788,7 @@ function policyCheck(checkCode) {
     }
   }
 
-  if (checkCode == 'M4') {
+  if (checkCode == 'M2') {
     let orcidEpflCreators = 0;
     for (let creator of recordJson.data.attributes.creators) {
       for (let affiliation of creator.affiliation) {
@@ -828,7 +828,7 @@ function policyCheck(checkCode) {
     }
   }
 
-  if (checkCode == 'R4') {
+  if (checkCode == 'M5') {
     let readmeFound = 'neutral';
     $('a.filename').each(function() {
       let f = $(this).text().toLowerCase();
@@ -842,7 +842,7 @@ function policyCheck(checkCode) {
   }
 
 
-  if (checkCode == 'N3') {
+  if (checkCode == 'N2') {
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
     try {
       if (goodLicenses.includes(recordJson.data.attributes.rightsList[0].rightsIdentifier.toLowerCase())) {
@@ -855,7 +855,7 @@ function policyCheck(checkCode) {
 
   }
 
-  if (checkCode == 'N5') {
+  if (checkCode == 'N4') {
     if ($("dt:contains('Awarding University:')").length) {
       if ($("h5:contains('Thesis supervisor(s)')").nextAll('p').html().match(/<span/g).length) {
         return 'ok';
@@ -864,7 +864,7 @@ function policyCheck(checkCode) {
 
   }
 
-  if (checkCode == 'N8') {
+  if (checkCode == 'N7') {
     //let kw = $( "dd a.label-link span.label" );
     try {
       let kw = recordJson.data.attributes.subjects;
