@@ -13,7 +13,7 @@
 // @include     https://zenodo.org/me/requests/*
 // @include     https://sandbox.zenodo.org/me/requests/*
 // @grant       none
-// @version     1.3.4
+// @version     1.4
 // ==/UserScript==
 
 // TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
