@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 let getUrl = window.location;
-let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1] + "/" + getUrl.pathname.split('/')[2];
+let baseUrl = getUrl.protocol + '//' + getUrl.host + '/' + getUrl.pathname.split('/')[1] + '/' + getUrl.pathname.split('/')[2];
 
 let metadataUrl = baseUrl + '/export/xm';
 
@@ -21,7 +21,7 @@ let actionMenu = $('div#actions');
 fetch(metadataUrl)
   .then(response => response.text())
   .then(data => {
-    const xml = new DOMParser().parseFromString(data, "application/xml");
+    const xml = new DOMParser().parseFromString(data, 'application/xml');
     //console.log(xml.innerHTML);
     for (let field of xml.getElementsByTagName('datafield')) {
       if (field.getAttribute('tag') == '999') {
