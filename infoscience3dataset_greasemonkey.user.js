@@ -354,6 +354,7 @@ function addCheckElement(selector, checkCode, position, normal) {
   // FIXME ReferenceError: recordJson is not defined
   //let status = policyCheck(checkCode);
   let status = 'neutral';
+  console.log(checkCode);
 
   if (normal) {
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
@@ -384,10 +385,12 @@ function addCheckElement(selector, checkCode, position, normal) {
   }
   checkElement.attr('title', checklistData[checkCode].full);
   checkElement.tooltip();
-  if (position == 'before') {
-    selector.prepend(checkElement);
-  } else {
-    selector.append(checkElement);
+  if (selector !== null) {
+    if (position == 'before') {
+      selector.prepend(checkElement);
+    } else {
+      selector.append(checkElement);
+    }
   }
 }
 
@@ -520,107 +523,109 @@ function addButtons() {
 
   menu.parentNode.insertBefore(frm, menu);
   
-  let mainTitle = $("h1#record-title");
+  let mainTitle = $("h1");
   let authorList = $('section#creatibutors');
   if (authorList.length) {
     addCheckElement(authorList, "M1", "after", true);
   }
 
-
   let contentChecks = $('<div>');
-  // let contentElement = $("div#files-list-accordion-trigger");
-  let contentElement = $("section#record-files");
+  
+  let contentElement = $('section#record-files');
   console.log('files heading?', contentElement);
   if (contentElement.length == 0) {
-    contentElement = $("div#files-list-accordion-trigger");
+    contentElement = $('div#files-list-accordion-trigger');
     console.log('contentElement:', contentElement);
   }
-  addCheckElement(contentChecks, "M2", "after", true);
+  addCheckElement(contentChecks, 'M3', 'after', true);
 
-  let abstract = $("section#description");
+  let abstract = $('section#description');
   if (abstract.length) {
-    addCheckElement(abstract, "M3", "before", true);
+    addCheckElement(abstract, 'M4', 'before', true);
     abstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   }
 
   if (authorList.length) {
-    addCheckElement(authorList, "M4", "after", true);
-    addCheckElement(authorList, "R1", "after", true);
-
-
+    addCheckElement(authorList, 'M2', 'after', true);
+    addCheckElement(authorList, 'R1', 'after', true);
   }
 
   if (contentElement.length) {
-    addCheckElement(contentChecks, "R4", "after", true);
-    addCheckElement(contentChecks, "R5", "after", true);
+    addCheckElement(contentChecks, 'M5', 'after', true);
+    addCheckElement(contentChecks, 'R5', 'after', true);
+  }
+
+  let doiElement = $('div#record-versions');
+  if (doiElement.length) {
+    addCheckElement(doiElement, 'M6', 'before', true);
   }
 
   if (mainTitle.length) {
-    addCheckElement(mainTitle, "R2", "after", true);
+    addCheckElement(mainTitle, 'R2', 'after', true);
   }
 
   // This one should always be there, let's use it as a reference point
 
   let importantFrame;
-  if (document.URL.match(/record/g)) {
-    importantFrame = $("section#metrics");
+  if (document.URL.match(/\/full$/g)) {
+    // we're in full technical view, do something else
   }
-  if (document.URL.match(/request/g)) {
+  else {
     // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
-    importantFrame = $("h2:contains('Versions')").parent();
+    importantFrame = $('ds-context-menu');
   }
 
-  let license = $("div#licenses");
+  let license = $('div#licenses');
   if (license.length) {
-    addCheckElement(license, "N3", "after", true);
+    addCheckElement(license, 'N2', 'after', true);
   } else {
-    addCheckElement(importantFrame, "N3", "after", false);
+    addCheckElement(importantFrame, 'N2', 'after', false);
   }
 
-  let relativeIdentifiers = $("h3:contains('Related works')");
+  let relativeIdentifiers = $('h3:contains("Related works")');
   if (relativeIdentifiers.length) {
-    addCheckElement(relativeIdentifiers, "R3", "after", true);
+    addCheckElement(relativeIdentifiers, 'R3', 'after', true);
   } else {
-    addCheckElement(importantFrame, "R3", "after", false);
+    addCheckElement(importantFrame, 'R3', 'after', false);
   }
 
-  let grants = $("h3:contains('Funding')");
+  let grants = $('h3:contains("Funding")');
   if (grants.length) {
-    addCheckElement(grants, "N1", "after", true);
+    addCheckElement(grants, 'R4', 'after', true);
   } else {
-    addCheckElement(importantFrame, "N1", "after", false);
+    addCheckElement(importantFrame, 'R4', 'after', false);
   }
 
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N2", "after", true);
-    addCheckElement(contentChecks, "N4", "after", true);
+    addCheckElement(contentChecks, 'N1', 'after', true);
+    addCheckElement(contentChecks, 'N3', 'after', true);
   }
 
-  let thesisUniversity = $("dt:contains('Awarding university')");
+  let thesisUniversity = $('dt:contains("Awarding university")');
   if (thesisUniversity.length) {
-    addCheckElement(thesisUniversity, "N5", "after", true);
+    addCheckElement(thesisUniversity, 'N4', 'after', true);
   } else {
-    addCheckElement(importantFrame, "N5", "after", false);
+    addCheckElement(importantFrame, 'N4', 'after', false);
   }
 
   if (contentElement.length) {
-    addCheckElement(contentChecks, "N6", "after", true);
+    addCheckElement(contentChecks, 'N5', 'after', true);
     let referencesWarning = '<div><b>Do not forget to check the references box at the bottom of the page...</b></div>';
     contentChecks.append(referencesWarning);
   }
 
-  let referencesElement = $("div#references-accordion-trigger");
+  let referencesElement = $('div#references-accordion-trigger');
   if (referencesElement.length) {
-    addCheckElement(referencesElement, "N7", "after", true);
+    addCheckElement(referencesElement, 'N6', 'after', true);
   } else {
-    addCheckElement(importantFrame, "N7", "after", false);
+    addCheckElement(importantFrame, 'N6', 'after', false);
   }
 
-  let keywords = $("h2:contains('Keywords and subjects')");
+  let keywords = $('h2:contains("Keywords and subjects")');
   if (keywords.length) {
-    addCheckElement(keywords, "N8", "after", true);
+    addCheckElement(keywords, 'N7', 'after', true);
   } else {
-    addCheckElement(importantFrame, "N8", "after", false);
+    addCheckElement(importantFrame, 'N7', 'after', false);
   }
 
   contentElement.prepend(contentChecks);
