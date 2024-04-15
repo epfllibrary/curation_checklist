@@ -13,6 +13,11 @@
 
 alert('this is Infoscience3');
 
+
+function sleep (time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
 const checkLevels = [{'short': 'must', 'full': 'MUST (mandatory for acceptance into the collection)'}, {'short': 'recommended', 'full': 'RECOMMENDED'}, {'short': 'nth', 'full': 'NICE-TO-HAVE'}];
 
 const checklistData = {
@@ -336,13 +341,19 @@ $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', 'ht
 $('head').append(checklistStyle);
 console.log('greasemonkey_checklist active');
 
-addButtons();
+// 5 seconds feels sufficient for the whole interface to initialize
+sleep(5000).then(() => {
+  addButtons();
+});
+
 
 
 function addCheckElement(selector, checkCode, position, normal) {
   let checkElement;
   // see if we can get a non-neutral answer for the current criterion
-  let status = policyCheck(checkCode);
+  // FIXME ReferenceError: recordJson is not defined
+  //let status = policyCheck(checkCode);
+  let status = 'neutral';
 
   if (normal) {
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
@@ -392,6 +403,8 @@ function addRequestRecordTab(doiId) {
 
 
 function addButtons() {
+
+  const maxRetries = 5;
 
   var btn = document.createElement('BUTTON');
   var t = document.createTextNode('Prepare curation feedback e-mail');
@@ -493,25 +506,20 @@ function addButtons() {
 
   let menu;
   const recordRegex = new RegExp('entities/product');
+
+
   if (document.URL.match(recordRegex)) {
     console.log('We are in');
     menu = document.getElementById('cris-layout-leading');
-    // FIXME Why is this null????
     console.log('curation_checklist menu', menu);
   }
-  
 
-  console.log('curation_checklist menu', menu);
-  console.log('we should do something useful now');
-  
-  
-  // var metadata = $('ds-cris-layout-metadata-box);
+  var metadata = $('ds-cris-layout-metadata-box');
 
-  //menu.appendChild(btn);
+  menu.appendChild(btn);
 
   menu.parentNode.insertBefore(frm, menu);
-
-  /*
+  
   let mainTitle = $("h1#record-title");
   let authorList = $('section#creatibutors');
   if (authorList.length) {
@@ -628,7 +636,7 @@ function addButtons() {
       $(this).text('?');
     }
   });
-	*/
+	
 }
 
 
