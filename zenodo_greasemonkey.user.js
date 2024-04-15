@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        Zenodo Curation Checklist
-// @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js
+// @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js
 // @require     https://far-nyon.ch/assets/js/tinysort/src/jquery.tinysort.min.js
@@ -134,7 +134,7 @@ const checklistData = {
   'R3': {
     'full': 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) are specified in the "Related works" field. If available, references are designated by their respective DOIs',
     'answers': {
-      'bad': 'The upload appears to related with a publication. If the final publication or a version of the manuscript is available online, it should be listed it in the "Related/alternate identifiers" section - preferably using a DOI but a URL is fine if no DOI has been assigned to the publication. If no online version exists yet (even a preprint), can you give us an estimated time for the expected publication?',
+      'bad': 'The upload appears to be related with a publication. If the final publication or a version of the manuscript is available online, it should be listed it in the "Related/alternate identifiers" section - preferably using a DOI but a URL is fine if no DOI has been assigned to the publication. If no online version exists yet (even a preprint), can you give us an estimated time for the expected publication?',
       'meh': 'NOT TOTALLY WRONG, BUT STILL...',
       'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
       'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
