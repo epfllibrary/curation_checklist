@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        Infoscience3 Checklist
-// @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js
+// @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js
 // @require     https://far-nyon.ch/assets/js/tinysort/src/jquery.tinysort.min.js
@@ -128,7 +128,7 @@ const checklistData = {
   'R3': {
     'full': 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) are specified in the "Related works" field. If available, references are designated by their respective DOIs',
     'answers': {
-      'bad': 'The upload appears to related with a publication. If the final publication or a version of the manuscript is available online, it should be listed it in the "Related/alternate identifiers" section - preferably using a DOI but a URL is fine if no DOI has been assigned to the publication. If no online version exists yet (even a preprint), can you give us an estimated time for the expected publication?',
+      'bad': 'The upload appears to be related with a publication. If the final publication or a version of the manuscript is available online, it should be listed it in the "Related/alternate identifiers" section - preferably using a DOI but a URL is fine if no DOI has been assigned to the publication. If no online version exists yet (even a preprint), can you give us an estimated time for the expected publication?',
       'meh': 'NOT TOTALLY WRONG, BUT STILL...',
       'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
       'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
@@ -668,7 +668,7 @@ function policyCheck(checkCode) {
     }
   }
 
-  if (checkCode == 'M2') {
+  if (checkCode == 'M3') {
     let noAccess = $('div.panel-body:contains("Files are not publicly accessible.")');
     let embargoAccess = $('div.panel-body:contains("Files are currently under embargo")');
     if (noAccess.length || embargoAccess.length) {
@@ -679,7 +679,7 @@ function policyCheck(checkCode) {
     }
   }
 
-  if (checkCode == 'M4') {
+  if (checkCode == 'M2') {
     let orcidEpflCreators = 0;
     for (let creator of recordJson.data.attributes.creators) {
       for (let affiliation of creator.affiliation) {
@@ -719,7 +719,7 @@ function policyCheck(checkCode) {
     }
   }
 
-  if (checkCode == 'R4') {
+  if (checkCode == 'M5') {
     let readmeFound = 'neutral';
     $('a.filename').each(function() {
       let f = $(this).text().toLowerCase();
@@ -733,7 +733,7 @@ function policyCheck(checkCode) {
   }
 
 
-  if (checkCode == 'N3') {
+  if (checkCode == 'N2') {
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
     try {
       if (goodLicenses.includes(recordJson.data.attributes.rightsList[0].rightsIdentifier.toLowerCase())) {
@@ -746,7 +746,7 @@ function policyCheck(checkCode) {
 
   }
 
-  if (checkCode == 'N5') {
+  if (checkCode == 'N4') {
     if ($("dt:contains('Awarding University:')").length) {
       if ($("h5:contains('Thesis supervisor(s)')").nextAll('p').html().match(/<span/g).length) {
         return 'ok';
@@ -755,7 +755,7 @@ function policyCheck(checkCode) {
 
   }
 
-  if (checkCode == 'N8') {
+  if (checkCode == 'N7') {
     //let kw = $( "dd a.label-link span.label" );
     try {
       let kw = recordJson.data.attributes.subjects;

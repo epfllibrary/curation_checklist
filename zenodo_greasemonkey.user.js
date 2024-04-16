@@ -833,25 +833,6 @@ function policyCheck(checkCode) {
     return readmeFound;
   }
 
-  if (checkCode == 'M6') {
-    let doiOK = 'ok';
-    // Dryad and Figshare are probably OK but deserve a check
-    const acceptableSources = ['^10.5061/dryad', '^10.6084/m9.figshare'];
-    const acceptableSourcesRegex = new RegExp(acceptableSources.join('|'), 'i');
-    const zenodoRegex = new RegExp('^10.5281/zenodo');
-    const doi = $('h4 pre:first').text().toLowerCase();
-    // console.log('will check DOI', doi, zenodoRegex.test(doi), acceptableSourcesRegex.test(doi));
-    if (!zenodoRegex.test(doi)) {
-      if (acceptableSourcesRegex.test(doi)) {
-        doiOK = 'maybe'
-      }
-      else {
-        doiOK = 'bad'
-      }
-    }
-    
-    return doiOK;
-  }
 
   if (checkCode == 'N2') {
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
@@ -867,8 +848,8 @@ function policyCheck(checkCode) {
   }
 
   if (checkCode == 'N4') {
-    if ($('dt:contains("Awarding University:")').length) {
-      if ($('h5:contains("Thesis supervisor(s)")').nextAll('p').html().match(/<span/g).length) {
+    if ($("dt:contains('Awarding University:')").length) {
+      if ($("h5:contains('Thesis supervisor(s)')").nextAll('p').html().match(/<span/g).length) {
         return 'ok';
       }
     }
@@ -876,6 +857,7 @@ function policyCheck(checkCode) {
   }
 
   if (checkCode == 'N7') {
+    //let kw = $( "dd a.label-link span.label" );
     try {
       let kw = recordJson.data.attributes.subjects;
       console.log(kw);
@@ -893,10 +875,7 @@ function policyCheck(checkCode) {
       if (kw.length > 2) {
         return 'ok';
       }
-    } catch (error) {
-      console.log('Keyword check error', error);
-      return 'bad';
-    }
+    } catch {}
 
   }
 
