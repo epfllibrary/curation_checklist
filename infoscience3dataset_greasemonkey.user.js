@@ -557,6 +557,8 @@ function addButtons() {
   let doiElement = $('span.col-3:contains("DOI")');
   if (doiElement.length) {
     addCheckElement(doiElement, 'M6', 'before', true);
+  } else {
+    // TODO report somewhere about a completely missing DOI
   }
 
   if (mainTitle.length) {
@@ -574,6 +576,7 @@ function addButtons() {
     importantFrame = $('ds-context-menu');
   }
 
+  // TODO check for a global license?
   let license = $('div#licenses');
   if (license.length) {
     addCheckElement(license, 'N2', 'after', true);
@@ -581,10 +584,11 @@ function addButtons() {
     addCheckElement(importantFrame, 'N2', 'after', false);
   }
 
-  let relativeIdentifiers = $('h3:contains("Related works")');
+  let relativeIdentifiers = $('span.col-3:contains("Publication(s)")');
   if (relativeIdentifiers.length) {
     addCheckElement(relativeIdentifiers, 'R3', 'after', true);
   } else {
+    // CHECK does this work?
     addCheckElement(importantFrame, 'R3', 'after', false);
   }
 
@@ -592,9 +596,12 @@ function addButtons() {
   if (grants.length) {
     addCheckElement(grants, 'R4', 'after', true);
   } else {
+    // CHECK does this work?
     addCheckElement(importantFrame, 'R4', 'after', false);
   }
 
+  // Not relevant for Infoscience3
+  /*
   if (contentElement.length) {
     addCheckElement(contentChecks, 'N1', 'after', true);
     addCheckElement(contentChecks, 'N3', 'after', true);
@@ -606,6 +613,7 @@ function addButtons() {
   } else {
     addCheckElement(importantFrame, 'N4', 'after', false);
   }
+  */
 
   // Not relevant in the Infoscience context (metadata only) 
   /*
@@ -622,7 +630,7 @@ function addButtons() {
     addCheckElement(importantFrame, 'N6', 'after', false);
   }
 
-  let keywords = $('h2:contains("Keywords and subjects")');
+  let keywords = $('span.col-3:contains("Subjects")');
   if (keywords.length) {
     addCheckElement(keywords, 'N7', 'after', true);
   } else {
