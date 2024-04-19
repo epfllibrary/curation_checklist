@@ -775,8 +775,9 @@ function policyCheck(checkCode) {
       if (kw.length > 2) {
         return 'ok';
       }
-    } catch {}
-
+    } catch (error) {
+      console.log('Unknown error in checkCode N7');
+    }
   }
 
   // Default value if nothing else was noticed
