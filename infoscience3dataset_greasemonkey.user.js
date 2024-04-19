@@ -11,8 +11,7 @@
 // @version     0.2
 // ==/UserScript==
 
-alert('this is Infoscience3');
-
+// alert('this is Infoscience3');
 
 function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time));
@@ -423,10 +422,11 @@ function addButtons() {
 
   frm.addEventListener("click", function(event) {
 
-    var collapse = document.getElementById('collapseTwo'); 
-
+    // var collapse = document.getElementById('collapseTwo'); 
+    console.log('report button clicked');
     var zenodoURL = window.location.href;
     let title = document.title.replace(' | Zenodo', '');
+    let identifier = 'FIXME PLEASE';
     if (title == "Zenodo") {
       possibleTitle = $("h2.request-header");
       if (possibleTitle.length) {
@@ -517,11 +517,7 @@ function addButtons() {
     console.log('curation_checklist menu', menu);
   }
 
-  var metadata = $('ds-cris-layout-metadata-box');
-
-  menu.appendChild(btn);
-
-  menu.parentNode.insertBefore(frm, menu);
+  menu.appendChild(frm);
   
   let mainTitle = $("h1");
   let authorList = mainTitle.parent();
@@ -650,6 +646,8 @@ function addButtons() {
       $(this).text('?');
     }
   });
+
+  console.log('form should be ready and listening')
 	
 }
 
