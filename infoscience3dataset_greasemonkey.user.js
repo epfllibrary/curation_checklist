@@ -524,7 +524,7 @@ function addButtons() {
   menu.parentNode.insertBefore(frm, menu);
   
   let mainTitle = $("h1");
-  let authorList = $('section#creatibutors');
+  let authorList = mainTitle.parent();
   if (authorList.length) {
     addCheckElement(authorList, "M1", "after", true);
   }
@@ -539,10 +539,9 @@ function addButtons() {
   }
   addCheckElement(contentChecks, 'M3', 'after', true);
 
-  let abstract = $('section#description');
+  let abstract = $('ds-truncatable-part');
   if (abstract.length) {
     addCheckElement(abstract, 'M4', 'before', true);
-    abstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   }
 
   if (authorList.length) {
@@ -555,7 +554,7 @@ function addButtons() {
     addCheckElement(contentChecks, 'R5', 'after', true);
   }
 
-  let doiElement = $('div#record-versions');
+  let doiElement = $('span.col-3:contains("DOI")');
   if (doiElement.length) {
     addCheckElement(doiElement, 'M6', 'before', true);
   }
@@ -608,11 +607,13 @@ function addButtons() {
     addCheckElement(importantFrame, 'N4', 'after', false);
   }
 
+  // Not relevant in the Infoscience context (metadata only) 
+  /*
   if (contentElement.length) {
     addCheckElement(contentChecks, 'N5', 'after', true);
     let referencesWarning = '<div><b>Do not forget to check the references box at the bottom of the page...</b></div>';
     contentChecks.append(referencesWarning);
-  }
+  }*/
 
   let referencesElement = $('div#references-accordion-trigger');
   if (referencesElement.length) {
