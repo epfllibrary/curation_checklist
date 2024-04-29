@@ -1,0 +1,6 @@
+{
+  "source": ".",
+  "destination": "./docs",
+  "includes": ["\\.user.js$"],
+  "plugins": [{"name": "esdoc-standard-plugin"}]
+}
