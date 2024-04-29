@@ -1,6 +1,16 @@
 {
-  "source": ".",
-  "destination": "./docs",
-  "includes": ["\\.user.js$"],
-  "plugins": [{"name": "esdoc-standard-plugin"}]
+    "source": ".",
+    "destination": "./docs",
+    "includes": ["\\.user.js$"],
+    "plugins": [
+    {
+        "name": "esdoc-standard-plugin",
+        "option":
+        {
+            "eslint":
+            {
+                "enable": true
+            }
+        }
+    }]
 }

@@ -297,8 +297,11 @@ const buttonValues = {
   'meh': ['?', ' ', ' ']
 }
 
-// Convert manually selected checkbutton states into an evaluation
+
 function state2checkValue(buttonID, value) {
+  /**
+   * Convert manually selected checkbutton states into an evaluation
+   */
   if (buttonID == 'bad' && value == 'x') {
     return 'bad';
   }
