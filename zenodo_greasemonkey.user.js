@@ -27,7 +27,7 @@
 const checkLevels = [{'short': 'must', 'full': 'MUST (mandatory for acceptance into the collection)'}, {'short': 'recommended', 'full': 'RECOMMENDED'}, {'short': 'nth', 'full': 'NICE-TO-HAVE'}];
 
 
-/*
+/**
 Checklist data:
 each curation criterion is desribed by:
 - main identifier M1, M2,... Mn, R1, R2... Rn, N1, N2...Nn according to the importance level and numbering
@@ -483,6 +483,9 @@ fetch('https://api.datacite.org/dois/' + doi, {
 
 
 function addCheckElement(selector, checkCode, position, normal) {
+  /**
+   * Add checkbuttons next to a DOM element
+   */
   let checkElement;
   // see if we can get a non-neutral answer for the current criterion
   let status = policyCheck(checkCode);
@@ -526,6 +529,9 @@ function addCheckElement(selector, checkCode, position, normal) {
 }
 
 function addRequestRecordTab(doiId) {
+  /**
+  Add a record tab in the Zenodo post-Oct. 2023 interface
+   */
   var requestCommunitySubmissionTab = $('div#request-community-submission-tab');
   var fullRecordTabHtml = '<a href="' + doiId + '" target="_blank" role="tab" class="item" data-tab="fullrecord" aria-selected="false" aria-controls="full-record-tab-panel" id="full-record-tab">[SISB-RDM]Full record view</a>';
   requestCommunitySubmissionTab.append($(fullRecordTabHtml));
@@ -625,7 +631,7 @@ function addButtons() {
     openMailEditor(finalURL);
   })
 
-  /*
+  /**
   Main Greasemoneky section
   For all curiteria, identify the relevant DOM element and insert the checkbuttons and short text using addCheckElement()
   The checkbuttons can be inserted 'before' or 'after' the selected DOM element
@@ -754,11 +760,11 @@ function addButtons() {
 
   contentElement.prepend(contentChecks);
 
-  /*
+  /**
   End of the main Greasemonkey section
   */
 
-  /*
+  /**
   Detect click on a checkbutton, change its value (circling between x, ? and empty) and clear its siblings if necessary
   */
   $('div.btn-group label.btn').on('click', function myclick(event) {
@@ -781,11 +787,12 @@ function openMailEditor(url) {
   location.href = url;
 }
 
-/*
-Automatic checks: will return 'neutral' by default.
-The logic must be adapated to each criterion, not all of them can be automated.
-*/
+
 function policyCheck(checkCode) {
+  /**
+  Automatic checks: will return 'neutral' by default.
+  The logic must be adapated to each criterion, not all of them can be automated.
+  */
   if (checkCode == 'M1') {
     // Check EPFL creators. Acceptable if there is at least one, OK if all (more than 1) creators are EPFL
     let epflCreators = 0;
