@@ -777,6 +777,7 @@ function addButtons() {
 
 
 function openMailEditor(url) {
+  // Simply use the mailto URL
   location.href = url;
 }
 
@@ -786,6 +787,7 @@ The logic must be adapated to each criterion, not all of them can be automated.
 */
 function policyCheck(checkCode) {
   if (checkCode == 'M1') {
+    // Check EPFL creators. Acceptable if there is at least one, OK if all (more than 1) creators are EPFL
     let epflCreators = 0;
     for (let creator of recordJson.data.attributes.creators) {
       for (let affiliation of creator.affiliation) {
@@ -803,6 +805,7 @@ function policyCheck(checkCode) {
   }
 
   if (checkCode == 'M3') {
+    // Check access to the files
     let noAccess = $('div.panel-body:contains("Files are not publicly accessible.")');
     let embargoAccess = $('div.panel-body:contains("Files are currently under embargo")');
     if (noAccess.length || embargoAccess.length) {
@@ -837,6 +840,8 @@ function policyCheck(checkCode) {
   }
 
   if (checkCode == 'R1') {
+    // Check for ORCID iDs
+    // At least one creator with ORCID = maybe. All creators with ORCID = OK
     let orcidCreators = 0;
     for (let creator of recordJson.data.attributes.creators) {
       for (let identifier of creator.nameIdentifiers) {
@@ -854,6 +859,8 @@ function policyCheck(checkCode) {
   }
 
   if (checkCode == 'M5') {
+    // Try to find a README
+    // This will not check the content of Zips or other archive files
     let readmeFound = 'neutral';
     $('a.filename').each(function() {
       let f = $(this).text().toLowerCase();
@@ -868,6 +875,8 @@ function policyCheck(checkCode) {
 
 
   if (checkCode == 'N2') {
+    // Licenses: check for one of the better ones.
+    // Bad if there is no license at all.
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
     try {
       if (goodLicenses.includes(recordJson.data.attributes.rightsList[0].rightsIdentifier.toLowerCase())) {
@@ -890,6 +899,7 @@ function policyCheck(checkCode) {
   }
 
   if (checkCode == 'N7') {
+    // Keywords: if there is only one string and it contains a comma or a semicolon, it is probably bad
     //let kw = $( "dd a.label-link span.label" );
     try {
       let kw = recordJson.data.attributes.subjects;
