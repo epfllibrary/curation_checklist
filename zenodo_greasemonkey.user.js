@@ -23,7 +23,10 @@
 // R5, N4 better left out of automatic checking
 // MAYBE: better explanation of Infoscience validation
 
-// All possible importance levels, in short and long format
+/**
+Check levels:
+All possible importance levels, in short and long format
+*/
 const checkLevels = [{'short': 'must', 'full': 'MUST (mandatory for acceptance into the collection)'}, {'short': 'recommended', 'full': 'RECOMMENDED'}, {'short': 'nth', 'full': 'NICE-TO-HAVE'}];
 
 
@@ -36,7 +39,9 @@ each curation criterion is desribed by:
 - answers: text used in the feedback message, depending on the selected checkbox button. bad = red x, meh = red ?, maybe = green ?, ok = green x, neutral otherwise
 - category: importance level, using the short code from checkLevels
 - wrapper: HTML tag that will contain the short text. span or div depending on what works best in the web page of interest.
-
+For some criteria, mostly when they deal with optional fields (such as keywords), there can can be alternative values:
+- altshort
+- altwrapper
 */
 const checklistData = {
   'M1': {
