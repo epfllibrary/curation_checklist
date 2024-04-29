@@ -16,16 +16,28 @@
 // @version     1.4.1
 // ==/UserScript==
 
-// TODO use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
+// MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
 
 // TODO add standardized comments for non-compliant results where possible
 // TODO: find ideas to check criteria M3, R3 (look for patterns in the description?), N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
 // R5, N4 better left out of automatic checking
-// TODO: better explanation of Infoscience validation
-// TODO: update curation criteria when the new policy is accepted
+// MAYBE: better explanation of Infoscience validation
 
+// All possible importance levels, in short and long format
 const checkLevels = [{'short': 'must', 'full': 'MUST (mandatory for acceptance into the collection)'}, {'short': 'recommended', 'full': 'RECOMMENDED'}, {'short': 'nth', 'full': 'NICE-TO-HAVE'}];
 
+
+/*
+Checklist data:
+each curation criterion is desribed by:
+- main identifier M1, M2,... Mn, R1, R2... Rn, N1, N2...Nn according to the importance level and numbering
+- full: the criterio as listed in the curation policy (to display as baloon help)
+- short: HTML string that will be inserted next to the relevant checklist buttons
+- answers: text used in the feedback message, depending on the selected checkbox button. bad = red x, meh = red ?, maybe = green ?, ok = green x, neutral otherwise
+- category: importance level, using the short code from checkLevels
+- wrapper: HTML tag that will contain the short text. span or div depending on what works best in the web page of interest.
+
+*/
 const checklistData = {
   'M1': {
     'full': 'At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work',
@@ -276,6 +288,7 @@ const checklistData = {
   }
 };
 
+// Values of all checkbuttons if created with computed evaluation
 const buttonValues = {
   'neutral': [' ', '?', ' '],
   'ok': [' ', ' ', 'x'],
@@ -284,6 +297,7 @@ const buttonValues = {
   'meh': ['?', ' ', ' ']
 }
 
+// Convert manually selected checkbutton states into an evaluation
 function state2checkValue(buttonID, value) {
   if (buttonID == 'bad' && value == 'x') {
     return 'bad';
@@ -300,7 +314,7 @@ function state2checkValue(buttonID, value) {
   return 'neutral';
 }
 
-
+// CSS for the checkbuttons. Do not touch.
 const checklistStyle = `
 <style>
 .check {
@@ -340,6 +354,7 @@ label.btn {
 </style>
 `;
 
+// Script initialization. In particular, insert the necessary stylesheets
 this.$ = this.jQuery = jQuery.noConflict(true);
 $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css'));
 $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css'));
@@ -348,10 +363,10 @@ $('head').append(checklistStyle);
 console.log('greasemonkey_checklist active');
 
 
-
-
+// Find the DOI on the page
 let doi = $('h4 pre:first').text();
 
+// Dummy record in case the metadata retrieval fails
 let recordJson = {
   'data': {
     'id': 'XXX',
@@ -446,6 +461,8 @@ if (!doi.startsWith('10.5281/zenodo.')) {
 }
 console.log('https://api.datacite.org/dois/' + doi);
 addRequestRecordTab(identifier);
+
+// Retrieve Datacite metadata
 fetch('https://api.datacite.org/dois/' + doi, {
     method: 'GET',
     headers: {
@@ -578,6 +595,7 @@ function addButtons() {
     let footer = ''
     emailSub += encodeURIComponent(': ' + title);
     if (text == '') {
+      // When all checkbuttons are set to ok, prepare the most positive feedback
       header += `Good XXX,\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo. Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
       header += 'As per our new workflow, the dataset will also be listed on Infoscience by our staff. The record will be submitted for approval to your laboratory, similar to the process followed by publications imported from the Web of Science.\n\n'
       header += 'XXX CHECK IF APPLICABLE XXX '
@@ -586,6 +604,7 @@ function addButtons() {
       header += 'If you have any question about these steps, do not hesitate to ask!\n'
 
     } else {
+      // If even one checkbutton is not OK, there will be more to say
       header += `Good XXX,\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo.`;
       header += ' We thank you and your coworkers for this contribution.\n\n'
       header += 'Within our curation procedure ( https://zenodo.org/communities/epfl/about ), we have identified a few details that could be improved:\n\n';
@@ -606,7 +625,11 @@ function addButtons() {
     openMailEditor(finalURL);
   })
 
-
+  /*
+  Main Greasemoneky section
+  For all curiteria, identify the relevant DOM element and insert the checkbuttons and short text using addCheckElement()
+  The checkbuttons can be inserted 'before' or 'after' the selected DOM element
+  */
   let menu;
   if (document.URL.match(/record/g)) {
     menu = document.getElementsByClassName('sixteen wide tablet five wide computer column sidebar')[0];
@@ -731,6 +754,13 @@ function addButtons() {
 
   contentElement.prepend(contentChecks);
 
+  /*
+  End of the main Greasemonkey section
+  */
+
+  /*
+  Detect click on a checkbutton, change its value (circling between x, ? and empty) and clear its siblings if necessary
+  */
   $('div.btn-group label.btn').on('click', function myclick(event) {
     console.log('click detected', event);
     console.log('in group selector', $(this).parent().attr('id'), $(this).attr('id'));
@@ -750,7 +780,10 @@ function openMailEditor(url) {
   location.href = url;
 }
 
-
+/*
+Automatic checks: will return 'neutral' by default.
+The logic must be adapated to each criterion, not all of them can be automated.
+*/
 function policyCheck(checkCode) {
   if (checkCode == 'M1') {
     let epflCreators = 0;
