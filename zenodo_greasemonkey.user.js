@@ -806,7 +806,7 @@ function policyCheck(checkCode) {
     let epflCreators = 0;
     for (let creator of recordJson.data.attributes.creators) {
       for (let affiliation of creator.affiliation) {
-        if (affiliation.includes('EPFL')) {
+        if (affiliation.includes('EPFL') || affiliation.includes('Polytechnique Fédérale de Lausanne')) {
           epflCreators += 1;
         }
       }
@@ -835,7 +835,7 @@ function policyCheck(checkCode) {
     let orcidEpflCreators = 0;
     for (let creator of recordJson.data.attributes.creators) {
       for (let affiliation of creator.affiliation) {
-        if (affiliation.includes('EPFL')) {
+        if (affiliation.includes('EPFL') || affiliation.includes('Polytechnique Fédérale de Lausanne')) {
           for (let identifier of creator.nameIdentifiers) {
             if (identifier.nameIdentifierScheme == 'ORCID') {
               orcidEpflCreators += 1;
