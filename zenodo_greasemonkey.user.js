@@ -13,7 +13,7 @@
 // @include     https://zenodo.org/me/requests/*
 // @include     https://sandbox.zenodo.org/me/requests/*
 // @grant       none
-// @version     1.4.1
+// @version     1.4.2
 // ==/UserScript==
 
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -806,7 +806,7 @@ function policyCheck(checkCode) {
     let epflCreators = 0;
     for (let creator of recordJson.data.attributes.creators) {
       for (let affiliation of creator.affiliation) {
-        if (affiliation.includes('EPFL') || affiliation.includes('Polytechnique Fédérale de Lausanne')) {
+        if (affiliation.includes('EPFL') || affiliation.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
           epflCreators += 1;
         }
       }
@@ -835,7 +835,7 @@ function policyCheck(checkCode) {
     let orcidEpflCreators = 0;
     for (let creator of recordJson.data.attributes.creators) {
       for (let affiliation of creator.affiliation) {
-        if (affiliation.includes('EPFL') || affiliation.includes('Polytechnique Fédérale de Lausanne')) {
+        if (affiliation.includes('EPFL') || affiliation.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
           for (let identifier of creator.nameIdentifiers) {
             if (identifier.nameIdentifierScheme == 'ORCID') {
               orcidEpflCreators += 1;
