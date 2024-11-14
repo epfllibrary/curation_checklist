@@ -13,7 +13,7 @@
 // @include     https://zenodo.org/me/requests/*
 // @include     https://sandbox.zenodo.org/me/requests/*
 // @grant       none
-// @version     1.4.2
+// @version     1.4.3
 // ==/UserScript==
 
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -371,6 +371,24 @@ $('head').append(checklistStyle);
 console.log('greasemonkey_checklist active');
 
 
+// Thanks to https://stackoverflow.com/questions/190253/how-to-use-a-regular-expression-in-a-jquery-selector
+// useful helper to use regexps in JQuery selectors
+jQuery.expr.pseudos.regex = jQuery.expr.createPseudo(function (expression) {
+    return function (elem) {
+        var matchParams = expression.split(','),
+            validLabels = /^(data|css):/,
+            attr = {
+                method: matchParams[0].match(validLabels) ?
+                    matchParams[0].split(':')[0] : 'attr',
+                property: matchParams.shift().replace(validLabels, '')
+            },
+            regexFlags = 'ig',
+            regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g, ''), regexFlags);
+        return regex.test(jQuery(elem)[attr.method](attr.property));
+    }
+});
+
+
 // Find the DOI on the page
 let doi = $('h4 pre:first').text();
 
@@ -641,7 +659,7 @@ function addButtons() {
 
   /**
   Main Greasemoneky section
-  For all curiteria, identify the relevant DOM element and insert the checkbuttons and short text using addCheckElement()
+  For all criteria, identify the relevant DOM element and insert the checkbuttons and short text using addCheckElement()
   The checkbuttons can be inserted 'before' or 'after' the selected DOM element
   */
   let menu;
@@ -752,7 +770,8 @@ function addButtons() {
     contentChecks.append(referencesWarning);
   }
 
-  let referencesElement = $('div#references-accordion-trigger');
+  //let referencesElement = $('div#references-accordion-trigger');
+  let referencesElement = $('h3:contains("References")');
   if (referencesElement.length) {
     addCheckElement(referencesElement, 'N6', 'after', true);
   } else {
@@ -821,6 +840,7 @@ function policyCheck(checkCode) {
 
   if (checkCode == 'M3') {
     // Check access to the files
+    // IDEA it could be useful to check whether the license is consistent with the access rights
     let noAccess = $('div.panel-body:contains("Files are not publicly accessible.")');
     let embargoAccess = $('div.panel-body:contains("Files are currently under embargo")');
     if (noAccess.length || embargoAccess.length) {
@@ -877,12 +897,12 @@ function policyCheck(checkCode) {
     // Try to find a README
     // This will not check the content of Zips or other archive files
     let readmeFound = 'neutral';
-    $('a.filename').each(function() {
+    $('a:regex(href, records/.*/files/)').each(function() {
       let f = $(this).text().toLowerCase();
       console.log([f], f.indexOf('readme'));
       if ((f.indexOf('readme') >= 0) && (f.indexOf('readme') < 4)) {
         console.log('should be OK');
-        return readmeFound = 'ok';
+        readmeFound = 'ok';
       }
     });
     return readmeFound;
