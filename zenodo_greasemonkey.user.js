@@ -99,8 +99,8 @@ const checklistData = {
   'M5': {
     'full': 'The submitted work includes a clearly identifiable README file, typically in the root directory. This is not required for works consisting in one single document (ex. publications, posters, or presentation slides)',
     'answers': {
-      'bad': 'Such a file really facilitates a potential user\'s understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL\'s ACOUA system (further info at the end of this message).',
-      'meh': 'Such a file really facilitates a potential user\'s understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, while the presence of a README file is not mandatory for acceptance into the Community, it is a requirement for long-term archiving by EPFL\'s ACOUA system (further info at the end of this message).',
+      'bad': 'Such a file really facilitates a potential user\'s understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, it is a requirement for long-term archiving by EPFL\'s ACOUA system (further info at the end of this message).',
+      'meh': 'Such a file really facilitates a potential user\'s understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, it is a requirement for long-term archiving by EPFL\'s ACOUA system (further info at the end of this message).',
       'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
       'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
       'ok': ''
