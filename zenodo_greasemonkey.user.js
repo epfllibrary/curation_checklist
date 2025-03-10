@@ -13,7 +13,7 @@
 // @include     https://zenodo.org/me/requests/*
 // @include     https://sandbox.zenodo.org/me/requests/*
 // @grant       none
-// @version     1.4.3
+// @version     1.4.4
 // ==/UserScript==
 
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -112,7 +112,7 @@ const checklistData = {
   'M6': {
     'full': 'The main DOI has been assigned by Zenodo',
     'answers': {
-      'bad': 'Entering an existing DOI as the main identifier is allowed only if the submitted work is an exact copy of a digital object that has already received its DOI on another platform. Typically, supplementary data to a journal article should NOT re-use the journal article DOI.',
+      'bad': 'Entering an existing DOI as the main identifier is allowed only if the submitted work is an exact copy of a digital object that has already received its DOI on another platform, but even in that case an IsIdenticalTo relationship will be more correct. Typically, supplementary data to a journal article should NOT re-use the journal article DOI.',
       'meh': 'NOT TOTALLY WRONG, BUT STILL...',
       'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
       'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
@@ -139,7 +139,7 @@ const checklistData = {
     'full': 'The main title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated',
     'answers': {
       'bad': 'As for any scientific output, a good title is the first place where others will learn about the nature and purpose of your research. The same principles as for scientific papers are applicable.',
-      'meh': 'NOT TOTALLY WRONG, BUT STILL...',
+      'meh': 'It is usually better to distinguish a dataset from the associated publication through their titles. A simple recipe could be "Dataset for " + the article title',
       'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
       'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
       'ok': ''
@@ -237,8 +237,8 @@ const checklistData = {
     'full': 'If the submission is related to a PhD thesis, the supervisor is specified',
     'answers': {
       'bad': 'There are mentions of a PhD thesis, this should be formally declared using the relevant input field with the supervisor name and institution',
-      'meh': 'THIS IS NOT GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.',
-      'maybe': 'THIS IS NOT GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.',
+      'meh': 'THIS IS NOT A GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.',
+      'maybe': 'THIS IS NOT A GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.',
       'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
       'ok': ''
     },
