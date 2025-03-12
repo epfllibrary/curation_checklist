@@ -9,7 +9,9 @@
 // @include     https://zenodo.org/records/*
 // @include     https://sandbox.zenodo.org/records/*
 // @include     https://zenodo.org/communities/epfl/requests/*
+// @include     https://zenodo.org/communities/eth-domain-oer-rdm/requests/*
 // @include     https://sandbox.zenodo.org/communities/epfl/requests/*
+// @include     https://sandbox.zenodo.org/communities/eth-domain-oer-rdm/requests/*
 // @include     https://zenodo.org/me/requests/*
 // @include     https://sandbox.zenodo.org/me/requests/*
 // @grant       none
@@ -485,8 +487,9 @@ let identifier = 'https://doi.org/' + doi;
 if (!doi.startsWith('10.5281/zenodo.')) {
   doi = 'dummy';
 }
-console.log('https://api.datacite.org/dois/' + doi);
+
 addRequestRecordTab(identifier);
+console.log('added link to https://api.datacite.org/dois/' + doi);
 
 // Retrieve Datacite metadata
 fetch('https://api.datacite.org/dois/' + doi, {
@@ -671,7 +674,7 @@ function addButtons() {
   }
   if (document.URL.match(/request/g)) {
     // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
-    menu = document.getElementById('request-actions');
+    menu = $('div#request-actions')[0];
     console.log("locate menu: this is a request");
   }
 
