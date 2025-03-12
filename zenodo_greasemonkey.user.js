@@ -662,21 +662,20 @@ function addButtons() {
   For all criteria, identify the relevant DOM element and insert the checkbuttons and short text using addCheckElement()
   The checkbuttons can be inserted 'before' or 'after' the selected DOM element
   */
+
+
   let menu;
   if (document.URL.match(/record/g)) {
-    menu = document.getElementsByClassName('sixteen wide tablet five wide computer column sidebar')[0];
+    console.log("locate menu: this is a record");
+    menu = $('aside.sixteen.wide.tablet.five.wide.computer.column.sidebar')[0];
   }
   if (document.URL.match(/request/g)) {
     // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
     menu = document.getElementById('request-actions');
+    console.log("locate menu: this is a request");
   }
 
-  // console.log(menu);
-  var metadata = document.getElementById('metrics');
-
-  //menu.appendChild(btn);
-
-  menu.insertBefore(frm, metadata);
+  menu.prepend(frm);
 
   let mainTitle = $('h1#record-title');
   let authorList = $('section#creatibutors');
