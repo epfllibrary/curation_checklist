@@ -32,7 +32,7 @@ jobs:
           
           # Create ZIP archive
           cd package
-          zip -r ../greasemonkey-script-${{ github.event.release.tag_name }}.zip .
+          zip -r ../zenodo-checklist-gm-${{ github.event.release.tag_name }}.zip .
 
       - name: Upload ZIP to release
         uses: softprops/action-gh-release@v1
