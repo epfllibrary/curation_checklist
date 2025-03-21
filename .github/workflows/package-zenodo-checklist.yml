@@ -1,0 +1,52 @@
+name: Package Zenodo Greasemonkey Checklist
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download dependencies
+        run: |
+          # Extract @require URLs from the script
+          grep -E "// @require\s+" script.user.js | sed 's/\/\/ @require\s\+//' > dependency_urls.txt
+          
+          # Download all dependencies
+          while read url; do
+            # Extract filename from URL
+            filename=$(basename "$url")
+            echo "Downloading $filename from $url"
+            wget -q "$url" -O "dependencies/$filename"
+          done < dependency_urls.txt
+          
+          # Copy dependencies to package lib directory
+          cp -r dependencies/* package/
+
+      - name: Package script and dependencies
+        run: |
+          # Copy the user script to package directory
+          cp zenodo_greasemonkey.user.js package/
+          
+          # Copy other important files
+          cp README.md package/
+          
+          # You may want to include other files
+          # cp LICENSE package/
+          # cp -r assets/ package/assets/
+          
+          # Create ZIP archive
+          cd package
+          zip -r ../greasemonkey-script-${{ github.event.release.tag_name }}.zip .
+
+      - name: Upload ZIP to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            zenodo-checklist-gm-${{ github.event.release.tag_name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
