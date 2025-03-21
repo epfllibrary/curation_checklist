@@ -33,6 +33,7 @@ jobs:
           # Create ZIP archive
           cd package
           zip -r ../greasemonkey-script-${{ github.event.release.tag_name }}.zip .
+          cd ..
 
       - name: Upload ZIP to release
         uses: softprops/action-gh-release@v1
