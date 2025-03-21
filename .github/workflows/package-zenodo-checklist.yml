@@ -15,17 +15,15 @@ jobs:
         run: |
           # Extract @require URLs from the script
           grep -E "// @require\s+" zenodo_greasemonkey.user.js | sed 's/\/\/ @require\s\+//' > dependency_urls.txt
-          
+          mkdir package
+
           # Download all dependencies
           while read url; do
             # Extract filename from URL
             filename=$(basename "$url")
             echo "Downloading $filename from $url"
-            wget -q "$url" -O "dependencies/$filename"
+            wget -q "$url" -O "package/$filename"
           done < dependency_urls.txt
-          
-          # Copy dependencies to package lib directory
-          cp -r dependencies/* package/
 
       - name: Package script and dependencies
         run: |
