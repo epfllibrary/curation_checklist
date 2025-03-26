@@ -5,7 +5,7 @@
 
 ## Use cases
 - Zenodo EPFL community curation zenodo_checklist.html (obsolete)
-- Zenodo EPFL community curation within the Zenodo record: `zenodo_greasemonkey.user.js (Greasemonkey/Tampermonkey user script)
+- Zenodo EPFL community curation within the Zenodo record: `zenodo_greasemonkey.user.js` (Greasemonkey/Tampermonkey user script)
 - Infoscience Greasemonkey script to facilitate some workflow steps
 
 ## Greasemonkey information
