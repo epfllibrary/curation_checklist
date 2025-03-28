@@ -11,5 +11,5 @@
 ## Greasemonkey information
 
 The Greasemonkey browser plugin must be installed first (Firefox: https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/ or Chrome: https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=fr).
-After that the code Javascript user script (i.e. zenodo_greasemonkey.user.js) can be pasted into a new user script within the interface.
+After that the code of the Javascript user script (i.e. zenodo_greasemonkey.user.js) can be pasted into a new user script within the interface.
 Since version 1.4.4, a more convenient method to install or upgrade the user script is to use the "Import a backup..." command in Greasemonkey and select the matching package  (i.e. `zenodo-checklist-gm-v1.4.4.zip ` for version 1.4.4) from the latest release https://github.com/epfllibrary/curation_checklist/releases
