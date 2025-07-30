@@ -548,13 +548,24 @@ function addButtons() {
       }
     }
 
+    let now = new Date();
+    let greeting;
+    if (now.getHours() < 12) {
+      greeting = "Good morning";
+    } else if (now.getHours() > 16) {
+      greeting = "Good evening";
+    } else if (now.getHours() > 12) {
+      greeting = "Good afternoon";
+    } else {
+      greeting = "Hello"
+    }
 
     let header = ''
     let footer = ''
     emailSub += encodeURIComponent(': ' + title);
     if (text == '') {
       // When all checkbuttons are set to ok, prepare the most positive feedback
-      header += `Good XXX,\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo. Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
+      header += `${greeting},\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo. Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
       header += 'As per our new workflow, the dataset will also be listed on Infoscience by our staff. The record will be submitted for approval to your laboratory, similar to the process followed by publications imported from the Web of Science.\n\n'
       header += 'XXX CHECK IF APPLICABLE XXX '
       header += 'Furthermore, considering that the dataset is linked to a publication, we will also archive a copy of the dataset for long-time preservation in EPFL\'s ACOUA platform (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info).\n'
@@ -563,7 +574,7 @@ function addButtons() {
 
     } else {
       // If even one checkbutton is not OK, there will be more to say
-      header += `Good XXX,\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo.`;
+      header += `${greeting},\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo.`;
       header += ' We thank you and your coworkers for this contribution.\n\n'
       header += 'Within our curation procedure ( https://zenodo.org/communities/epfl/about ), we have identified a few details that could be improved:\n\n';
 
