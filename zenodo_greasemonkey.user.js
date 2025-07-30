@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Zenodo Curation Checklist
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js
-// @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js
+// @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js
 // @require     https://far-nyon.ch/assets/js/tinysort/src/jquery.tinysort.min.js
 // @namespace   curation.epflrdm.zenodo
@@ -401,6 +401,9 @@ for (let exportFormat of exportFormats) {
 }
 console.log(jsonUrl);
 
+let identifier;
+let doi;
+  
 
 let recordJson = {}
 fetch(jsonUrl, {
@@ -416,132 +419,20 @@ fetch(jsonUrl, {
       console.log('And we have a winner!');
       recordJson = json;
     }
+  // Find the DOI
+    if ("doi" in recordJson.pids) {
+      doi = recordJson.pids.doi.identifier;
+      identifier = "https://doi.org/" + doi;
+    } else {
+      doi = "MISSING_DOI";
+      identifier = doi;
+  }
+
     addButtons();
   })
   .catch(err => console.error(err));
 console.log(recordJson.metadata);
 
-// Find the DOI on the page
-let doi = $('h4 pre:first').text();
-
-// Dummy record in case the metadata retrieval fails
-let oldrecordJson = {
-  'metadata': {
-    'id': 'XXX',
-    'type': 'dummy',
-    'attributes': {
-      'doi': 'XXX',
-      'prefix': 'XXX',
-      'suffix': '',
-      'identifiers': [],
-      'alternateIdentifiers': [],
-      'creators': [],
-      'titles': [
-        {
-          'title': 'DUMMY TITLE'
-        }
-      ],
-      'publisher': '',
-      'container': {},
-      'publicationYear': 2023,
-      'subjects': [],
-      'contributors': [],
-      'dates': [{ 'date': '2023', 'dateType': 'Issued' }],
-      'language': 'en',
-      'types': {
-        'ris': 'RPRT',
-        'bibtex': 'article',
-        'citeproc': 'article-journal',
-        'schemaOrg': 'ScholarlyArticle',
-        'resourceType': 'Documentation',
-        'resourceTypeGeneral': 'Text'
-      },
-      'relatedIdentifiers': [],
-      'relatedItems': [],
-      'sizes': [],
-      'formats': [],
-      'version': null,
-      'rightsList': [{'rights': 'none', 'rightsIdentifier': 'none'}],
-      'descriptions': [{
-                'description': 'empty',
-                'descriptionType': 'Abstract'
-            }],
-      'geoLocations': [],
-      'fundingReferences': [],
-      'xml': '',
-      'url': '',
-      'contentUrl': null,
-      'metadataVersion': 1,
-      'schemaVersion': null,
-      'source': null,
-      'isActive': true,
-      'state': 'findable',
-      'reason': null,
-      'viewCount': 0,
-      'viewsOverTime': [],
-      'downloadCount': 0,
-      'downloadsOverTime': [],
-      'referenceCount': 2,
-      'citationCount': 6,
-      'citationsOverTime': [],
-      'partCount': 0,
-      'partOfCount': 0,
-      'versionCount': 0,
-      'versionOfCount': 0,
-      'created': '2023-07-06T07:00:00.000Z',
-      'registered': '2023-07-06T07:00:00.000Z',
-      'published': '2023',
-      'updated': '2023-07-06T07:00:00.001Z'
-    },
-    'relationships': {
-      'client': {
-        'data': { 'id': 'datacite.datacite', 'type': 'clients' }
-      },
-      'provider': { 'data': { 'id': 'datacite', 'type': 'providers' } },
-      'media': { 'data': { 'id': 'XXX', 'type': 'media' } },
-      'references': {
-        'data': []
-      },
-      'citations': {
-        'data': []
-      },
-      'parts': { 'data': [] },
-      'partOf': { 'data': [] },
-      'versions': { 'data': [] },
-      'versionOf': { 'data': [] }
-    }
-  }
-};
-
-/*
-console.log('doi', doi);
-let identifier = 'https://doi.org/' + doi;
-if (!doi.startsWith('10.5281/zenodo.')) {
-  doi = 'dummy';
-}
-
-addRequestRecordTab(identifier);
-console.log('added link to https://api.datacite.org/dois/' + doi);
-
-// Retrieve Datacite metadata
-fetch('https://api.datacite.org/dois/' + doi, {
-    method: 'GET',
-    headers: {
-      accept: 'application/json'
-    }
-  })
-  .then(resp => resp.json())
-  .then(json => {
-    console.log(json);
-    if ('data' in json) {
-      console.log('And we have a winner!');
-      recordJson = json;
-    }
-    addButtons();
-  })
-  .catch(err => console.error(err));
-
-*/
 
 function addCheckElement(selector, checkCode, position, normal) {
   /**
