@@ -21,8 +21,7 @@
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
 
 // TODO add standardized comments for non-compliant results where possible
-// TODO: find ideas to check criteria M3, N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
-// R5, N4 better left out of automatic checking
+// TODO: find further ideas to check criteria M3, R4 (if we find a comment about grant in the description), N1 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
 // MAYBE: better explanation of Infoscience validation
 
 /**
@@ -195,7 +194,7 @@ const checklistData = {
     'wrapper': 'div'
   },
   'N1': {
-    'full': 'The submitted work has been cleaned up (e.g., there are no temporary files, no unnecessary empty files or folders, no superfluous file versions, etc.)',
+    'full': 'The submitted work has been n2ed up (e.g., there are no temporary files, no unnecessary empty files or folders, no superfluous file versions, etc.)',
     'answers': {
       'bad': '[ONE POSSIBLE CASE]This is just a suggestion at this point but is quite a frequent one for us: in the future, you might want to exclude .DS_Store and other similar MacOS files in your archives. The otherwise very convenient "Compress" command in the OSX Finder makes it difficult to avoid this, but there are other tools that you could use instead, see https://apple.stackexchange.com/questions/239578/compress-without-ds-store-and-macosx for a few possible options.',
       'meh': 'NOT TOTALLY WRONG, BUT STILL...',
