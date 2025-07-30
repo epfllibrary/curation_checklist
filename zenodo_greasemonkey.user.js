@@ -844,6 +844,14 @@ function policyCheck(checkCode) {
     return readmeFound;
   }
 
+  if (checkCode == 'M6') {
+    let originalZendoDoi = 'bad';
+    if (doi.match(/^10\.5281\/zenodo/g) || doi.match(/^10\.5072\/zenodo/g)) {
+      originalZenodoDoi = 'ok';
+    }
+    return originalZenodoDoi;
+  }
+
 
   if (checkCode == 'N2') {
     // Licenses: check for one of the better ones.
