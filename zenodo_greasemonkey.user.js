@@ -21,7 +21,7 @@
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
 
 // TODO add standardized comments for non-compliant results where possible
-// TODO: find ideas to check criteria M3, R3 (look for patterns in the description?), N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
+// TODO: find ideas to check criteria M3, N1 (if we find a comment about grant in the description), N2 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
 // R5, N4 better left out of automatic checking
 // MAYBE: better explanation of Infoscience validation
 
@@ -772,6 +772,7 @@ function policyCheck(checkCode) {
     if (epflCreators) {
       return 'maybe';
     }
+    return 'meh';
   }
 
   if (checkCode == 'M3') {
@@ -808,25 +809,6 @@ function policyCheck(checkCode) {
       return 'maybe';
     }
     return 'bad';
-  }
-
-  if (checkCode == 'R1') {
-    // Check for ORCID iDs
-    // At least one creator with ORCID = maybe. All creators with ORCID = OK
-    let orcidCreators = 0;
-    for (let creator of recordJson.metadata.creators) {
-      for (let identifier of creator.person_or_org.identifiers) {
-        if (identifier.scheme.toLowerCase() == 'orcid') {
-          orcidCreators += 1;
-        }
-      }
-    }
-    if (orcidCreators == recordJson.metadata.creators.length) {
-      return 'ok';
-    }
-    if (orcidCreators) {
-      return 'maybe';
-    }
   }
 
   if (checkCode == 'M5') {
@@ -901,6 +883,57 @@ function policyCheck(checkCode) {
       console.log('Unknown error in checkCode N7');
     }
 
+  }
+
+ if (checkCode == 'R1') {
+    // Check for ORCID iDs
+    // At least one creator with ORCID = maybe. All creators with ORCID = OK
+    let orcidCreators = 0;
+    for (let creator of recordJson.metadata.creators) {
+      if ("identifiers" in creator.person_or_org) {
+        for (let identifier of creator.person_or_org.identifiers) {
+          if (identifier.scheme.toLowerCase() == 'orcid') {
+            orcidCreators += 1;
+          }
+        }
+      }
+    }
+    if (orcidCreators == recordJson.metadata.creators.length) {
+      return 'ok';
+    }
+    if (orcidCreators) {
+      return 'maybe';
+    }
+  }
+
+  if (checkCode == 'R3') {
+    // check for related identifier (experimental)
+    // 2025-07-30 at this point, give a green light if there is at least one structured funding field
+    if ('related_identifiers' in recordJson.metadata) {
+      for (let relatedResource of recordJson.metadata.related_identifiers) {
+        if (relatedResource.resource_type.id == "publication") {
+          return 'ok'
+        }
+      }
+      return 'maybe';
+    } else {
+      // In the absence of any related identifier, a DOI in the description is suspiscious.
+      if (recordJson.metadata.description.match(/doi\.org\/10\./g)) {
+        return 'meh';
+      }
+    }
+  }
+
+  if (checkCode == 'R4') {
+    // check for funding information
+    // 2025-07-30 at this point, give a green light if there is at least one structured funding field
+    if ('funding' in recordJson.metadata) {
+      for (let grant of recordJson.metadata.funding) {
+        if (grant.award.id) {
+          return 'ok';
+        }
+      } 
+    }
   }
 
   // Default value if nothing else was noticed
