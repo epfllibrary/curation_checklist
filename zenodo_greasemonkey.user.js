@@ -15,7 +15,7 @@
 // @include     https://zenodo.org/me/requests/*
 // @include     https://sandbox.zenodo.org/me/requests/*
 // @grant       none
-// @version     1.4.4
+// @version     1.5
 // ==/UserScript==
 
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -390,13 +390,43 @@ jQuery.expr.pseudos.regex = jQuery.expr.createPseudo(function (expression) {
     }
 });
 
+// Find the JSON export linl on the page;
+let exportFormats = JSON.parse($("div#recordExportDownload")[0].attributes["data-formats"].value);
+
+let jsonUrl;
+for (let exportFormat of exportFormats) {
+  if (exportFormat.name === "JSON") {
+    jsonUrl = window.location.protocol + '//' + window.location.hostname + exportFormat.export_url;
+  }
+}
+console.log(jsonUrl);
+
+
+let recordJson = {}
+fetch(jsonUrl, {
+    method: 'GET',
+    headers: {
+      accept: 'application/json'
+    }
+  })
+  .then(resp => resp.json())
+  .then(json => {
+    console.log(json);
+    if ('metadata' in json) {
+      console.log('And we have a winner!');
+      recordJson = json;
+    }
+    addButtons();
+  })
+  .catch(err => console.error(err));
+console.log(recordJson.metadata);
 
 // Find the DOI on the page
 let doi = $('h4 pre:first').text();
 
 // Dummy record in case the metadata retrieval fails
-let recordJson = {
-  'data': {
+let oldrecordJson = {
+  'metadata': {
     'id': 'XXX',
     'type': 'dummy',
     'attributes': {
@@ -482,6 +512,8 @@ let recordJson = {
     }
   }
 };
+
+/*
 console.log('doi', doi);
 let identifier = 'https://doi.org/' + doi;
 if (!doi.startsWith('10.5281/zenodo.')) {
@@ -509,7 +541,7 @@ fetch('https://api.datacite.org/dois/' + doi, {
   })
   .catch(err => console.error(err));
 
-
+*/
 
 function addCheckElement(selector, checkCode, position, normal) {
   /**
@@ -825,14 +857,14 @@ function policyCheck(checkCode) {
   if (checkCode == 'M1') {
     // Check EPFL creators. Acceptable if there is at least one, OK if all (more than 1) creators are EPFL
     let epflCreators = 0;
-    for (let creator of recordJson.data.attributes.creators) {
-      for (let affiliation of creator.affiliation) {
-        if (affiliation.includes('EPFL') || affiliation.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
+    for (let creator of recordJson.metadata.creators) {
+      for (let affiliation of creator.affiliations) {
+        if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
           epflCreators += 1;
         }
       }
     }
-    if (epflCreators == recordJson.data.attributes.creators.length) {
+    if (epflCreators == recordJson.metadata.creators.length) {
       return 'ok';
     }
     if (epflCreators) {
@@ -855,11 +887,11 @@ function policyCheck(checkCode) {
 
   if (checkCode == 'M2') {
     let orcidEpflCreators = 0;
-    for (let creator of recordJson.data.attributes.creators) {
-      for (let affiliation of creator.affiliation) {
-        if (affiliation.includes('EPFL') || affiliation.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
-          for (let identifier of creator.nameIdentifiers) {
-            if (identifier.nameIdentifierScheme == 'ORCID') {
+    for (let creator of recordJson.metadata.creators) {
+      for (let affiliation of creator.affiliations) {
+        if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
+          for (let identifier of creator.person_or_org.identifiers) {
+            if (identifier.scheme.toLowerCase() == 'orcid') {
               orcidEpflCreators += 1;
             }
           }
@@ -870,7 +902,7 @@ function policyCheck(checkCode) {
     if (orcidEpflCreators) {
       return 'ok';
     }
-    if (recordJson.data.attributes.descriptions[0].description.includes('@epfl.ch')) {
+    if (recordJson.metadata.description.includes('@epfl.ch')) {
       return 'maybe';
     }
     return 'bad';
@@ -880,14 +912,14 @@ function policyCheck(checkCode) {
     // Check for ORCID iDs
     // At least one creator with ORCID = maybe. All creators with ORCID = OK
     let orcidCreators = 0;
-    for (let creator of recordJson.data.attributes.creators) {
-      for (let identifier of creator.nameIdentifiers) {
-        if (identifier.nameIdentifierScheme == 'ORCID') {
+    for (let creator of recordJson.metadata.creators) {
+      for (let identifier of creator.person_or_org.identifiers) {
+        if (identifier.scheme.toLowerCase() == 'orcid') {
           orcidCreators += 1;
         }
       }
     }
-    if (orcidCreators == recordJson.data.attributes.creators.length) {
+    if (orcidCreators == recordJson.metadata.creators.length) {
       return 'ok';
     }
     if (orcidCreators) {
@@ -916,7 +948,7 @@ function policyCheck(checkCode) {
     // Bad if there is no license at all.
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
     try {
-      if (goodLicenses.includes(recordJson.data.attributes.rightsList[0].rightsIdentifier.toLowerCase())) {
+      if (goodLicenses.includes(recordJson.metadata.rights[0].id.toLowerCase())) {
         return 'ok';
       }
     } catch (error) {
@@ -939,7 +971,7 @@ function policyCheck(checkCode) {
     // Keywords: if there is only one string and it contains a comma or a semicolon, it is probably bad
     //let kw = $( "dd a.label-link span.label" );
     try {
-      let kw = recordJson.data.attributes.subjects;
+      let kw = recordJson.metadata.subjects;
       console.log(kw);
       if (kw.length == 0) {
         return 'meh';
