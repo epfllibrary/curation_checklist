@@ -15,7 +15,7 @@
 // @include     https://zenodo.org/me/requests/*
 // @include     https://sandbox.zenodo.org/me/requests/*
 // @grant       none
-// @version     1.5
+// @version     1.6
 // ==/UserScript==
 
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -402,6 +402,7 @@ console.log(jsonUrl);
 
 let identifier;
 let doi;
+let allFileNames;
   
 
 let recordJson = {}
@@ -418,14 +419,16 @@ fetch(jsonUrl, {
       console.log('And we have a winner!');
       recordJson = json;
     }
-  // Find the DOI
+    // Find the DOI
     if ("doi" in recordJson.pids) {
       doi = recordJson.pids.doi.identifier;
       identifier = "https://doi.org/" + doi;
     } else {
       doi = "MISSING_DOI";
       identifier = doi;
-  }
+    }
+
+    allFileNames = listContent(recordJson);
 
     addButtons();
   })
@@ -759,9 +762,11 @@ function policyCheck(checkCode) {
     // Check EPFL creators. Acceptable if there is at least one, OK if all (more than 1) creators are EPFL
     let epflCreators = 0;
     for (let creator of recordJson.metadata.creators) {
-      for (let affiliation of creator.affiliations) {
-        if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
-          epflCreators += 1;
+      if ('affiliations' in creator) {
+        for (let affiliation of creator.affiliations) {
+          if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
+            epflCreators += 1;
+          }
         }
       }
     }
@@ -790,6 +795,7 @@ function policyCheck(checkCode) {
   if (checkCode == 'M2') {
     let orcidEpflCreators = 0;
     for (let creator of recordJson.metadata.creators) {
+      if ('affiliations' in creator) {
       for (let affiliation of creator.affiliations) {
         if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
           for (let identifier of creator.person_or_org.identifiers) {
@@ -798,6 +804,7 @@ function policyCheck(checkCode) {
             }
           }
         }
+      }
       }
     }
     console.log('epfl orcids', orcidEpflCreators);
@@ -816,9 +823,9 @@ function policyCheck(checkCode) {
     let readmeFound = 'neutral';
     $('a:regex(href, records/.*/files/)').each(function() {
       let f = $(this).text().toLowerCase();
-      console.log([f], f.indexOf('readme'));
+      // console.log([f], f.indexOf('readme'));
       if ((f.indexOf('readme') >= 0) && (f.indexOf('readme') < 4)) {
-        console.log('should be OK');
+        // console.log('should be OK');
         readmeFound = 'ok';
       }
     });
@@ -910,8 +917,10 @@ function policyCheck(checkCode) {
     // 2025-07-30 at this point, give a green light if there is at least one structured funding field
     if ('related_identifiers' in recordJson.metadata) {
       for (let relatedResource of recordJson.metadata.related_identifiers) {
-        if (relatedResource.resource_type.id == "publication") {
-          return 'ok'
+        if ('id' in relatedResource) {
+          if (relatedResource.resource_type.id == "publication") {
+            return 'ok'
+          }
         }
       }
       return 'maybe';
