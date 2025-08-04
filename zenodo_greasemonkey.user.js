@@ -945,6 +945,7 @@ function listContent(recordJson) {
   List the content of a Zenodo record
   */
   let filenames = [];
+  let previewDocument;
   let archive_extensions = ["zip", "gz","tar", "7z", "bz2"];
   for (let file of Object.keys(recordJson.files.entries)) {
     console.log(recordJson.files.entries[file]["ext"]);
@@ -958,10 +959,12 @@ function listContent(recordJson) {
         .then(resp => resp.text())
         .then(text => {
           const parser = new DOMParser();
-          let previewDocument = parser.parseFromString(text, 'text/html')
+          previewDocument = parser.parseFromString(text, 'text/html');
+          let allcontent = ulTreeToPathList($(previewDocument).find("ul.tree"));
+          console.log(allcontent)
+          filenames.push(...allcontent);
         })
         .catch(err => console.error(err));
-
 
 
 
@@ -970,12 +973,13 @@ function listContent(recordJson) {
         filenames.push(file);
       }
     }
-
+    
     return filenames;
   }
 
 
 function ulTreeToPathList($ul, basePath = '') {
+  // 2025-08-04 this seems to work when called on a preview page as ulTreeToPathList($('url.tree'))
   const paths = [];
   
   // Find all direct li children of this ul
