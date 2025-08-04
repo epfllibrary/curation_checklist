@@ -939,3 +939,75 @@ function policyCheck(checkCode) {
   return 'neutral';
 
 }
+
+function listContent(recordJson) {
+  /**
+  List the content of a Zenodo record
+  */
+  let filenames = [];
+  let archive_extensions = ["zip", "gz","tar", "7z", "bz2"];
+  for (let file of Object.keys(recordJson.files.entries)) {
+    console.log(recordJson.files.entries[file]["ext"]);
+    if (archive_extensions.indexOf(recordJson.files.entries[file]["ext"]) > -1) {
+      console.log('Archive found', file);
+      let previewUrl = recordJson.links.self_html + '/preview/' + file;
+      console.log(previewUrl);
+      fetch(previewUrl, {
+          method: 'GET',
+        })
+        .then(resp => resp.text())
+        .then(text => {
+          const parser = new DOMParser();
+          let previewDocument = parser.parseFromString(text, 'text/html')
+        })
+        .catch(err => console.error(err));
+
+
+
+
+      } else {
+        console.log('File found', file);
+        filenames.push(file);
+      }
+    }
+
+    return filenames;
+  }
+
+
+function ulTreeToPathList($ul, basePath = '') {
+  const paths = [];
+  
+  // Find all direct li children of this ul
+  $ul.children('li').each(function() {
+      const $li = $(this);
+      $li.children('div').children('div.row').each(function() {
+          let $item = $(this).children('div, a');
+          const nodeName = $item.first().text().trim();
+          // console.log('we have a', [$item.first().prop('tagName')], 'named', [nodeName]);
+          let currentPath = basePath ? basePath + '/' + nodeName : nodeName;
+
+          // console.log(['basePath:', basePath]);
+          // console.log(['currentPath:', currentPath]);
+          
+      
+          // Check if this li has nested ul children
+          let $childUl = [];
+          if ($item.first().prop('tagName') === 'A') {
+              $childUl = $li.find('ul').first();
+          }
+      
+          if ($childUl.length > 0) {
+              // Recursively process nested ul elements and merge results
+              const childPaths = ulTreeToPathList($childUl, currentPath);
+              paths.push(...childPaths);
+          } else {
+              // Leaf node - add the complete path
+              paths.push(currentPath);
+          }
+      })
+      
+  });
+  
+  return paths;
+}
