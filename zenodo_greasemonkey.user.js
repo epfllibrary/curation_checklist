@@ -974,7 +974,9 @@ function listContent(recordJson) {
   */
   let filenames = [];
   let previewDocument;
-  let archive_extensions = ["zip", "gz","tar", "7z", "bz2"];
+  // let archive_extensions = ["zip", "gz","tar", "7z", "bz2"];
+  // Zenodo only previews Zip files at the moment
+  let archive_extensions = ["zip"];
   for (let file of Object.keys(recordJson.files.entries)) {
     console.log(recordJson.files.entries[file]["ext"]);
     if (archive_extensions.indexOf(recordJson.files.entries[file]["ext"]) > -1) {
