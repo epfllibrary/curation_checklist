@@ -804,9 +804,11 @@ function policyCheck(checkCode) {
       if ('affiliations' in creator) {
       for (let affiliation of creator.affiliations) {
         if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
-          for (let identifier of creator.person_or_org.identifiers) {
-            if (identifier.scheme.toLowerCase() == 'orcid') {
-              orcidEpflCreators += 1;
+          if ('identifiers' in creator.person_or_org) {
+            for (let identifier of creator.person_or_org.identifiers) {
+              if (identifier.scheme.toLowerCase() == 'orcid') {
+                orcidEpflCreators += 1;
+              }
             }
           }
         }
@@ -977,30 +979,33 @@ function listContent(recordJson) {
   // let archive_extensions = ["zip", "gz","tar", "7z", "bz2"];
   // Zenodo only previews Zip files at the moment
   let archive_extensions = ["zip"];
-  for (let file of Object.keys(recordJson.files.entries)) {
-    console.log(recordJson.files.entries[file]["ext"]);
-    if (archive_extensions.indexOf(recordJson.files.entries[file]["ext"]) > -1) {
-      console.log('Archive found', file);
-      let previewUrl = recordJson.links.self_html + '/preview/' + file;
-      console.log(previewUrl);
-      fetch(previewUrl, {
-          method: 'GET',
-        })
-        .then(resp => resp.text())
-        .then(text => {
-          const parser = new DOMParser();
-          previewDocument = parser.parseFromString(text, 'text/html');
-          let allcontent = ulTreeToPathList($(previewDocument).find("ul.tree"));
-          console.log(allcontent)
-          filenames.push(...allcontent);
-        })
-        .catch(err => console.error(err));
+    // There will be no entries for restricted access objects
+    if ('entries' in recordJson.files) {
+    for (let file of Object.keys(recordJson.files.entries)) {
+      console.log(recordJson.files.entries[file]["ext"]);
+      if (archive_extensions.indexOf(recordJson.files.entries[file]["ext"]) > -1) {
+        console.log('Archive found', file);
+        let previewUrl = recordJson.links.self_html + '/preview/' + file;
+        console.log(previewUrl);
+        fetch(previewUrl, {
+            method: 'GET',
+          })
+          .then(resp => resp.text())
+          .then(text => {
+            const parser = new DOMParser();
+            previewDocument = parser.parseFromString(text, 'text/html');
+            let allcontent = ulTreeToPathList($(previewDocument).find("ul.tree"));
+            console.log(allcontent)
+            filenames.push(...allcontent);
+          })
+          .catch(err => console.error(err));
 
 
 
-      } else {
-        console.log('File found', file);
-        filenames.push(file);
+        } else {
+          console.log('File found', file);
+          filenames.push(file);
+        }
       }
     }
     
