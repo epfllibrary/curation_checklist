@@ -14,6 +14,10 @@
 // @include     https://sandbox.zenodo.org/communities/eth-domain-oer-rdm/requests/*
 // @include     https://zenodo.org/me/requests/*
 // @include     https://sandbox.zenodo.org/me/requests/*
+// @exclude     https://sandbox.zenodo.org/records/*/export/*
+// @exclude     https://sandbox.zenodo.org/records/*preview/*
+// @exclude     https://zenodo.org/records/*/export/*
+// @exclude     https://zenodo.org/records/*preview/*
 // @grant       none
 // @version     1.6
 // ==/UserScript==
@@ -95,6 +99,7 @@ const checklistData = {
     },
     'category': 'must',
     'short': '<b>Sufficient abstract?&nbsp;</b>',
+    'altshort': '<b>Sufficient abstract?&nbsp;</b>',
     'wrapper': 'div'
   },
   'M5': {
@@ -616,12 +621,22 @@ function addButtons() {
 
   menu.prepend(frm);
 
+    // This one should always be there, let's use it as a reference point
+
+  let importantFrame;
+  if (document.URL.match(/record/g)) {
+    importantFrame = $('section#metrics');
+  }
+  if (document.URL.match(/request/g)) {
+    // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
+    importantFrame = $('h2:contains("Versions")').parent();
+  }
+
   let mainTitle = $('h1#record-title');
   let authorList = $('section#creatibutors');
   if (authorList.length) {
     addCheckElement(authorList, 'M1', 'after', true);
   }
-
 
   let contentChecks = $('<div>');
   
@@ -637,6 +652,8 @@ function addButtons() {
   if (abstract.length) {
     addCheckElement(abstract, 'M4', 'before', true);
     abstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
+  } else {
+    addCheckElement(importantFrame, 'M4', 'after', false);
   }
 
   if (authorList.length) {
@@ -656,17 +673,6 @@ function addButtons() {
 
   if (mainTitle.length) {
     addCheckElement(mainTitle, 'R2', 'after', true);
-  }
-
-  // This one should always be there, let's use it as a reference point
-
-  let importantFrame;
-  if (document.URL.match(/record/g)) {
-    importantFrame = $('section#metrics');
-  }
-  if (document.URL.match(/request/g)) {
-    // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
-    importantFrame = $('h2:contains("Versions")').parent();
   }
 
   let license = $('div#licenses');
@@ -811,10 +817,21 @@ function policyCheck(checkCode) {
     if (orcidEpflCreators) {
       return 'ok';
     }
-    if (recordJson.metadata.description.includes('@epfl.ch')) {
-      return 'maybe';
+    if ('description' in recordJson.metadata) {
+      if (recordJson.metadata.description.includes('@epfl.ch')) {
+        return 'maybe';
+      }
     }
     return 'bad';
+  }
+
+  if (checkCode == 'M4') {
+    // If the abstract is missing entirely, it's bad.
+    if ('description' in recordJson.metadata) {
+      return 'maybe';
+    } else {
+      return 'bad';
+    }
   }
 
   if (checkCode == 'M5') {
@@ -868,7 +885,7 @@ function policyCheck(checkCode) {
   if (checkCode == 'N7') {
     // Keywords: if there is only one string and it contains a comma or a semicolon, it is probably bad
     //let kw = $( "dd a.label-link span.label" );
-    try {
+    if ('subjects' in recordJson.metadata) {
       let kw = recordJson.metadata.subjects;
       console.log(kw);
       if (kw.length == 0) {
@@ -885,8 +902,8 @@ function policyCheck(checkCode) {
       if (kw.length > 2) {
         return 'ok';
       }
-    } catch (error) {
-      console.log('Unknown error in checkCode N7');
+    } else {
+      return 'meh';
     }
 
   }
@@ -926,8 +943,10 @@ function policyCheck(checkCode) {
       return 'maybe';
     } else {
       // In the absence of any related identifier, a DOI in the description is suspiscious.
-      if (recordJson.metadata.description.match(/doi\.org\/10\./g)) {
-        return 'meh';
+      if ('description' in recordJson.metadata) {
+        if (recordJson.metadata.description.match(/doi\.org\/10\./g)) {
+          return 'meh';
+        }
       }
     }
   }
