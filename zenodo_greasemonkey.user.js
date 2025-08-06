@@ -901,6 +901,9 @@ function policyCheck(checkCode) {
           return 'bad';
         }
       }
+      if (kw.length == 2) {
+        return 'maybe';
+      }
       if (kw.length > 2) {
         return 'ok';
       }
@@ -928,6 +931,8 @@ function policyCheck(checkCode) {
     }
     if (orcidCreators) {
       return 'maybe';
+    } else {
+      return 'bad';
     }
   }
 
