@@ -852,7 +852,7 @@ function policyCheck(checkCode) {
   }
 
   if (checkCode == 'M6') {
-    let originalZendoDoi = 'bad';
+    let originalZenodoDoi = 'bad';
     if (doi.match(/^10\.5281\/zenodo/g) || doi.match(/^10\.5072\/zenodo/g)) {
       originalZenodoDoi = 'ok';
     }
