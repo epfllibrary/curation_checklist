@@ -199,7 +199,7 @@ const checklistData = {
     'wrapper': 'div'
   },
   'N1': {
-    'full': 'The submitted work has been n2ed up (e.g., there are no temporary files, no unnecessary empty files or folders, no superfluous file versions, etc.)',
+    'full': 'The submitted work has been cleaned up (e.g., there are no temporary files, no unnecessary empty files or folders, no superfluous file versions, etc.)',
     'answers': {
       'bad': '[ONE POSSIBLE CASE]This is just a suggestion at this point but is quite a frequent one for us: in the future, you might want to exclude .DS_Store and other similar MacOS files in your archives. The otherwise very convenient "Compress" command in the OSX Finder makes it difficult to avoid this, but there are other tools that you could use instead, see https://apple.stackexchange.com/questions/239578/compress-without-ds-store-and-macosx for a few possible options.',
       'meh': 'NOT TOTALLY WRONG, BUT STILL...',
