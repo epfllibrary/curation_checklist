@@ -19,7 +19,7 @@
 // @exclude     https://zenodo.org/records/*/export/*
 // @exclude     https://zenodo.org/records/*preview/*
 // @grant       none
-// @version     1.6
+// @version     1.6.1
 // ==/UserScript==
 
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -945,8 +945,14 @@ function policyCheck(checkCode) {
       return 'maybe';
     } else {
       // In the absence of any related identifier, a DOI in the description is suspiscious.
+      // Unless it is the object's DOI itelf => negative look ahead needed
+      function escapeRegex(string) {
+        return string.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
+      }
+      let doiAfterTen = doi.slice(3);
+      let re = new RegExp(String.raw`doi\.org\/10\.(?!${escapeRegex(doiAfterTen)})`, "g");
       if ('description' in recordJson.metadata) {
-        if (recordJson.metadata.description.match(/doi\.org\/10\./g)) {
+        if (recordJson.metadata.description.match(re)) {
           return 'meh';
         }
       }
