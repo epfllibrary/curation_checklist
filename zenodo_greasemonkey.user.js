@@ -19,7 +19,7 @@
 // @exclude     https://zenodo.org/records/*/export/*
 // @exclude     https://zenodo.org/records/*preview/*
 // @grant       none
-// @version     1.6.1
+// @version     1.6.3
 // ==/UserScript==
 
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -973,8 +973,13 @@ function policyCheck(checkCode) {
     // 2025-07-30 at this point, give a green light if there is at least one structured funding field
     if ('funding' in recordJson.metadata) {
       for (let grant of recordJson.metadata.funding) {
-        if (grant.award.id) {
-          return 'ok';
+        if (grant.funder.id) {
+          if ('award' in grant) {
+            return 'ok';
+          } else {
+            return 'maybe'
+          }
+          
         }
       } 
     }
