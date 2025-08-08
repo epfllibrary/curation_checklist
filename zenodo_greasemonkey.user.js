@@ -19,7 +19,7 @@
 // @exclude     https://zenodo.org/records/*/export/*
 // @exclude     https://zenodo.org/records/*preview/*
 // @grant       none
-// @version     1.6
+// @version     1.6.1
 // ==/UserScript==
 
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -199,7 +199,7 @@ const checklistData = {
     'wrapper': 'div'
   },
   'N1': {
-    'full': 'The submitted work has been n2ed up (e.g., there are no temporary files, no unnecessary empty files or folders, no superfluous file versions, etc.)',
+    'full': 'The submitted work has been cleaned up (e.g., there are no temporary files, no unnecessary empty files or folders, no superfluous file versions, etc.)',
     'answers': {
       'bad': '[ONE POSSIBLE CASE]This is just a suggestion at this point but is quite a frequent one for us: in the future, you might want to exclude .DS_Store and other similar MacOS files in your archives. The otherwise very convenient "Compress" command in the OSX Finder makes it difficult to avoid this, but there are other tools that you could use instead, see https://apple.stackexchange.com/questions/239578/compress-without-ds-store-and-macosx for a few possible options.',
       'meh': 'NOT TOTALLY WRONG, BUT STILL...',
@@ -852,7 +852,7 @@ function policyCheck(checkCode) {
   }
 
   if (checkCode == 'M6') {
-    let originalZendoDoi = 'bad';
+    let originalZenodoDoi = 'bad';
     if (doi.match(/^10\.5281\/zenodo/g) || doi.match(/^10\.5072\/zenodo/g)) {
       originalZenodoDoi = 'ok';
     }
@@ -901,6 +901,9 @@ function policyCheck(checkCode) {
           return 'bad';
         }
       }
+      if (kw.length == 2) {
+        return 'maybe';
+      }
       if (kw.length > 2) {
         return 'ok';
       }
@@ -928,6 +931,8 @@ function policyCheck(checkCode) {
     }
     if (orcidCreators) {
       return 'maybe';
+    } else {
+      return 'bad';
     }
   }
 
@@ -945,8 +950,14 @@ function policyCheck(checkCode) {
       return 'maybe';
     } else {
       // In the absence of any related identifier, a DOI in the description is suspiscious.
+      // Unless it is the object's DOI itelf => negative look ahead needed
+      function escapeRegex(string) {
+        return string.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
+      }
+      let doiAfterTen = doi.slice(3);
+      let re = new RegExp(String.raw`doi\.org\/10\.(?!${escapeRegex(doiAfterTen)})`, "g");
       if ('description' in recordJson.metadata) {
-        if (recordJson.metadata.description.match(/doi\.org\/10\./g)) {
+        if (recordJson.metadata.description.match(re)) {
           return 'meh';
         }
       }
