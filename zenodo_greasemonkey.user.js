@@ -894,11 +894,15 @@ function policyCheck(checkCode) {
         return 'meh';
       }
       if (kw.length == 1) {
-        if (kw[0].includes(',')) {
-          return 'bad';
-        }
-        if (kw[0].includes(';')) {
-          return 'bad';
+        if (!('scheme' in kw[0])) {
+          if (kw[0].includes(',')) {
+            return 'bad';
+          }
+          if (kw[0].includes(';')) {
+            return 'bad';
+          }
+        } else {
+          return 'ok'
         }
       }
       if (kw.length == 2) {
