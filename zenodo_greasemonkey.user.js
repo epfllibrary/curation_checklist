@@ -18,6 +18,7 @@
 // @exclude     https://sandbox.zenodo.org/records/*preview/*
 // @exclude     https://zenodo.org/records/*/export/*
 // @exclude     https://zenodo.org/records/*preview/*
+// @downloadURL https://github.com/epfllibrary/curation_checklist/raw/refs/heads/main/zenodo_greasemonkey.user.js
 // @grant       none
 // @version     1.6.3
 // ==/UserScript==
