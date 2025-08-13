@@ -20,7 +20,7 @@
 // @exclude     https://zenodo.org/records/*preview/*
 // @downloadURL https://github.com/epfllibrary/curation_checklist/raw/refs/heads/main/zenodo_greasemonkey.user.js
 // @grant       none
-// @version     1.6.3
+// @version     1.6.3.1
 // ==/UserScript==
 
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
