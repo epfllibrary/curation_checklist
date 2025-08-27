@@ -412,6 +412,7 @@ let allFileNames;
   
 
 let recordJson = {}
+let unknownRelated;
 fetch(jsonUrl, {
     method: 'GET',
     headers: {
@@ -438,9 +439,17 @@ fetch(jsonUrl, {
 
     console.log(recordJson.metadata);
 
+    /*
     console.log('missing related DOIs according to Infoscience', relatedItemsNotOnInfoscience(recordJson));
 
     addButtons();
+    */
+
+    relatedItemsNotOnInfoscience(recordJson).then(result => {
+      unknownRelated = result;
+      console.log('missing related DOIs according to Infoscience', unknownRelated);
+      addButtons(); // Move this inside the .then() if it depends on unknownRelated
+    });
   })
   .catch(err => console.error(err));
 
@@ -1078,6 +1087,7 @@ function ulTreeToPathList($ul, basePath = '') {
 async function listedOnInfoscience(doi) {
   let isPresent;
   let searchURL = 'https://infoscience.epfl.ch/server/api/discover/search/objects?query=dc.identifier.doi%3A%22' + encodeURIComponent(doi) + '%22';
+  console.log(searchURL);
   await fetch(searchURL, {
     method: 'GET',
     headers: {
@@ -1087,7 +1097,7 @@ async function listedOnInfoscience(doi) {
   .then(resp => resp.json())
   .then(json => {
     if (json._embedded.searchResult._embedded.objects.length > 0) {
-      console.log('yep')
+      console.log(doi, 'yep')
       isPresent = true
     } else {
       isPresent = false
@@ -1101,11 +1111,12 @@ async function relatedItemsNotOnInfoscience(recordJson) {
   let infoscienceMissingRelated = [];
   if ('related_identifiers' in recordJson.metadata) {
     for (let relatedResource of recordJson.metadata.related_identifiers) {
-      if (relatedResource.resource_type.id == "publication") {
-        if (!( await listedOnInfoscience(relatedResource.identifier))) {
+      //if (relatedResource.resource_type.id == "publication") {
+        isPresent = await listedOnInfoscience(relatedResource.identifier);
+        if (!isPresent) {
           infoscienceMissingRelated.push(relatedResource.identifier)    
         }
-      }
+      //}
     }
   }
   return infoscienceMissingRelated;
