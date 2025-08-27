@@ -20,7 +20,7 @@
 // @exclude     https://zenodo.org/records/*preview/*
 // @downloadURL https://github.com/epfllibrary/curation_checklist/raw/refs/heads/main/zenodo_greasemonkey.user.js
 // @grant       none
-// @version     1.6.3.1
+// @version     1.7
 // ==/UserScript==
 
 // MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
@@ -436,10 +436,13 @@ fetch(jsonUrl, {
 
     allFileNames = listContent(recordJson);
 
+    console.log(recordJson.metadata);
+
+    console.log('missing related DOIs according to Infoscience', relatedItemsNotOnInfoscience(recordJson));
+
     addButtons();
   })
   .catch(err => console.error(err));
-console.log(recordJson.metadata);
 
 
 function addCheckElement(selector, checkCode, position, normal) {
@@ -574,7 +577,7 @@ function addButtons() {
     if (text == '') {
       // When all checkbuttons are set to ok, prepare the most positive feedback
       header += `${greeting},\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo. Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
-      header += 'As per our new workflow, the dataset will also be listed on Infoscience by our staff. The record will be submitted for approval to your laboratory, similar to the process followed by publications imported from the Web of Science.\n\n'
+      header += 'As per our new workflow, the dataset will also be listed on Infoscience by our staff. The record will be submitted for approval to your laboratory, similar to the process followed by publications imported from external sources (Web of Science, Scopus, OpenAlex...).\n\n'
       header += 'XXX CHECK IF APPLICABLE XXX '
       header += 'Furthermore, considering that the dataset is linked to a publication, we will also archive a copy of the dataset for long-time preservation in EPFL\'s ACOUA platform (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info).\n'
       header += '\n\n'
@@ -943,7 +946,7 @@ function policyCheck(checkCode) {
 
   if (checkCode == 'R3') {
     // check for related identifier (experimental)
-    // 2025-07-30 at this point, give a green light if there is at least one structured funding field
+    // 2025-07-30 at this point, give a green light if there is at least one related identifier
     if ('related_identifiers' in recordJson.metadata) {
       for (let relatedResource of recordJson.metadata.related_identifiers) {
         if ('id' in relatedResource) {
@@ -1070,4 +1073,40 @@ function ulTreeToPathList($ul, basePath = '') {
   });
   
   return paths;
+}
+
+async function listedOnInfoscience(doi) {
+  let isPresent;
+  let searchURL = 'https://infoscience.epfl.ch/server/api/discover/search/objects?query=dc.identifier.doi%3A%22' + encodeURIComponent(doi) + '%22';
+  await fetch(searchURL, {
+    method: 'GET',
+    headers: {
+      accept: 'application/json'
+    }
+  })
+  .then(resp => resp.json())
+  .then(json => {
+    if (json._embedded.searchResult._embedded.objects.length > 0) {
+      console.log('yep')
+      isPresent = true
+    } else {
+      isPresent = false
+    }
+  })
+  return isPresent;
+}
+
+async function relatedItemsNotOnInfoscience(recordJson) {
+  console.log('entering relatedItemsNotOnInfoscience()');
+  let infoscienceMissingRelated = [];
+  if ('related_identifiers' in recordJson.metadata) {
+    for (let relatedResource of recordJson.metadata.related_identifiers) {
+      if (relatedResource.resource_type.id == "publication") {
+        if (!( await listedOnInfoscience(relatedResource.identifier))) {
+          infoscienceMissingRelated.push(relatedResource.identifier)    
+        }
+      }
+    }
+  }
+  return infoscienceMissingRelated;
 }
