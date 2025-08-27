@@ -582,6 +582,7 @@ function addButtons() {
 
     let header = ''
     let footer = ''
+    let infoscienceReport = ''
     emailSub += encodeURIComponent(': ' + title);
     if (text == '') {
       // When all checkbuttons are set to ok, prepare the most positive feedback
@@ -598,6 +599,12 @@ function addButtons() {
       header += ' We thank you and your coworkers for this contribution.\n\n'
       header += 'Within our curation procedure ( https://zenodo.org/communities/epfl/about ), we have identified a few details that could be improved:\n\n';
 
+      if (unknownRelated.length > 0) {
+        console.log('unknownRelated:', unknownRelated, unknownRelated.length)
+        infoscienceReport = 'Related identifiers not found on Infoscience:\n- ' + unknownRelated.join('\n- ') + '\n\n';
+        //infoscienceReport = unknownRelated;
+      }
+
       footer += 'When the above feedback is addressed, we will be able to add value to your results and potentially save some of your time:\n';
       footer += '    •   we create Infoscience records for datasets newly accepted into the EPFL community, so that they are available for web pages, activity reports, etc.\n';
       footer += '    •   if the upload is related with a publication and if the distribution license allows it, we can take advantage of this situation to copy the data into EPFL\'s long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n';
@@ -608,7 +615,7 @@ function addButtons() {
     }
     footer += 'Best regards,\nZZZZZZ'
 
-    text = header + text + footer;
+    text = header + text + infoscienceReport + footer;
     let finalURL = 'mailto:' + emailTo + '?&subject=' + emailSub + '&body=' + encodeURIComponent(text);
     // console.log(finalURL);
     openMailEditor(finalURL);
