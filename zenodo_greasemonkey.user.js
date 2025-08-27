@@ -1118,6 +1118,7 @@ async function relatedItemsNotOnInfoscience(recordJson) {
   let infoscienceMissingRelated = [];
   if ('related_identifiers' in recordJson.metadata) {
     for (let relatedResource of recordJson.metadata.related_identifiers) {
+      // TODO define criteria for eligible related identifiers: resource_type.id? DOI normalization?
       //if (relatedResource.resource_type.id == "publication") {
         isPresent = await listedOnInfoscience(relatedResource.identifier);
         if (!isPresent) {
