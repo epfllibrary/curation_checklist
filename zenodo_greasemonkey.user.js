@@ -1091,6 +1091,8 @@ function ulTreeToPathList($ul, basePath = '') {
 }
 
 async function listedOnInfoscience(identifier, idScheme) {
+  // Check whether a record for the listed identifier already exists on Infoscience
+  // Public API calls => only published records will be detected, not workspace items 
   let isPresent;
   let normalizedIdentifier;
   // By default, use the identifier directly, unless the scheme has further requirements
@@ -1128,7 +1130,10 @@ async function listedOnInfoscience(identifier, idScheme) {
 }
 
 async function relatedItemsNotOnInfoscience(recordJson) {
-  console.log('entering relatedItemsNotOnInfoscience()');
+  // check all related identifiers with: 
+  // 1) publication-like resource types
+  // 2) publication-oriented identifier schemes
+  // Returns the ones not publicly listed on Infoscience (adding the scheme in capitals)
 
   relevantResourceTypes = ['publication',
                            'publication-annotationcollection',
