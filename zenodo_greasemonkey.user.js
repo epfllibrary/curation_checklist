@@ -497,16 +497,6 @@ function addCheckElement(selector, checkCode, position, normal) {
   }
 }
 
-function addRequestRecordTab(doiId) {
-  /**
-  Add a record tab in the Zenodo post-Oct. 2023 interface
-   */
-  var requestCommunitySubmissionTab = $('div#request-community-submission-tab');
-  var fullRecordTabHtml = '<a href="' + doiId + '" target="_blank" role="tab" class="item" data-tab="fullrecord" aria-selected="false" aria-controls="full-record-tab-panel" id="full-record-tab">[SISB-RDM]Full record view</a>';
-  requestCommunitySubmissionTab.append($(fullRecordTabHtml));
-
-}
-
 function addButtons() {
 
   var btn = document.createElement('BUTTON');
@@ -1101,7 +1091,7 @@ async function listedOnInfoscience(identifier, idScheme) {
       normalizedIdentifier = doiNormalize(identifier);
       break;
     case 'arxiv':
-      normalizedIdentifier = doiNormalize(identifier);
+      normalizedIdentifier = arxivNormalize(identifier);
       break;
     default:
       normalizedIdentifier = identifier;   
