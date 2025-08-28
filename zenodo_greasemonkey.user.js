@@ -1091,9 +1091,24 @@ function ulTreeToPathList($ul, basePath = '') {
   return paths;
 }
 
-async function listedOnInfoscience(doi) {
+async function listedOnInfoscience(identifier, idScheme) {
   let isPresent;
-  let searchURL = 'https://infoscience.epfl.ch/server/api/discover/search/objects?query=dc.identifier.doi%3A%22' + encodeURIComponent(doiNormalize(doi)) + '%22';
+  let normalizedIdentifier;
+  // By default, use the identifier directly, unless the scheme has further requirements
+  switch (idScheme) {
+    case 'doi':
+      normalizedIdentifier = doiNormalize(identifier);
+      break;
+    case 'arxiv':
+      normalizedIdentifier = doiNormalize(identifier);
+      break;
+    default:
+      normalizedIdentifier = identifier;   
+  }
+
+  console.log(idScheme, normalizedIdentifier)
+
+  let searchURL = 'https://infoscience.epfl.ch/server/api/discover/search/objects?query=dc.identifier.' + idScheme + '%3A%22' + encodeURIComponent(normalizedIdentifier) + '%22';
   console.log(searchURL);
   await fetch(searchURL, {
     method: 'GET',
@@ -1115,20 +1130,55 @@ async function listedOnInfoscience(doi) {
 
 async function relatedItemsNotOnInfoscience(recordJson) {
   console.log('entering relatedItemsNotOnInfoscience()');
+
+  relevantResourceTypes = ['publication',
+                           'publication-annotationcollection',
+                           'publication-article',
+                           'publication-book',
+                           'publication-conferencepaper',
+                           'publication-datamanagementplan',
+                           'publication-deliverable',
+                           'publication-milestone',
+                           'publication-other',
+                           'publication-patent',
+                           'publication-preprint',
+                           'publication-proposal',
+                           'publication-report',
+                           'publication-section',
+                           'publication-softwaredocumentation',
+                           'publication-taxonomictreatment',
+                           'publication-technicalnote',
+                           'publication-thesis',
+                           'publication-workingpaper',
+                           'presentation', 
+                           'poster'];
+  
+  relevantIdSchemes = ['doi', 'arxiv', 'isbn', 'pmid'];
+
   let infoscienceMissingRelated = [];
+  
   if ('related_identifiers' in recordJson.metadata) {
     for (let relatedResource of recordJson.metadata.related_identifiers) {
-      // TODO define criteria for eligible related identifiers: resource_type.id? DOI normalization?
-      //if (relatedResource.resource_type.id == "publication") {
-        isPresent = await listedOnInfoscience(relatedResource.identifier);
-        if (!isPresent) {
-          infoscienceMissingRelated.push(relatedResource.identifier)    
+      // TODO MAYBE define behavior if no resource_type was provided?
+      // TODO MAYBE exclude Zenodo/Dryad/etc. DOIs in that case?
+      console.log(relatedResource);
+      if ('resource_type' in relatedResource) {
+        if (relevantResourceTypes.indexOf(relatedResource.resource_type.id) > -1) {
+          console.log(relatedResource.resource_type.id);
+          if (relevantIdSchemes.indexOf(relatedResource.scheme) > -1) {
+            isPresent = await listedOnInfoscience(relatedResource.identifier, relatedResource.scheme);
+            if (!isPresent) {
+              infoscienceMissingRelated.push(relatedResource.identifier)
+            }
+          }
         }
-      //}
+      }
     }
   }
+  
   return infoscienceMissingRelated;
 }
+
 
 // Adapted from https://github.com/altmetric/identifiers-arxiv
 function arxivNormalize(str) {
