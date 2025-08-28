@@ -1093,7 +1093,7 @@ function ulTreeToPathList($ul, basePath = '') {
 
 async function listedOnInfoscience(doi) {
   let isPresent;
-  let searchURL = 'https://infoscience.epfl.ch/server/api/discover/search/objects?query=dc.identifier.doi%3A%22' + encodeURIComponent(doi) + '%22';
+  let searchURL = 'https://infoscience.epfl.ch/server/api/discover/search/objects?query=dc.identifier.doi%3A%22' + encodeURIComponent(doiNormalize(doi)) + '%22';
   console.log(searchURL);
   await fetch(searchURL, {
     method: 'GET',
@@ -1128,4 +1128,63 @@ async function relatedItemsNotOnInfoscience(recordJson) {
     }
   }
   return infoscienceMissingRelated;
+}
+
+// Adapted from https://github.com/altmetric/identifiers-arxiv
+function arxivNormalize(str) {
+
+  function extractPre2007Ids(str) {
+    return extractIds(str, /(?:^|\s|\/)((?:arXiv:)?[a-z-]+(?:\.[A-Z]{2})?\/\d{2}(?:0[1-9]|1[012])\d{3}(?:v\d+)?(?=$|\s))/gi);
+  }
+
+  function extractPost2007Ids(str) {
+    return extractIds(str, /(?:^|\s|\/)((?:arXiv:)?\d{4}\.\d{4,5}(?:v\d+)?(?=$|\s))/gi);
+  }
+
+  function extractIds(str, re) {
+    let match = [];
+    let matches = [];
+    while ((match = re.exec(str)) !== null) {
+        matches.push(match[1]);
+    }
+    return matches.map(stripScheme);
+  }
+
+  function stripScheme(str) {
+    return str.replace(/^arXiv:/i, "");
+  }
+
+  return extractPre2007Ids(str).concat(extractPost2007Ids(str));
+}
+
+
+// Adapted from https://github.com/altmetric/identifiers-doi
+function doiNormalize(str) {
+
+  const PATTERN = "\\b10\\.(?:97[89]\\.\\d{2,8}\\/\\d{1,7}|\\d{4,9}\\/\\S+)";
+  const GLOBAL_PATTERN = new RegExp(PATTERN, "g");
+  const SINGLE_PATTERN = new RegExp(PATTERN);
+  
+  function extractOne(str) {
+    const match = String(str).toLowerCase().match(SINGLE_PATTERN);
+    if (!match) {
+        return;
+    }
+    return stripPunctuation(match[0]);
+  }
+
+  function stripPunctuation(doi) {
+    const VALID_ENDING = /(?:\w|\(.+\)|2-#)$/;
+    if (VALID_ENDING.test(doi)) {
+        return doi;
+    }
+    return extractOne(doi.replace(/\W$/, ""));
+  }
+
+  const matches = String(str).toLowerCase().match(GLOBAL_PATTERN);
+  if (!matches) {
+        return [];
+  }
+
+  return matches.map(stripPunctuation).filter(Boolean);
 }
