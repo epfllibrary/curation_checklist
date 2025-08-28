@@ -23,11 +23,8 @@
 // @version     1.7
 // ==/UserScript==
 
-// MAYBE use https://stackoverflow.com/questions/18231259/how-to-take-screen-shot-of-current-webpage-using-javascript-jquery ?
-
 // TODO add standardized comments for non-compliant results where possible
 // TODO: find further ideas to check criteria M3, R4 (if we find a comment about grant in the description), N1 (maybe a quick look at the files for the worst offenders: ._*, *.bak, ...), N6 (maybe lists based on the Fastguide)
-// MAYBE: better explanation of Infoscience validation
 
 /**
 Check levels:
@@ -230,8 +227,8 @@ const checklistData = {
   'N3': {
     'full': 'The README file contains detailed information about the work creation (authors, time, place, methodologies…), content (file organization and naming, formats, relevant standards…), sharing and access, etc.',
     'answers': {
-      'bad': 'A good README can significantly improve a potential user\'s understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/record/298249',
-      'meh': 'A good README can significantly improve a potential user\'s understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/record/298249',
+      'bad': 'A good README can significantly improve a potential user\'s understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/handle/20.500.14299/192546',
+      'meh': 'A good README can significantly improve a potential user\'s understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/handle/20.500.14299/192546',
       'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
       'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
       'ok': ''
@@ -447,8 +444,8 @@ fetch(jsonUrl, {
 
     relatedItemsNotOnInfoscience(recordJson).then(result => {
       unknownRelated = result;
-      console.log('missing related DOIs according to Infoscience', unknownRelated);
-      addButtons(); // Move this inside the .then() if it depends on unknownRelated
+      console.log('missing related identifiers according to Infoscience', unknownRelated);
+      addButtons();
     });
   })
   .catch(err => console.error(err));
@@ -601,7 +598,9 @@ function addButtons() {
 
       if (unknownRelated.length > 0) {
         console.log('unknownRelated:', unknownRelated, unknownRelated.length)
-        infoscienceReport = 'Related identifiers not found on Infoscience:\n- ' + unknownRelated.join('\n- ') + '\n\n';
+        infoscienceReport = 'Apparently, the following related publications are not yet declared on Infoscience:\n* ' + unknownRelated.join('\n* ') + '\n\n';
+        infoscienceReport += 'Assuming that they are EPFL publications, we strongly recommend submitting them on https://infoscience.epfl.ch/mydspace to make sure the database is fully up-to-date.\n';
+        infoscienceReport += '(See https://www.epfl.ch/campus/library/services-researchers/infoscience-en/help-infoscience/submit-a-publication/ if you are not familiar with entering new records on Infoscience)\n\n';
         //infoscienceReport = unknownRelated;
       }
 
@@ -1168,7 +1167,7 @@ async function relatedItemsNotOnInfoscience(recordJson) {
           if (relevantIdSchemes.indexOf(relatedResource.scheme) > -1) {
             isPresent = await listedOnInfoscience(relatedResource.identifier, relatedResource.scheme);
             if (!isPresent) {
-              infoscienceMissingRelated.push(relatedResource.identifier)
+              infoscienceMissingRelated.push(relatedResource.scheme.toUpperCase() + ': ' + relatedResource.identifier);
             }
           }
         }
