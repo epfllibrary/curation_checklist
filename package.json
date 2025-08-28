@@ -1,24 +1,36 @@
 {
+  "name": "curation_checklist",
+  "version": "1.0.0",
+  "description": "## Goals - simplify the creation of curation/review reports",
+  "homepage": "https://github.com/epfllibrary/curation_checklist#readme",
+  "bugs": {
+    "url": "https://github.com/epfllibrary/curation_checklist/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://aborel@github.com/epfllibrary/curation_checklist.git"
+  },
+  "license": "MIT",
+  "author": "Alain Borel",
+  "type": "commonjs",
+  "main": ".eslintrc.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
-    "cypress": "^14.5.3",
     "esdoc": "^1.1.0",
     "esdoc-standard-plugin": "^1.0.0",
     "lint": "^0.8.19"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "eslint-config-airbnb-base": "^15.0.0",
+    "@eslint/js": "^9.34.0",
+    "eslint": "^9.34.0",
     "eslint-config-jquery": "^3.0.0",
     "eslint-plugin-html": "^7.1.0",
-    "eslint-plugin-import": "^2.27.5"
-  },
-  "name": "curation_checklist",
-  "description": "## Goals - simplify the creation of curation/review reports",
-  "version": "1.0.0",
-  "main": ".eslintrc.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Alain Borel",
-  "license": "MIT"
+    "eslint-plugin-import": "^2.27.5",
+    "globals": "^16.3.0"
+  }
 }
