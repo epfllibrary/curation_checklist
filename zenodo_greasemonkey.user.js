@@ -435,6 +435,7 @@ fetch(jsonUrl, {
     allFileNames = listContent(recordJson);
 
     console.log(recordJson.metadata);
+    console.log(allFileNames);
 
     /*
     console.log('missing related DOIs according to Infoscience', relatedItemsNotOnInfoscience(recordJson));
@@ -1131,29 +1132,29 @@ async function relatedItemsNotOnInfoscience(recordJson) {
   // 2) publication-oriented identifier schemes
   // Returns the ones not publicly listed on Infoscience (adding the scheme in capitals)
 
-  relevantResourceTypes = ['publication',
-                           'publication-annotationcollection',
-                           'publication-article',
-                           'publication-book',
-                           'publication-conferencepaper',
-                           'publication-datamanagementplan',
-                           'publication-deliverable',
-                           'publication-milestone',
-                           'publication-other',
-                           'publication-patent',
-                           'publication-preprint',
-                           'publication-proposal',
-                           'publication-report',
-                           'publication-section',
-                           'publication-softwaredocumentation',
-                           'publication-taxonomictreatment',
-                           'publication-technicalnote',
-                           'publication-thesis',
-                           'publication-workingpaper',
-                           'presentation', 
-                           'poster'];
-  
-  relevantIdSchemes = ['doi', 'arxiv', 'isbn', 'pmid'];
+  const relevantResourceTypes = ['publication',
+                                 'publication-annotationcollection',
+                                 'publication-article',
+                                 'publication-book',
+                                 'publication-conferencepaper',
+                                 'publication-datamanagementplan',
+                                 'publication-deliverable',
+                                 'publication-milestone',
+                                 'publication-other',
+                                 'publication-patent',
+                                 'publication-preprint',
+                                 'publication-proposal',
+                                 'publication-report',
+                                 'publication-section',
+                                 'publication-softwaredocumentation',
+                                 'publication-taxonomictreatment',
+                                 'publication-technicalnote',
+                                 'publication-thesis',
+                                 'publication-workingpaper',
+                                 'presentation', 
+                                 'poster'];
+        
+  const relevantIdSchemes = ['doi', 'arxiv', 'isbn', 'pmid'];
 
   let infoscienceMissingRelated = [];
   
@@ -1166,7 +1167,7 @@ async function relatedItemsNotOnInfoscience(recordJson) {
         if (relevantResourceTypes.indexOf(relatedResource.resource_type.id) > -1) {
           console.log(relatedResource.resource_type.id);
           if (relevantIdSchemes.indexOf(relatedResource.scheme) > -1) {
-            isPresent = await listedOnInfoscience(relatedResource.identifier, relatedResource.scheme);
+            let isPresent = await listedOnInfoscience(relatedResource.identifier, relatedResource.scheme);
             if (!isPresent) {
               infoscienceMissingRelated.push(relatedResource.scheme.toUpperCase() + ': ' + relatedResource.identifier);
             }
