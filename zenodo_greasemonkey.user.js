@@ -590,14 +590,14 @@ function addButtons() {
       if (unknownRelated.length > 1) {
         console.log('unknownRelated:', unknownRelated, unknownRelated.length)
         infoscienceReport = 'Apparently, the following related publications are not yet listed on Infoscience:\n* ' + unknownRelated.join('\n* ') + '\n\n';
-        infoscienceReport += 'Assuming that they are EPFL publications, we strongly recommend submitting them on https://infoscience.epfl.ch/mydspace to make sure the database is fully up-to-date.\n';
+        infoscienceReport += 'Assuming that they are EPFL publications, we invite you to submit them on https://infoscience.epfl.ch/mydspace to make sure the database is fully up-to-date.\n';
         infoscienceReport += '(See https://go.epfl.ch/how-submit-infoscience if you are not familiar with entering new records on Infoscience)\n\n';
       }
 
       if (unknownRelated.length == 1) {
         console.log('unknownRelated:', unknownRelated, unknownRelated.length)
         infoscienceReport = 'Apparently, the following related publication is not yet listed on Infoscience:\n* ' + unknownRelated.join('\n* ') + '\n\n';
-        infoscienceReport += 'Assuming that this is an EPFL publication, we strongly recommend submitting it on https://infoscience.epfl.ch/mydspace to make sure the database is fully up-to-date.\n';
+        infoscienceReport += 'Assuming that this is an EPFL publication, we invite you to submit it on https://infoscience.epfl.ch/mydspace to make sure the database is fully up-to-date.\n';
         infoscienceReport += '(See https://go.epfl.ch/how-submit-infoscience if you are not familiar with entering new records on Infoscience)\n\n';
       }
 
