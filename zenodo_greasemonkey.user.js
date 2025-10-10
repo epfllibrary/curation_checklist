@@ -20,7 +20,7 @@
 // @exclude     https://zenodo.org/records/*preview/*
 // @downloadURL https://github.com/epfllibrary/curation_checklist/raw/refs/heads/main/zenodo_greasemonkey.user.js
 // @grant       none
-// @version     1.7
+// @version     1.7.1
 // ==/UserScript==
 
 // TODO add standardized comments for non-compliant results where possible
@@ -53,7 +53,10 @@ const checklistData = {
     'answers': {
       'bad': 'There is not enough evidence that the authors are or were affiliated with EPFL, we would be grateful for more details (for example an e-mail address or ORCID identifier)',
       'meh': 'NOT TOTALLY WRONG, BUT STILL...',
-      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'maybe': '[Typical issue, please check!] One or more authors are affiliated with EPFL, ' +
+                'but the format does not conform to the standard address format "École polytechnique fédérale de Lausanne (EPFL)" ' + 
+                '(part of the Directive concerning research integrity and good scientific practice at EPFL - LEX 3.3.2).' +
+                '\nIn the Zenodo entry form, the compliant suggestion by the entry form is the one listed with "Source: ROR (Prefered)".',
       'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
       'ok': ''
     },
@@ -783,16 +786,20 @@ function policyCheck(checkCode) {
   if (checkCode == 'M1') {
     // Check EPFL creators. Acceptable if there is at least one, OK if all (more than 1) creators are EPFL
     let epflCreators = 0;
+    let compliantCreators = 0
     for (let creator of recordJson.metadata.creators) {
       if ('affiliations' in creator) {
         for (let affiliation of creator.affiliations) {
-          if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
+          if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/) || affiliation.name.match(/[Ss]wiss [Ff]ederal [Ii]nstitute of [Tt]echnology .{1,4}Lausanne/)) {
             epflCreators += 1;
+          }
+          if (affiliation.name.includes('École Polytechnique Fédérale de Lausanne')) {
+            compliantCreators += 1;
           }
         }
       }
     }
-    if (epflCreators == recordJson.metadata.creators.length) {
+    if (compliantCreators == recordJson.metadata.creators.length) {
       return 'ok';
     }
     if (epflCreators) {
