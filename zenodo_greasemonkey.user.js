@@ -53,7 +53,7 @@ const checklistData = {
     'answers': {
       'bad': 'There is not enough evidence that the authors are or were affiliated with EPFL, we would be grateful for more details (for example an e-mail address or ORCID identifier)',
       'meh': 'NOT TOTALLY WRONG, BUT STILL...',
-      'maybe': '[Typical issue, please check!] One or more authors are affiliated with EPFL, ' +
+      'maybe': '[Typical issue, please check!] One or more authors are affiliated with EPFL, which is sufficient for us, ' +
                 'but the format does not conform to the standard address format "École polytechnique fédérale de Lausanne (EPFL)" ' + 
                 '(part of the Directive concerning research integrity and good scientific practice at EPFL - LEX 3.3.2).' +
                 '\nIn the Zenodo entry form, the compliant suggestion by the entry form is the one listed with "Source: ROR (Prefered)".',
@@ -826,7 +826,7 @@ function policyCheck(checkCode) {
     for (let creator of recordJson.metadata.creators) {
       if ('affiliations' in creator) {
       for (let affiliation of creator.affiliations) {
-        if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/)) {
+        if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/) || affiliation.name.match(/[Ss]wiss [Ff]ederal [Ii]nstitute of [Tt]echnology .{1,4}Lausanne/)) {
           if ('identifiers' in creator.person_or_org) {
             for (let identifier of creator.person_or_org.identifiers) {
               if (identifier.scheme.toLowerCase() == 'orcid') {
