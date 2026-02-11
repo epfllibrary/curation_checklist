@@ -20,7 +20,7 @@
 // @exclude     https://zenodo.org/records/*preview/*
 // @downloadURL https://github.com/epfllibrary/curation_checklist/raw/refs/heads/main/zenodo_greasemonkey.user.js
 // @grant       none
-// @version     1.7.1
+// @version     1.7.2
 // ==/UserScript==
 
 // TODO add standardized comments for non-compliant results where possible
@@ -46,6 +46,8 @@ For some criteria, mostly when they deal with optional fields (such as keywords)
 - altshort
 - altwrapper
 */
+
+/* tags for code maintenance in case of policy changes */
 
 const ruleTags = {
   'epflAuthor': 'M1',
