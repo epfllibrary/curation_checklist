@@ -20,7 +20,7 @@
 // @exclude     https://zenodo.org/records/*preview/*
 // @downloadURL https://github.com/epfllibrary/curation_checklist/raw/refs/heads/main/zenodo_greasemonkey.user.js
 // @grant       none
-// @version     1.7.1
+// @version     1.7.2
 // ==/UserScript==
 
 // TODO add standardized comments for non-compliant results where possible
@@ -46,8 +46,32 @@ For some criteria, mostly when they deal with optional fields (such as keywords)
 - altshort
 - altwrapper
 */
+
+/* tags for code maintenance in case of policy changes */
+
+const ruleTags = {
+  'epflAuthor': 'M1',
+  'epflContact': 'M2',
+  'accessForReview': 'M3',
+  'sufficientDescription': 'M4',
+  'readmePresent': 'M5',
+  'originalDOI': 'M6',
+  'allORCIDs': 'R1',
+  'humanReadableTitle': 'R2',
+  'relatedWorks': 'R3',
+  'listedGrants': 'R4',
+  'noPersonalData': 'R5',
+  'cleanDataset': 'N1',
+  'permissiveLicence': 'N2',
+  'detailedReadme': 'N3',
+  'supervisorIfThesis': 'N4',
+  'openFileFormats': 'N5',
+  'listedSourced': 'N6',
+  'properKeywords': 'N7'
+}
+
 const checklistData = {
-  'M1': {
+  'epflAuthor': {
     'full': 'At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work',
     'short': '<b>EPFL authors?&nbsp;</b>',
     'answers': {
@@ -63,7 +87,7 @@ const checklistData = {
     'category': 'must',
     'wrapper': 'div'
   },
-  'M2': {
+  'epflContact': {
     'full': 'Contact information for at least one EPFL author is provided, preferably through an ORCID identifier',
     'answers': {
       'bad': 'Minimal contact information for an EPFL author must be available, please add it either using ORCID or in the Description.',
@@ -76,7 +100,7 @@ const checklistData = {
     'short': '<b>ORCID or email for 1 EPFL author?&nbsp;</b>',
     'wrapper': 'div'
   },
-  'M3': {
+  'accessForReview': {
     'full': 'The content of the submitted work must be accessible for review, i.e. Open Access, or Restricted after an access request has been granted to the reviewers. Embargoed works will be reviewed after the embargo expires',
     'answers': {
       'bad': 'If we cannot access the content of the dataset, we cannot check its compliance with our curation criteria. Would it be possible to make it at least Restricted?',
@@ -89,7 +113,7 @@ const checklistData = {
     'short': '<b>Access to content?&nbsp;</b>',
     'wrapper': 'div'
   },
-  'M4': {
+  'sufficientDescription': {
     'full': 'The Description of the submitted work is sufficiently detailed. Mere references to external articles or to other external resources are not sufficient descriptions',
     'answers': {
       'bad': 'For example, a few sentences explaining how the files were generated or used would be very helpful for a potential user. If the data was used in a publication, you could also include part of the article abstract, to make the scientific context more immediately apparent.',
@@ -103,8 +127,8 @@ const checklistData = {
     'altshort': '<b>Sufficient abstract?&nbsp;</b>',
     'wrapper': 'div'
   },
-  'M5': {
-    'full': 'The submitted work includes a clearly identifiable README file, typically in the root directory. This is not required for works consisting in one single document (ex. publications, posters, or presentation slides)',
+  'readmePresent': {
+    'full': 'The submitted work includes a clearly identifiable README file, typically in the root directory. This is not required for works consisting in one single document (ex. publication, poster, or presentation)',
     'answers': {
       'bad': 'Such a file really facilitates a potential user\'s understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, it is a requirement for long-term archiving by EPFL\'s ACOUA system (further info at the end of this message).',
       'meh': 'Such a file really facilitates a potential user\'s understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, it is a requirement for long-term archiving by EPFL\'s ACOUA system (further info at the end of this message).',
@@ -116,7 +140,7 @@ const checklistData = {
     'short': '<b>README present?&nbsp;</b>',
     'wrapper': 'span'
   },
-  'M6': {
+  'originalDOI': {
     'full': 'The main DOI has been assigned by Zenodo',
     'answers': {
       'bad': 'Entering an existing DOI as the main identifier is allowed only if the submitted work is an exact copy of a digital object that has already received its DOI on another platform, but even in that case an IsIdenticalTo relationship will be more correct. Typically, supplementary data to a journal article should NOT re-use the journal article DOI.',
@@ -129,7 +153,7 @@ const checklistData = {
     'short': '<b>&nbsp;Original (Zenodo) DOI?&nbsp;</b>',
     'wrapper': 'span'
   },
-  'R1': {
+  'allORCIDs': {
     'full': 'All authors are identified by their ORCID',
     'answers': {
       'bad': 'By listing all authors with their respective ORCID, you make sure that they can be recognized unambiguously. If an EPFL author has no ORCID yet, we strongly suggest to create one: see https://actu.epfl.ch/news/link-your-orcid-profile-with-epfl/ for more info',
@@ -142,7 +166,7 @@ const checklistData = {
     'short': '<b>Authors with ORCID?&nbsp;</b>',
     'wrapper': 'div'
   },
-  'R2': {
+  'humanReadableTitle': {
     'full': 'The main title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated',
     'answers': {
       'bad': 'As for any scientific output, a good title is the first place where others will learn about the nature and purpose of your research. The same principles as for scientific papers are applicable.',
@@ -155,7 +179,7 @@ const checklistData = {
     'short': '<b>&nbsp;</b>',
     'wrapper': 'span'
   },
-  'R3': {
+  'relatedWorks': {
     'full': 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) are specified in the "Related works" field. If available, references are designated by their respective DOIs',
     'answers': {
       'bad': 'The upload appears to be related with a publication. If the final publication or a version of the manuscript is available online, it should be listed it in the "Related/alternate identifiers" section - preferably using a DOI but a URL is fine if no DOI has been assigned to the publication. If no online version exists yet (even a preprint), can you give us an estimated time for the expected publication?',
@@ -170,7 +194,7 @@ const checklistData = {
     'altwrapper': 'dt',
     'altshort': '<b>No related identifiers here, is it OK?&nbsp;</b>'
   },
-  'R4': {
+  'listedGrants': {
     'full': 'If related grants require an acknowledgement, they are listed using “Funding/Grants” fields',
     'answers': {
       'bad': 'There are specific fields to list grants, it is better to use them than to write an acknowledgement in the description: it facilitates the automatic retrieval of that information on the funders\' platfoms',
@@ -186,7 +210,7 @@ const checklistData = {
     'altwrapper': 'dt',
     'selector': 'dt:contains("Grants:")'
   },
-  'R5': {
+  'noPersonalData': {
     'full': 'Any sensitive, personal data has been anonymized',
     'answers': {
       'bad': 'The upload contains personal data about human research subjects, which is forbidden by various laws. Make sure the access is strictly limited and/or replace the data with an anonymized version',
@@ -199,7 +223,7 @@ const checklistData = {
     'short': '<b>No sensitive data?&nbsp;</b>',
     'wrapper': 'div'
   },
-  'N1': {
+  'cleanDataset': {
     'full': 'The submitted work has been cleaned up (e.g., there are no temporary files, no unnecessary empty files or folders, no superfluous file versions, etc.)',
     'answers': {
       'bad': '[ONE POSSIBLE CASE]This is just a suggestion at this point but is quite a frequent one for us: in the future, you might want to exclude .DS_Store and other similar MacOS files in your archives. The otherwise very convenient "Compress" command in the OSX Finder makes it difficult to avoid this, but there are other tools that you could use instead, see https://apple.stackexchange.com/questions/239578/compress-without-ds-store-and-macosx for a few possible options.',
@@ -212,7 +236,7 @@ const checklistData = {
     'short': '<b>Clean content?&nbsp;</b> ',
     'wrapper': 'div'
   },
-  'N2': {
+  'permissiveLicence': {
     'full': 'Permissive licenses are preferred. CC0, CC-BY-4.0, CC-BY-SA-4.0 for data and MIT, BSD, GPL for code are suggested',
     'answers': {
       'bad': 'Limited access and re-usability are against the principles of Open Science endorsed by EPFL. Are you sure you cannot use a more liberal license?',
@@ -227,7 +251,7 @@ const checklistData = {
     'altshort': '<b>No license, probably wrong&nbsp;</b>',
     'altwrapper': 'dt'
   },
-  'N3': {
+  'detailedReadme': {
     'full': 'The README file contains detailed information about the work creation (authors, time, place, methodologies…), content (file organization and naming, formats, relevant standards…), sharing and access, etc.',
     'answers': {
       'bad': 'A good README can significantly improve a potential user\'s understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/handle/20.500.14299/192546',
@@ -240,7 +264,7 @@ const checklistData = {
     'short': '<b>Good README?&nbsp;</b> ',
     'wrapper': 'div'
   },
-  'N4': {
+  'supervisorIfThesis': {
     'full': 'If the submission is related to a PhD thesis, the supervisor is specified',
     'answers': {
       'bad': 'There are mentions of a PhD thesis, this should be formally declared using the relevant input field with the supervisor name and institution',
@@ -255,7 +279,7 @@ const checklistData = {
     'altshort': '<b>No thesis indication, probably fine&nbsp;</b>',
     'altwrapper': 'dt'
   },
-  'N5': {
+  'openFileFormats': {
     'full': 'Files are available in open formats. If proprietary formats are present, the work also includes versions of the files converted to open formats, with the least possible loss of information',
     'answers': {
       'bad': 'A potential user is more likely to be able to work with your data if it is available in open formats, since they will less restricted by some specific software choice. You can check our Fast Guide for examples https://infoscience.epfl.ch/record/265349/files/04_Formats_EPFL_Library_RDM_FastGuide.pdf',
@@ -268,7 +292,7 @@ const checklistData = {
     'short': '<b>Open file formats?&nbsp;</b> ',
     'wrapper': 'div'
   },
-  'N6': {
+  'listedSourced': {
     'full': 'Where applicable, sources from which the work is derived are specified in the "References" field',
     'answers': {
       'bad': 'It seems that the upload is derived from existing data. In such a case, the source of that data is best acknowledged using structured metadata: the "Related/alternate identifiers" section is generally intended for digitial sources, the "References" section can be used for other sources',
@@ -283,7 +307,7 @@ const checklistData = {
     'altshort': '<b>No "References" section, is this OK?&nbsp;</b>',
     'altwrapper': 'span'
   },
-  'N7': {
+  'properKeywords': {
     'full': 'Keywords are entered as separated fields in the “Keywords and subjects" field',
     'answers': {
       'bad': 'To maximize the effectiveness of keywords, each concept must be listed a distinct entity: each entity will have its own link that leads to other records tagged with the same concept. This will not work if all keywords are combined as one single text entry.',
@@ -554,7 +578,7 @@ function addButtons() {
         checkArray.sort();
         text += `Total ${checkArray.length} ${checkLevel.full} criteria not fully met:\n`;
         for (let element of checkArray) {
-          text += `**${element[0]}: ${element[1]}**\n=> ${element[2]}\n\n`;
+          text += `**${ruleTags[element[0]]}: ${element[1]}**\n=> ${element[2]}\n\n`;
         }
       }
     }
@@ -654,7 +678,7 @@ function addButtons() {
   let mainTitle = $('h1#record-title');
   let authorList = $('section#creatibutors');
   if (authorList.length) {
-    addCheckElement(authorList, 'M1', 'after', true);
+    addCheckElement(authorList, 'epflAuthor', 'after', true);
   }
 
   let contentChecks = $('<div>');
@@ -665,70 +689,70 @@ function addButtons() {
     contentElement = $('div#files-list-accordion-trigger');
     console.log('contentElement:', contentElement);
   }
-  addCheckElement(contentChecks, 'M3', 'after', true);
+  addCheckElement(contentChecks, 'accessForReview', 'after', true);
 
   let abstract = $('section#description');
   if (abstract.length) {
-    addCheckElement(abstract, 'M4', 'before', true);
+    addCheckElement(abstract, 'sufficientDescription', 'before', true);
     abstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   } else {
-    addCheckElement(importantFrame, 'M4', 'after', false);
+    addCheckElement(importantFrame, 'sufficientDescription', 'after', false);
   }
 
   if (authorList.length) {
-    addCheckElement(authorList, 'M2', 'after', true);
-    addCheckElement(authorList, 'R1', 'after', true);
+    addCheckElement(authorList, 'epflContact', 'after', true);
+    addCheckElement(authorList, 'allORCIDs', 'after', true);
   }
 
   if (contentElement.length) {
-    addCheckElement(contentChecks, 'M5', 'after', true);
-    addCheckElement(contentChecks, 'R5', 'after', true);
+    addCheckElement(contentChecks, 'readmePresent', 'after', true);
+    addCheckElement(contentChecks, 'noPersonalData', 'after', true);
   }
 
   let doiElement = $('div#record-versions');
   if (doiElement.length) {
-    addCheckElement(doiElement, 'M6', 'before', true);
+    addCheckElement(doiElement, 'originalDOI', 'before', true);
   }
 
   if (mainTitle.length) {
-    addCheckElement(mainTitle, 'R2', 'after', true);
+    addCheckElement(mainTitle, 'humanReadableTitle', 'after', true);
   }
 
   let license = $('div#licenses');
   if (license.length) {
-    addCheckElement(license, 'N2', 'after', true);
+    addCheckElement(license, 'permissiveLicence', 'after', true);
   } else {
-    addCheckElement(importantFrame, 'N2', 'after', false);
+    addCheckElement(importantFrame, 'permissiveLicence', 'after', false);
   }
 
   let relativeIdentifiers = $('h3:contains("Related works")');
   if (relativeIdentifiers.length) {
-    addCheckElement(relativeIdentifiers, 'R3', 'after', true);
+    addCheckElement(relativeIdentifiers, 'relatedWorks', 'after', true);
   } else {
-    addCheckElement(importantFrame, 'R3', 'after', false);
+    addCheckElement(importantFrame, 'relatedWorks', 'after', false);
   }
 
   let grants = $('h3:contains("Funding")');
   if (grants.length) {
-    addCheckElement(grants, 'R4', 'after', true);
+    addCheckElement(grants, 'listedGrants', 'after', true);
   } else {
-    addCheckElement(importantFrame, 'R4', 'after', false);
+    addCheckElement(importantFrame, 'listedGrants', 'after', false);
   }
 
   if (contentElement.length) {
-    addCheckElement(contentChecks, 'N1', 'after', true);
-    addCheckElement(contentChecks, 'N3', 'after', true);
+    addCheckElement(contentChecks, 'cleanDataset', 'after', true);
+    addCheckElement(contentChecks, 'detailedReadme', 'after', true);
   }
 
   let thesisUniversity = $('dt:contains("Awarding university")');
   if (thesisUniversity.length) {
-    addCheckElement(thesisUniversity, 'N4', 'after', true);
+    addCheckElement(thesisUniversity, 'supervisorIfThesis', 'after', true);
   } else {
-    addCheckElement(importantFrame, 'N4', 'after', false);
+    addCheckElement(importantFrame, 'supervisorIfThesis', 'after', false);
   }
 
   if (contentElement.length) {
-    addCheckElement(contentChecks, 'N5', 'after', true);
+    addCheckElement(contentChecks, 'openFileFormats', 'after', true);
     let referencesWarning = '<div><b>Do not forget to check the references box at the bottom of the page...</b></div>';
     contentChecks.append(referencesWarning);
   }
@@ -736,16 +760,16 @@ function addButtons() {
   //let referencesElement = $('div#references-accordion-trigger');
   let referencesElement = $('h3:contains("References")');
   if (referencesElement.length) {
-    addCheckElement(referencesElement, 'N6', 'after', true);
+    addCheckElement(referencesElement, 'listedSourced', 'after', true);
   } else {
-    addCheckElement(importantFrame, 'N6', 'after', false);
+    addCheckElement(importantFrame, 'listedSourced', 'after', false);
   }
 
   let keywords = $('h2:contains("Keywords and subjects")');
   if (keywords.length) {
-    addCheckElement(keywords, 'N7', 'after', true);
+    addCheckElement(keywords, 'properKeywords', 'after', true);
   } else {
-    addCheckElement(importantFrame, 'N7', 'after', false);
+    addCheckElement(importantFrame, 'properKeywords', 'after', false);
   }
 
   contentElement.prepend(contentChecks);
@@ -783,7 +807,7 @@ function policyCheck(checkCode) {
   Automatic checks: will return 'neutral' by default.
   The logic must be adapated to each criterion, not all of them can be automated.
   */
-  if (checkCode == 'M1') {
+  if (checkCode == 'epflAuthor') {
     // Check EPFL creators. Acceptable if there is at least one, OK if all (more than 1) creators are EPFL
     let epflCreators = 0;
     let compliantCreators = 0
@@ -808,7 +832,7 @@ function policyCheck(checkCode) {
     return 'meh';
   }
 
-  if (checkCode == 'M3') {
+  if (checkCode == 'accessForReview') {
     // Check access to the files
     // IDEA it could be useful to check whether the license is consistent with the access rights
     let noAccess = $('div.panel-body:contains("Files are not publicly accessible.")');
@@ -821,7 +845,7 @@ function policyCheck(checkCode) {
     }
   }
 
-  if (checkCode == 'M2') {
+  if (checkCode == 'epflContact') {
     let orcidEpflCreators = 0;
     for (let creator of recordJson.metadata.creators) {
       if ('affiliations' in creator) {
@@ -850,7 +874,7 @@ function policyCheck(checkCode) {
     return 'bad';
   }
 
-  if (checkCode == 'M4') {
+  if (checkCode == 'sufficientDescription') {
     // If the abstract is missing entirely, it's bad.
     if ('description' in recordJson.metadata) {
       return 'maybe';
@@ -859,7 +883,7 @@ function policyCheck(checkCode) {
     }
   }
 
-  if (checkCode == 'M5') {
+  if (checkCode == 'readmePresent') {
     // Try to find a README
     // This will not check the content of Zips or other archive files
     let readmeFound = 'neutral';
@@ -874,7 +898,7 @@ function policyCheck(checkCode) {
     return readmeFound;
   }
 
-  if (checkCode == 'M6') {
+  if (checkCode == 'originalDOI') {
     let originalZenodoDoi = 'bad';
     if (doi.match(/^10\.5281\/zenodo/g) || doi.match(/^10\.5072\/zenodo/g)) {
       originalZenodoDoi = 'ok';
@@ -883,7 +907,7 @@ function policyCheck(checkCode) {
   }
 
 
-  if (checkCode == 'N2') {
+  if (checkCode == 'permissiveLicence') {
     // Licenses: check for one of the better ones.
     // Bad if there is no license at all.
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
@@ -898,7 +922,7 @@ function policyCheck(checkCode) {
 
   }
 
-  if (checkCode == 'N4') {
+  if (checkCode == 'supervisorIfThesis') {
     if ($("dt:contains('Awarding University:')").length) {
       if ($("h5:contains('Thesis supervisor(s)')").nextAll('p').html().match(/<span/g).length) {
         return 'ok';
@@ -907,7 +931,7 @@ function policyCheck(checkCode) {
 
   }
 
-  if (checkCode == 'N7') {
+  if (checkCode == 'properKeywords') {
     // Keywords: if there is only one string and it contains a comma or a semicolon, it is probably bad
     //let kw = $( "dd a.label-link span.label" );
     if ('subjects' in recordJson.metadata) {
@@ -940,7 +964,7 @@ function policyCheck(checkCode) {
 
   }
 
- if (checkCode == 'R1') {
+ if (checkCode == 'allORCIDs') {
     // Check for ORCID iDs
     // At least one creator with ORCID = maybe. All creators with ORCID = OK
     let orcidCreators = 0;
@@ -963,7 +987,7 @@ function policyCheck(checkCode) {
     }
   }
 
-  if (checkCode == 'R3') {
+  if (checkCode == 'relatedWorks') {
     // check for related identifier (experimental)
     // 2025-07-30 at this point, give a green light if there is at least one related identifier
     if ('related_identifiers' in recordJson.metadata) {
@@ -991,7 +1015,7 @@ function policyCheck(checkCode) {
     }
   }
 
-  if (checkCode == 'R4') {
+  if (checkCode == 'listedGrants') {
     // check for funding information
     // 2025-07-30 at this point, give a green light if there is at least one structured funding field
     if ('funding' in recordJson.metadata) {
