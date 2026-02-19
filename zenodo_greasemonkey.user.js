@@ -419,7 +419,7 @@ jQuery.expr.pseudos.regex = jQuery.expr.createPseudo(function (expression) {
     }
 });
 
-// Find the JSON export linl on the page;
+// Find the JSON export in on the page;
 let exportFormats = JSON.parse($("div#recordExportDownload")[0].attributes["data-formats"].value);
 
 let jsonUrl;
