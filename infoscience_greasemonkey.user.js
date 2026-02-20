@@ -633,7 +633,9 @@ function addButtons() {
   }
 
   // let mainTitle = $('h1#record-title');
-  let mainTitle = jsonData.metadata["dc.title"][0].value;
+  let titleValue = jsonData.metadata["dc.title"][0].value;
+  let mainTitle = $("div.h4");
+  console.log("mainItle:", mainTitle);
 
 /*
   let authorList = $('section#creatibutors');
@@ -673,10 +675,13 @@ function addButtons() {
   if (doiElement.length) {
     addCheckElement(doiElement, 'originalDOI', 'before', true);
   }
+  */
 
   if (mainTitle.length) {
     addCheckElement(mainTitle, 'humanReadableTitle', 'after', true);
   }
+  
+  /*
 
   let license = $('div#licenses');
   if (license.length) {
