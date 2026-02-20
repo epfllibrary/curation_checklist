@@ -15,6 +15,7 @@
 // https://infoscience.epfl.ch/server/api/core/items/a0c90826-53bb-4cb9-bde8-02aa6933fdc9?embed=owningCollection%2FparentCommunity%2FparentCommunity&embed=relationships&embed=version%2Fversionhistory&embed=bundles%2Fbitstreams&embed=thumbnail&embed=metrics
 
 console.log('infoscience_greasemonkey here');
+let jsonData;
 
 /*
 Check levels:
@@ -414,14 +415,16 @@ jQuery.expr.pseudos.regex = jQuery.expr.createPseudo(function (expression) {
 });
 
 
-let actionMenu = $('div#actions');
-
-
+let identifier;
+let doi;
+let allFileNames;
 
 fetch(metadataUrl)
   .then(response => response.json())
   .then(jsonResponse => {
     console.log(jsonResponse.metadata["dc.title"][0].value);
+    jsonData = jsonResponse;
+    identifier = jsonResponse.metadata["dc.title"][0].value;
 
     // Use the "..." button as a signal that Angular's work is complete
     waitForKeyElements ("button#context-menu", addButtons);
@@ -496,7 +499,7 @@ function addButtons() {
     var zenodoURL = window.location.href;
     let title = document.title.replace(' | Zenodo', '');
     if (title == 'Infoscience') {
-      let possibleTitle = $('h2.request-header');
+      let possibleTitle = jsonData.metadata["dc.title"][0];
       if (possibleTitle.length) {
         title = possibleTitle.text();
         identifier = 'unpublished'
@@ -605,6 +608,7 @@ function addButtons() {
     menu = $('main#main-content');
     console.log("menu:", menu.length);
   }
+  // TODO decide whether this could be useful on Infoscience
   if (document.URL.match(/request/g)) {
     // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
     menu = $('div#request-actions')[0];
@@ -614,18 +618,24 @@ function addButtons() {
   console.log(frm);
   menu.prepend(frm);
 
-    // This one should always be there, let's use it as a reference point
+  
+  // This one should always be there, let's use it as a reference point
 
   let importantFrame;
-  if (document.URL.match(/record/g)) {
-    importantFrame = $('section#metrics');
+  if (document.URL.match(/entities\/product/g)) {
+    importantFrame = $('ds-context-menu.ng-star-inserted');
   }
+
+  // TODO decide whether this could be useful on Infoscience
   if (document.URL.match(/request/g)) {
     // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
     importantFrame = $('h2:contains("Versions")').parent();
   }
 
-  let mainTitle = $('h1#record-title');
+  // let mainTitle = $('h1#record-title');
+  let mainTitle = jsonData.metadata["dc.title"][0].value;
+
+/*
   let authorList = $('section#creatibutors');
   if (authorList.length) {
     addCheckElement(authorList, 'epflAuthor', 'after', true);
@@ -724,6 +734,7 @@ function addButtons() {
 
   contentElement.prepend(contentChecks);
 
+*/
   /**
   End of the main Greasemonkey section
   */
