@@ -7,6 +7,7 @@
 // @namespace   curation.epflrdm.infoscience
 // @author      Alain Borel
 // @include     https://infoscience.epfl.ch/entities/product/*
+// @run-at      document-idle
 // @grant       none
 // @version     1.0
 // ==/UserScript==
@@ -422,7 +423,8 @@ fetch(metadataUrl)
   .then(jsonResponse => {
     console.log(jsonResponse.metadata["dc.title"][0].value);
 
-    addButtons();
+    // Use the "..." button as a signal that Angular's work is complete
+    waitForKeyElements ("button#context-menu", addButtons);
 
     })
   .catch(console.error);
@@ -479,6 +481,7 @@ function addButtons() {
   var btn = document.createElement('BUTTON');
   var t = document.createTextNode('Prepare curation feedback e-mail');
   var frm = document.createElement('FORM');
+  frm.setAttribute('id', 'is3_gm_form')
   var icn = document.createElement('I');
 
 
@@ -566,8 +569,7 @@ function addButtons() {
         infoscienceReport = 'Apparently, the following related publications are not yet listed on Infoscience:\n* ' + unknownRelated.join('\n* ') + '\n\n';
         infoscienceReport += 'Assuming that they are EPFL publications, we invite you to submit them on https://infoscience.epfl.ch/mydspace to make sure the database is fully up-to-date.\n';
         infoscienceReport += '(See https://go.epfl.ch/how-submit-infoscience if you are not familiar with entering new records on Infoscience)\n\n';
-      }
-
+      }frm
       if (unknownRelated.length == 1) {
         console.log('unknownRelated:', unknownRelated, unknownRelated.length)
         infoscienceReport = 'Apparently, the following related publication is not yet listed on Infoscience:\n* ' + unknownRelated.join('\n* ') + '\n\n';
@@ -597,22 +599,23 @@ function addButtons() {
   The checkbuttons can be inserted 'before' or 'after' the selected DOM element
   */
 
-
   let menu;
   if (document.URL.match(/entities\/product/g)) {
     console.log("locate menu: this is a record");
-    menu = $('.d-flex.space-children-mr.justify-content-end.ng-star-inserted');
+    menu = $('main#main-content');
+    console.log("menu:", menu.length);
   }
   if (document.URL.match(/request/g)) {
     // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
     menu = $('div#request-actions')[0];
     console.log("locate menu: this is a request");
   }
-
+  
+  console.log(frm);
   menu.prepend(frm);
 
     // This one should always be there, let's use it as a reference point
-/*
+
   let importantFrame;
   if (document.URL.match(/record/g)) {
     importantFrame = $('section#metrics');
@@ -720,7 +723,7 @@ function addButtons() {
   }
 
   contentElement.prepend(contentChecks);
-*/
+
   /**
   End of the main Greasemonkey section
   */
@@ -1214,4 +1217,101 @@ function doiNormalize(str) {
   }
 
   return matches.map(stripPunctuation).filter(Boolean);
+}
+
+
+/*--- waitForKeyElements():  A utility function, for Greasemonkey scripts,
+    that detects and handles AJAXed content.
+
+    Usage example:
+
+        waitForKeyElements (
+            "div.comments"
+            , commentCallbackFunction
+        );
+
+        //--- Page-specific function to do what we want when the node is found.
+        function commentCallbackFunction (jNode) {
+            jNode.text ("This comment changed by waitForKeyElements().");
+        }
+
+    IMPORTANT: This function requires your script to have loaded jQuery.
+    
+    https://gist.githubusercontent.com/BrockA/2625891/raw/9c97aa67ff9c5d56be34a55ad6c18a314e5eb548/waitForKeyElements.js
+    
+*/
+function waitForKeyElements (
+    selectorTxt,    /* Required: The jQuery selector string that
+                        specifies the desired element(s).
+                    */
+    actionFunction, /* Required: The code to run when elements are
+                        found. It is passed a jNode to the matched
+                        element.
+                    */
+    bWaitOnce,      /* Optional: If false, will continue to scan for
+                        new elements even after the first match is
+                        found.
+                    */
+    iframeSelector  /* Optional: If set, identifies the iframe to
+                        search.
+                    */
+) {
+    var targetNodes, btargetsFound;
+
+    if (typeof iframeSelector == "undefined")
+        targetNodes     = $(selectorTxt);
+    else
+        targetNodes     = $(iframeSelector).contents ()
+                                           .find (selectorTxt);
+
+    if (targetNodes  &&  targetNodes.length > 0) {
+        btargetsFound   = true;
+        /*--- Found target node(s).  Go through each and act if they
+            are new.
+        */
+        targetNodes.each ( function () {
+            var jThis        = $(this);
+            var alreadyFound = jThis.data ('alreadyFound')  ||  false;
+
+            if (!alreadyFound) {
+                //--- Call the payload function.
+                var cancelFound     = actionFunction (jThis);
+                if (cancelFound)
+                    btargetsFound   = false;
+                else
+                    jThis.data ('alreadyFound', true);
+            }
+        } );
+    }
+    else {
+        btargetsFound   = false;
+    }
+
+    //--- Get the timer-control variable for this selector.
+    var controlObj      = waitForKeyElements.controlObj  ||  {};
+    var controlKey      = selectorTxt.replace (/[^\w]/g, "_");
+    var timeControl     = controlObj [controlKey];
+
+    //--- Now set or clear the timer as appropriate.
+    if (btargetsFound  &&  bWaitOnce  &&  timeControl) {
+        //--- The only condition where we need to clear the timer.
+        clearInterval (timeControl);
+        delete controlObj [controlKey]
+    }
+    else {
+        //--- Set a timer, if needed.
+        if ( ! timeControl) {
+            timeControl = setInterval ( function () {
+                    waitForKeyElements (    selectorTxt,
+                                            actionFunction,
+                                            bWaitOnce,
+                                            iframeSelector
+                                        );
+                },
+                300
+            );
+            controlObj [controlKey] = timeControl;
+        }
+    }
+    waitForKeyElements.controlObj   = controlObj;
 }
