@@ -15,7 +15,6 @@
 // https://infoscience.epfl.ch/server/api/core/items/a0c90826-53bb-4cb9-bde8-02aa6933fdc9?embed=owningCollection%2FparentCommunity%2FparentCommunity&embed=relationships&embed=version%2Fversionhistory&embed=bundles%2Fbitstreams&embed=thumbnail&embed=metrics
 
 console.log('infoscience_greasemonkey here');
-let jsonData;
 
 /*
 Check levels:
@@ -418,6 +417,8 @@ jQuery.expr.pseudos.regex = jQuery.expr.createPseudo(function (expression) {
 let identifier;
 let doi;
 let allFileNames;
+let jsonData = {};
+let unknownRelated = [];
 
 fetch(metadataUrl)
   .then(response => response.json())
@@ -439,7 +440,10 @@ function addCheckElement(selector, checkCode, position, normal) {
    */
   let checkElement;
   // see if we can get a non-neutral answer for the current criterion
-  let status = policyCheck(checkCode);
+
+  // FIXME lots of stuff before the checks can use Infoscience JSON
+  //let status = policyCheck(checkCode);
+  let status = 'neutral';
 
   let myHtml;
 
@@ -615,7 +619,9 @@ function addButtons() {
     console.log("locate menu: this is a request");
   }
   
+
   console.log(frm);
+
   menu.prepend(frm);
 
   
@@ -637,12 +643,14 @@ function addButtons() {
   let mainTitle = $("div.h4");
   console.log("mainItle:", mainTitle);
 
-/*
-  let authorList = $('section#creatibutors');
+
+  // let authorList = $("span").filter(function(){ return $(this).text() === 'Author(s)';});
+  let authorList = $("span:contains('Author(s)')")
   if (authorList.length) {
-    addCheckElement(authorList, 'epflAuthor', 'after', true);
+    addCheckElement(authorList, 'epflAuthor', 'before', true);
   }
 
+/*
   let contentChecks = $('<div>');
   
   let contentElement = $('section#record-files');
@@ -729,17 +737,17 @@ function addButtons() {
   } else {
     addCheckElement(importantFrame, 'listedSourced', 'after', false);
   }
-
-  let keywords = $('h2:contains("Keywords and subjects")');
+*/
+  let keywords = $('span:contains("Subjects")');
   if (keywords.length) {
-    addCheckElement(keywords, 'properKeywords', 'after', true);
+    addCheckElement(keywords, 'properKeywords', 'before', true);
   } else {
-    addCheckElement(importantFrame, 'properKeywords', 'after', false);
+    addCheckElement(importantFrame, 'properKeywords', 'before', false);
   }
 
-  contentElement.prepend(contentChecks);
+  // TODO adapt contentChecks to Infoscience
+  // contentElement.prepend(contentChecks);
 
-*/
   /**
   End of the main Greasemonkey section
   */
