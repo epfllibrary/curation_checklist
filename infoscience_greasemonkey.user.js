@@ -660,15 +660,20 @@ function addButtons() {
     console.log('contentElement:', contentElement);
   }
   addCheckElement(contentChecks, 'accessForReview', 'after', true);
+*/
 
-  let abstract = $('section#description');
-  if (abstract.length) {
-    addCheckElement(abstract, 'sufficientDescription', 'before', true);
-    abstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
+
+  //let abstract = $('div.item-detail ds-markdown-viewer span p');
+  let aboveAbstract = $('div span ds-metadata-render span div span ds-metadata-link-view div span.ng-star-inserted:contains("EPFL Infoscience")')
+  console.log(aboveAbstract);
+  if (aboveAbstract.length) {
+    addCheckElement(aboveAbstract, 'sufficientDescription', 'after', true);
+    // aboveAbstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   } else {
     addCheckElement(importantFrame, 'sufficientDescription', 'after', false);
   }
 
+/*
   if (authorList.length) {
     addCheckElement(authorList, 'epflContact', 'after', true);
     addCheckElement(authorList, 'allORCIDs', 'after', true);
@@ -729,7 +734,9 @@ function addButtons() {
     let referencesWarning = '<div><b>Do not forget to check the references box at the bottom of the page...</b></div>';
     contentChecks.append(referencesWarning);
   }
+*/
 
+  /* Irrelevant on Infoscience
   //let referencesElement = $('div#references-accordion-trigger');
   let referencesElement = $('h3:contains("References")');
   if (referencesElement.length) {
@@ -737,7 +744,7 @@ function addButtons() {
   } else {
     addCheckElement(importantFrame, 'listedSourced', 'after', false);
   }
-*/
+  */
   let keywords = $('span:contains("Subjects")');
   if (keywords.length) {
     addCheckElement(keywords, 'properKeywords', 'before', true);
