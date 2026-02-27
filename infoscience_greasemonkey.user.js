@@ -703,20 +703,24 @@ function addButtons() {
     addCheckElement(importantFrame, 'permissiveLicence', 'after', false);
   }
 
-  let relativeIdentifiers = $('h3:contains("Related works")');
+*/
+  let relativeIdentifiers = $('table tr td span:contains("Relation")');
   if (relativeIdentifiers.length) {
-    addCheckElement(relativeIdentifiers, 'relatedWorks', 'after', true);
+    addCheckElement(relativeIdentifiers, 'relatedWorks', 'before', true);
   } else {
     addCheckElement(importantFrame, 'relatedWorks', 'after', false);
   }
 
-  let grants = $('h3:contains("Funding")');
+
+
+  let grants = $('table tr td span:contains("Funder")');
   if (grants.length) {
-    addCheckElement(grants, 'listedGrants', 'after', true);
+    addCheckElement(grants, 'listedGrants', 'before', true);
   } else {
     addCheckElement(importantFrame, 'listedGrants', 'after', false);
   }
 
+  /*
   if (contentElement.length) {
     addCheckElement(contentChecks, 'cleanDataset', 'after', true);
     addCheckElement(contentChecks, 'detailedReadme', 'after', true);
