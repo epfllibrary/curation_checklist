@@ -63,7 +63,7 @@ const ruleTags = {
 const checklistData = {
   'epflAuthor': {
     'full': 'At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work',
-    'short': '<b>EPFL authors?&nbsp;</b>',
+    'short': '<i>EPFL authors?&nbsp;</i>',
     'answers': {
       'bad': 'There is not enough evidence that the authors are or were affiliated with EPFL, we would be grateful for more details (for example an e-mail address or ORCID identifier)',
       'meh': 'NOT TOTALLY WRONG, BUT STILL...',
@@ -87,7 +87,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'must',
-    'short': '<b>ORCID or email for 1 EPFL author?&nbsp;</b>',
+    'short': '<i>ORCID or email for 1 EPFL author?&nbsp;</i>',
     'wrapper': 'div'
   },
   'accessForReview': {
@@ -100,7 +100,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'must',
-    'short': '<b>Access to content?&nbsp;</b>',
+    'short': '<i>Access to content?&nbsp;</i>',
     'wrapper': 'div'
   },
   'sufficientDescription': {
@@ -113,8 +113,8 @@ const checklistData = {
       'ok': ''
     },
     'category': 'must',
-    'short': '<b>Sufficient abstract?&nbsp;</b>',
-    'altshort': '<b>Sufficient abstract?&nbsp;</b>',
+    'short': '<i>Sufficient abstract?&nbsp;</i>',
+    'altshort': '<i>Sufficient abstract?&nbsp;</i>',
     'wrapper': 'div'
   },
   'readmePresent': {
@@ -127,7 +127,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'must',
-    'short': '<b>README present?&nbsp;</b>',
+    'short': '<i>README present?&nbsp;</i>',
     'wrapper': 'span'
   },
   'originalDOI': {
@@ -140,7 +140,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'must',
-    'short': '<b>&nbsp;Original (Zenodo) DOI?&nbsp;</b>',
+    'short': '<i>&nbsp;Original (Zenodo) DOI?&nbsp;</i>',
     'wrapper': 'span'
   },
   'allORCIDs': {
@@ -153,7 +153,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'recommended',
-    'short': '<b>Authors with ORCID?&nbsp;</b>',
+    'short': '<i>Authors with ORCID?&nbsp;</i>',
     'wrapper': 'div'
   },
   'humanReadableTitle': {
@@ -166,7 +166,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'recommended',
-    'short': '<b>&nbsp;</b>',
+    'short': '<i>&nbsp;</i>',
     'wrapper': 'span'
   },
   'relatedWorks': {
@@ -179,7 +179,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'recommended',
-    'short': '<b>&nbsp</b>;',
+    'short': '<i>&nbsp</i>;',
     'wrapper': 'span',
     'altwrapper': 'dt',
     'altshort': '<b>No related identifiers here, is it OK?&nbsp;</b>'
@@ -194,7 +194,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'recommended',
-    'short': '<b>&nbsp;</b>',
+    'short': '<i>&nbsp;</i>',
     'wrapper': 'span',
     'altshort': '<b>No grants here, is it OK?&nbsp;</b>',
     'altwrapper': 'dt',
@@ -210,7 +210,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'recommended',
-    'short': '<b>No sensitive data?&nbsp;</b>',
+    'short': '<i>No sensitive data?&nbsp;</i>',
     'wrapper': 'div'
   },
   'cleanDataset': {
@@ -236,7 +236,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'nth',
-    'short': '<b>&nbsp;</b>',
+    'short': '<i>&nbsp;</i>',
     'wrapper': 'span',
     'altshort': '<b>No license, probably wrong&nbsp;</b>',
     'altwrapper': 'dt'
@@ -251,7 +251,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'nth',
-    'short': '<b>Good README?&nbsp;</b> ',
+    'short': '<i>Good README?&nbsp;</i> ',
     'wrapper': 'div'
   },
   'supervisorIfThesis': {
@@ -264,7 +264,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'nth',
-    'short': '<b>&nbsp;| Supervisor listed?&nbsp;</b>',
+    'short': '<i>&nbsp;| Supervisor listed?&nbsp;</i>',
     'wrapper': 'span',
     'altshort': '<b>No thesis indication, probably fine&nbsp;</b>',
     'altwrapper': 'dt'
@@ -279,7 +279,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'nth',
-    'short': '<b>Open file formats?&nbsp;</b> ',
+    'short': '<i>Open file formats?&nbsp;</i> ',
     'wrapper': 'div'
   },
   'listedSourced': {
@@ -292,7 +292,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'nth',
-    'short': '<b>&nbsp;Relevant sources?&nbsp;</b>',
+    'short': '<i>&nbsp;Relevant sources?&nbsp;</i>',
     'wrapper': 'span',
     'altshort': '<b>No "References" section, is this OK?&nbsp;</b>',
     'altwrapper': 'span'
@@ -307,7 +307,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'nth',
-    'short': '<b>&nbsp;</b>',
+    'short': '<i>&nbsp;</i>',
     'wrapper': 'span',
     'altshort': '<b>No keywords here, is it OK?&nbsp;</b>',
     'altwrapper': 'dt'
