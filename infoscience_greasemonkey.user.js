@@ -644,8 +644,8 @@ function addButtons() {
   console.log("mainItle:", mainTitle);
 
 
-  // let authorList = $("span").filter(function(){ return $(this).text() === 'Author(s)';});
-  let authorList = $("span:contains('Author(s)')")
+  // let authorList = $("span").filter(function(){ return $(this).text() === 'Author(s)';}); 
+  let authorList = $("span:contains('Author(s)'), span:contains('Auteur·trices')")
   if (authorList.length) {
     addCheckElement(authorList, 'epflAuthor', 'before', true);
   }
@@ -693,17 +693,14 @@ function addButtons() {
   if (mainTitle.length) {
     addCheckElement(mainTitle, 'humanReadableTitle', 'after', true);
   }
-  
-  /*
 
-  let license = $('div#licenses');
+  let license = $('span:contains("License")');
   if (license.length) {
-    addCheckElement(license, 'permissiveLicence', 'after', true);
+    addCheckElement(license, 'permissiveLicence', 'before', true);
   } else {
     addCheckElement(importantFrame, 'permissiveLicence', 'after', false);
   }
 
-*/
   let relativeIdentifiers = $('table tr td span:contains("Relation")');
   if (relativeIdentifiers.length) {
     addCheckElement(relativeIdentifiers, 'relatedWorks', 'before', true);
@@ -749,11 +746,11 @@ function addButtons() {
     addCheckElement(importantFrame, 'listedSourced', 'after', false);
   }
   */
-  let keywords = $('span:contains("Subjects")');
+  let keywords = $('span:contains("Subjects"), span:contains("Sujets")');
   if (keywords.length) {
     addCheckElement(keywords, 'properKeywords', 'before', true);
   } else {
-    addCheckElement(importantFrame, 'properKeywords', 'before', false);
+    addCheckElement(importantFrame, 'properKeywords', 'after', false);
   }
 
   // TODO adapt contentChecks to Infoscience
