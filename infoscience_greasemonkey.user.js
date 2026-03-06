@@ -673,11 +673,13 @@ function addButtons() {
     addCheckElement(importantFrame, 'sufficientDescription', 'after', false);
   }
 
-/*
+
   if (authorList.length) {
     addCheckElement(authorList, 'epflContact', 'after', true);
     addCheckElement(authorList, 'allORCIDs', 'after', true);
   }
+
+  /*
 
   if (contentElement.length) {
     addCheckElement(contentChecks, 'readmePresent', 'after', true);
@@ -694,7 +696,7 @@ function addButtons() {
     addCheckElement(mainTitle, 'humanReadableTitle', 'after', true);
   }
 
-  let license = $('span:contains("License")');
+  let license = $('span:contains("License"), span:contains("Licence")');
   if (license.length) {
     addCheckElement(license, 'permissiveLicence', 'before', true);
   } else {
@@ -710,7 +712,7 @@ function addButtons() {
 
 
 
-  let grants = $('table tr td span:contains("Funder")');
+  let grants = $('table tr td span:contains("Funder"), table tr td span:contains("Bailleur de fonds")');
   if (grants.length) {
     addCheckElement(grants, 'listedGrants', 'before', true);
   } else {
