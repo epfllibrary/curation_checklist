@@ -444,13 +444,12 @@ function addCheckElement(selector, checkCode, position, normal) {
   // see if we can get a non-neutral answer for the current criterion
 
   // FIXME lots of stuff before the checks can use Infoscience JSON
+  let status = 'neutral';
   try {
-    let status = policyCheck(checkCode);
+    status = policyCheck(checkCode);
   } catch {
     console.log("Error checking policy for", checkCode);
   }
-  
-  let status = 'neutral';
 
   let myHtml;
 
@@ -855,8 +854,8 @@ function policyCheck(checkCode) {
     if (orcidEpflCreators) {
       return 'ok';
     }
-    if ('description' in recordJson.metadata) {
-      if (recordJson.metadata.description.includes('@epfl.ch')) {
+    if ('dc.description.abstract' in jsonData.metadata) {
+      if (jsonData.metadata['dc.description.abstract'][0].includes('@epfl.ch')) {
         return 'maybe';
       }
     }
@@ -899,10 +898,14 @@ function policyCheck(checkCode) {
   if (checkCode == 'permissiveLicence') {
     // Licenses: check for one of the better ones.
     // Bad if there is no license at all.
-    const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl'];
+    const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl', 'cc 0', 'cc by', 'cc by sa'];
     try {
-      if (goodLicenses.includes(recordJson.metadata.rights[0].id.toLowerCase())) {
-        return 'ok';
+      console.log(jsonData.metadata);
+      if ('ctb.oaireXXlicenseCondition' in jsonData.metadata) {
+        console.log([jsonData.metadata['ctb.oaireXXlicenseCondition'][0].value.toLowerCase()]);
+        if (goodLicenses.includes(jsonData.metadata['ctb.oaireXXlicenseCondition'][0].value.toLowerCase())) {
+          return 'ok';
+        }
       }
     } catch (error) {
       console.log('License check error', error);
@@ -923,23 +926,18 @@ function policyCheck(checkCode) {
   if (checkCode == 'properKeywords') {
     // Keywords: if there is only one string and it contains a comma or a semicolon, it is probably bad
     //let kw = $( "dd a.label-link span.label" );
-    if ('subjects' in recordJson.metadata) {
-      let kw = recordJson.metadata.subjects;
+    if ('dc.subject' in jsonData.metadata) {
+      let kw = jsonData.metadata['dc.subject'];
       console.log(kw);
       if (kw.length == 0) {
         return 'meh';
       }
       if (kw.length == 1) {
-        if (!('scheme' in kw[0])) {
-          if (kw[0].includes(',')) {
-            return 'bad';
-          }
-          if (kw[0].includes(';')) {
-            return 'bad';
-          }
-        } else {
-          return 'ok'
+        if (kw[0].includes(',') || kw[0].includes(';')) {
+            return 'meh';
         }
+      } else {
+        return 'ok'
       }
       if (kw.length == 2) {
         return 'maybe';
