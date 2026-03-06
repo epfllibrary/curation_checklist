@@ -418,6 +418,8 @@ let identifier;
 let doi;
 let allFileNames;
 let jsonData = {};
+// TODO remove recordJson definition when policyCheck implementation is complete
+let recordJson = {};
 let unknownRelated = [];
 
 fetch(metadataUrl)
@@ -442,7 +444,12 @@ function addCheckElement(selector, checkCode, position, normal) {
   // see if we can get a non-neutral answer for the current criterion
 
   // FIXME lots of stuff before the checks can use Infoscience JSON
-  //let status = policyCheck(checkCode);
+  try {
+    let status = policyCheck(checkCode);
+  } catch {
+    console.log("Error checking policy for", checkCode);
+  }
+  
   let status = 'neutral';
 
   let myHtml;
@@ -858,7 +865,7 @@ function policyCheck(checkCode) {
 
   if (checkCode == 'sufficientDescription') {
     // If the abstract is missing entirely, it's bad.
-    if ('description' in recordJson.metadata) {
+    if ('dc.description.abstract' in jsonData.metadata) {
       return 'maybe';
     } else {
       return 'bad';
