@@ -602,7 +602,7 @@ function addButtons() {
     if (text == '') {
       // When all checkbuttons are set to ok, prepare the most positive feedback
       header += `${greeting},\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo. Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
-      header += 'As per our new workflow, the dataset will also be listed on Infoscience by our staff. The record will be submitted for approval to your laboratory, similar to the process followed by publications imported from external sources (Web of Science, Scopus, OpenAlex...).\n\n'
+      header += 'As part of our workflow, the dataset will also be listed on Infoscience by our staff. The record will be submitted for approval to your laboratory, similar to the process followed by publications imported from external sources (Web of Science, Scopus, OpenAlex...).\n\n'
       header += 'XXX CHECK IF APPLICABLE XXX '
       header += 'Furthermore, considering that the dataset is linked to a publication, we will also archive a copy of the dataset for long-time preservation in EPFL\'s ACOUA platform (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info).\n'
       header += '\n\n'
