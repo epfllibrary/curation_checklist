@@ -427,7 +427,7 @@ fetch(metadataUrl)
   .then(jsonResponse => {
     console.log(jsonResponse.metadata["dc.title"][0].value);
     jsonData = jsonResponse;
-    identifier = jsonResponse.metadata["dc.title"][0].value;
+    identifier = jsonResponse.metadata["dc.identifier.uri"][0].value;
 
     // Use the "..." button as a signal that Angular's work is complete
     waitForKeyElements ("button#context-menu", addButtons);
@@ -564,7 +564,7 @@ function addButtons() {
     emailSub += encodeURIComponent(': ' + title);
     if (text == '') {
       // When all checkbuttons are set to ok, prepare the most positive feedback
-      header += `${greeting},\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo. Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
+      header += `${greeting},\n\nYou are designated as EPFL creators for "${title}", listed as ${identifier} . Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
       header += 'As per our new workflow, the dataset will also be listed on Infoscience by our staff. The record will be submitted for approval to your laboratory, similar to the process followed by publications imported from external sources (Web of Science, Scopus, OpenAlex...).\n\n'
       header += 'XXX CHECK IF APPLICABLE XXX '
       header += 'Furthermore, considering that the dataset is linked to a publication, we will also archive a copy of the dataset for long-time preservation in EPFL\'s ACOUA platform (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info).\n'
@@ -573,9 +573,9 @@ function addButtons() {
 
     } else {
       // If even one checkbutton is not OK, there will be more to say
-      header += `${greeting},\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo.`;
+      header += `${greeting},\n\nYou are designated as EPFL creators for "${title}", listed as ${identifier} .`;
       header += ' We thank you and your coworkers for this contribution.\n\n'
-      header += 'Within our curation procedure ( https://zenodo.org/communities/epfl/about ), we have identified a few details that could be improved:\n\n';
+      header += 'In the context of our general curation procedure for datasets ( https://zenodo.org/communities/epfl/about ), we have identified a few details that could be improved:\n\n';
 
       if (unknownRelated.length > 1) {
         console.log('unknownRelated:', unknownRelated, unknownRelated.length)
@@ -591,7 +591,6 @@ function addButtons() {
       }
 
       footer += 'When the above feedback is addressed, we will be able to add value to your results and potentially save some of your time:\n';
-      footer += '    •   we create Infoscience records for datasets newly accepted into the EPFL community, so that they are available for web pages, activity reports, etc.\n';
       footer += '    •   if the upload is related with a publication and if the distribution license allows it, we can take advantage of this situation to copy the data into EPFL\'s long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n';
       footer += 'Please note that we cannot keep a case open for an indefinite time: we need your input regarding the possible delays.'
       footer += ' If our messages are left unanswered for too long, we will process the submission according its current state.'
