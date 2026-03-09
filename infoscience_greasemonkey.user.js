@@ -418,8 +418,6 @@ let identifier;
 let doi;
 let allFileNames;
 let jsonData = {};
-// TODO remove recordJson definition when policyCheck implementation is complete
-let recordJson = {};
 let unknownRelated = [];
 
 fetch(metadataUrl)
@@ -506,7 +504,6 @@ function addButtons() {
 
   frm.addEventListener('click', function(event) {
 
-    var zenodoURL = window.location.href;
     let title = document.title.replace(' | Zenodo', '');
     if (title == 'Infoscience') {
       let possibleTitle = jsonData.metadata["dc.title"][0];
@@ -638,9 +635,7 @@ function addButtons() {
     importantFrame = $('h2:contains("Versions")').parent();
   }
 
-  let titleValue = jsonData.metadata["dc.title"][0].value;
-  let mainTitle = $("div.h4");
-
+  let mainTitle = $('div.h4');
 
   // let authorList = $("span").filter(function(){ return $(this).text() === 'Author(s)';}); 
   let authorList = $("span:contains('Author(s)'), span:contains('Auteur·trices')")
