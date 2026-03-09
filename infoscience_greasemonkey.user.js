@@ -660,6 +660,7 @@ function addButtons() {
   addCheckElement(contentChecks, 'accessForReview', 'after', true);
 */
 
+  addCheckElement(importantFrame, 'accessForReview', 'after', true);
 
   //let abstract = $('div.item-detail ds-markdown-viewer span p');
   let publisher;
@@ -799,13 +800,18 @@ function policyCheck(checkCode) {
   if (checkCode == 'accessForReview') {
     // Check access to the files
     // On Infoscience, we should always have access if the files are actually hosted here
-    let noAccess = $('div.panel-body:contains("Files are not publicly accessible.")');
-    let embargoAccess = $('div.panel-body:contains("Files are currently under embargo")');
-    if (noAccess.length || embargoAccess.length) {
-      return 'bad';
+
+    let contentElement = $('a[title="Fichiers"], a[title="Files"]');
+    console.log(contentElement);
+    if (contentElement.length > 0) {
+      console.log('we have some content');
+      return 'ok';
+    } else if ('dc.identifier.doi' in jsonData.metadata) {
+      console.log('we have some remote content');
+      return 'ok';  
     } else {
-      // we might have password-protected files - be careful
-      return 'maybe';
+      console.log('no content to inspect')
+      return 'meh';
     }
   }
 
@@ -1140,21 +1146,19 @@ async function relatedItemsNotOnInfoscience(recordJson) {
 
   let infoscienceMissingRelated = [];
   
-  if ('related_identifiers' in recordJson.metadata) {
-    for (let relatedResource of recordJson.metadata.related_identifiers) {
-      // TODO MAYBE define behavior if no resource_type was provided?
-      // TODO MAYBE exclude Zenodo/Dryad/etc. DOIs in that case?
+  // TODO test how this works, but maybe not really important?
+  if ('datacite.relatedIdentifier' in recordJson.metadata) {
+    for (let relatedResource of recordJson.metadata['datacite.relatedIdentifier']) {
       console.log(relatedResource);
-      if ('resource_type' in relatedResource) {
-        if (relevantResourceTypes.indexOf(relatedResource.resource_type.id) > -1) {
-          console.log(relatedResource.resource_type.id);
-          if (relevantIdSchemes.indexOf(relatedResource.scheme) > -1) {
-            let isPresent = await listedOnInfoscience(relatedResource.identifier, relatedResource.scheme);
-            if (!isPresent) {
-              infoscienceMissingRelated.push(relatedResource.scheme.toUpperCase() + ': ' + relatedResource.identifier);
-            }
-          }
+      let isPresent = false;
+      for (let idScheme of relevantIdSchemes) {
+        isPresent = await listedOnInfoscience(relatedResource.value, idScheme);
+        if (isPresent) {
+          break;
         }
+      }
+      if (!isPresent) {
+        infoscienceMissingRelated.push(relatedResource.scheme.toUpperCase() + ': ' + relatedResource.identifier);
       }
     }
   }
