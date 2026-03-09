@@ -669,9 +669,12 @@ function addButtons() {
 
 
   //let abstract = $('div.item-detail ds-markdown-viewer span p');
-  let aboveAbstract = $('div span ds-metadata-render span div span ds-metadata-link-view div span.ng-star-inserted:contains("EPFL Infoscience")')
-  console.log(aboveAbstract);
-  if (aboveAbstract.length) {
+  // FIXME this only works if "EPFL Infoscience" is the publisher in the metadata...
+  let publisher;
+  if ('dc.publisher' in jsonData.metadata) {
+    publisher = jsonData.metadata['dc.publisher'][0].value;
+    let aboveAbstract = $(`div span ds-metadata-render span div span ds-metadata-link-view div span.ng-star-inserted:contains("${publisher}")`)
+    console.log(aboveAbstract);
     addCheckElement(aboveAbstract, 'sufficientDescription', 'after', true);
     // aboveAbstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   } else {
