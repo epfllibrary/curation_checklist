@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        EXPERIMENTAL Infoscience datasets curation
-// @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js
-// @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js
+// @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js
+// @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js
 // @require     https://far-nyon.ch/assets/js/tinysort/src/jquery.tinysort.min.js
 // @namespace   curation.epflrdm.infoscience
