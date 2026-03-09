@@ -816,16 +816,12 @@ function policyCheck(checkCode) {
   }
 
   if (checkCode == 'epflContact') {
-    let epflCreators = 0;
     let orcidEpflCreators = 0;
     if ('cris.virtualsource.rid' in jsonData.metadata) {
       orcidEpflCreators = jsonData.metadata['cris.virtualsource.rid'].length;
     }
-    if ('cris.virtual.orcid' in jsonData.metadata) {
-      orcidEpflCreators = jsonData.metadata['cris.virtual.orcid'].length;
-    }
     console.log('epfl orcids', orcidEpflCreators);
-    if (orcidEpflCreators && orcidEpflCreators == epflCreators) {
+    if (orcidEpflCreators) {
       return 'ok';
     }
     if ('dc.description.abstract' in jsonData.metadata) {
@@ -928,24 +924,25 @@ function policyCheck(checkCode) {
  if (checkCode == 'allORCIDs') {
     // Check for ORCID iDs
     // At least one creator with ORCID = maybe. All creators with ORCID = OK
-    let orcidCreators = 0;
-    for (let creator of recordJson.metadata.creators) {
-      if ("identifiers" in creator.person_or_org) {
-        for (let identifier of creator.person_or_org.identifiers) {
-          if (identifier.scheme.toLowerCase() == 'orcid') {
-            orcidCreators += 1;
-          }
-        }
+    let epflCreators = 0;
+    let orcidEpflCreators = 0;
+    if ('cris.virtualsource.rid' in jsonData.metadata) {
+      epflCreators = jsonData.metadata['cris.virtualsource.rid'].length;
+    }
+    if ('cris.virtual.orcid' in jsonData.metadata) {
+      orcidEpflCreators = jsonData.metadata['cris.virtual.orcid'].length;
+    }
+    console.log('epfl orcids', orcidEpflCreators);
+    console.log('epfl orcids', orcidEpflCreators);
+    if (orcidEpflCreators) {
+      if (orcidEpflCreators == epflCreators) {
+        return 'ok';
+      } else {
+        return 'maybe'
       }
+      
     }
-    if (orcidCreators == recordJson.metadata.creators.length) {
-      return 'ok';
-    }
-    if (orcidCreators) {
-      return 'maybe';
-    } else {
-      return 'bad';
-    }
+    return 'bad';
   }
 
   if (checkCode == 'relatedWorks') {
