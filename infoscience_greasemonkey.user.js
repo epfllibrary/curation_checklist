@@ -515,8 +515,6 @@ function addButtons() {
         identifier = 'unpublished'
       }
     }
-    console.log(title);
-    console.log(zenodoURL);
 
     let emailTo = 'researchdata@epfl.ch';
     let emailSub = ' dataset listed on Infoscience';
@@ -623,9 +621,6 @@ function addButtons() {
     menu = $('div#request-actions')[0];
     console.log("locate menu: this is a request");
   }
-  
-
-  console.log(frm);
 
   menu.prepend(frm);
 
@@ -643,10 +638,8 @@ function addButtons() {
     importantFrame = $('h2:contains("Versions")').parent();
   }
 
-  // let mainTitle = $('h1#record-title');
   let titleValue = jsonData.metadata["dc.title"][0].value;
   let mainTitle = $("div.h4");
-  console.log("mainItle:", mainTitle);
 
 
   // let authorList = $("span").filter(function(){ return $(this).text() === 'Author(s)';}); 
@@ -673,7 +666,6 @@ function addButtons() {
   if ('dc.publisher' in jsonData.metadata) {
     publisher = jsonData.metadata['dc.publisher'][0].value;
     let aboveAbstract = $(`div span ds-metadata-render span div span ds-metadata-link-view div span.ng-star-inserted:contains("${publisher}")`)
-    console.log(aboveAbstract);
     addCheckElement(aboveAbstract, 'sufficientDescription', 'after', true);
     // aboveAbstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   } else {
@@ -822,7 +814,6 @@ function policyCheck(checkCode) {
     if ('cris.virtualsource.rid' in jsonData.metadata) {
       orcidEpflCreators = jsonData.metadata['cris.virtualsource.rid'].length;
     }
-    console.log('epfl orcids', orcidEpflCreators);
     if (orcidEpflCreators) {
       return 'ok';
     }
@@ -872,7 +863,6 @@ function policyCheck(checkCode) {
     // Bad if there is no license at all.
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl', 'cc 0', 'cc by', 'cc by sa', 'cc by-sa'];
     try {
-      console.log(jsonData.metadata);
       if ('ctb.oaireXXlicenseCondition' in jsonData.metadata) {
         console.log([jsonData.metadata['ctb.oaireXXlicenseCondition'][0].value.toLowerCase()]);
         if (goodLicenses.includes(jsonData.metadata['ctb.oaireXXlicenseCondition'][0].value.toLowerCase())) {
@@ -900,7 +890,6 @@ function policyCheck(checkCode) {
     //let kw = $( "dd a.label-link span.label" );
     if ('dc.subject' in jsonData.metadata) {
       let kw = jsonData.metadata['dc.subject'];
-      console.log(kw);
       if (kw.length == 0) {
         return 'meh';
       }
@@ -951,16 +940,13 @@ function policyCheck(checkCode) {
 
   if (checkCode == 'relatedWorks') {
     // check for related identifier (experimental)
-    // 2025-07-30 at this point, give a green light if there is at least one related identifier
-    if ('related_identifiers' in recordJson.metadata) {
-      for (let relatedResource of recordJson.metadata.related_identifiers) {
-        if ('id' in relatedResource) {
-          if (relatedResource.resource_type.id == "publication") {
-            return 'ok'
-          }
+    let ignoredRelations = ['IsNewVersionOf', 'IsPreviousVersionOf', 'IsVersionOf', 'HasVersion'];
+    if ('datacite.relationType' in jsonData.metadata) {
+      for (let relation of jsonData.metadata['datacite.relationType']) {
+        if (!(relation.value in ignoredRelations)) {
+          return 'maybe'
         }
       }
-      return 'maybe';
     } else {
       // In the absence of any related identifier, a DOI in the description is suspiscious.
       // Unless it is the object's DOI itelf => negative look ahead needed
@@ -969,8 +955,8 @@ function policyCheck(checkCode) {
       }
       let doiAfterTen = doi.slice(3);
       let re = new RegExp(String.raw`doi\.org\/10\.(?!${escapeRegex(doiAfterTen)})`, "g");
-      if ('description' in recordJson.metadata) {
-        if (recordJson.metadata.description.match(re)) {
+      if ('dc.description.abstract' in jsonData.metadata) {
+        if (jsonData.metadata['dc.description.abstract'][0].value.match(re)) {
           return 'meh';
         }
       }
