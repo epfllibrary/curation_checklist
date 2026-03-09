@@ -870,7 +870,7 @@ function policyCheck(checkCode) {
   if (checkCode == 'permissiveLicence') {
     // Licenses: check for one of the better ones.
     // Bad if there is no license at all.
-    const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl', 'cc 0', 'cc by', 'cc by sa'];
+    const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl', 'cc 0', 'cc by', 'cc by sa', 'cc by-sa'];
     try {
       console.log(jsonData.metadata);
       if ('ctb.oaireXXlicenseCondition' in jsonData.metadata) {
@@ -907,9 +907,9 @@ function policyCheck(checkCode) {
       if (kw.length == 1) {
         if (kw[0].includes(',') || kw[0].includes(';')) {
             return 'meh';
+        } else {
+          return 'ok'
         }
-      } else {
-        return 'ok'
       }
       if (kw.length == 2) {
         return 'maybe';
