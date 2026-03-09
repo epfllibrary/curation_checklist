@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        Infoscience datasets curation
+// @name        EXPERIMENTAL Infoscience datasets curation
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js
@@ -796,32 +796,15 @@ function policyCheck(checkCode) {
   */
   if (checkCode == 'epflAuthor') {
     // Check EPFL creators. Acceptable if there is at least one, OK if all (more than 1) creators are EPFL
-    let epflCreators = 0;
-    let compliantCreators = 0
-    for (let creator of recordJson.metadata.creators) {
-      if ('affiliations' in creator) {
-        for (let affiliation of creator.affiliations) {
-          if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/) || affiliation.name.match(/[Ss]wiss [Ff]ederal [Ii]nstitute of [Tt]echnology .{1,4}Lausanne/)) {
-            epflCreators += 1;
-          }
-          if (affiliation.name.includes('École Polytechnique Fédérale de Lausanne')) {
-            compliantCreators += 1;
-          }
-        }
-      }
-    }
-    if (compliantCreators == recordJson.metadata.creators.length) {
+    if ('cris.virtualsource.rid' in jsonData.metadata) {
       return 'ok';
     }
-    if (epflCreators) {
-      return 'maybe';
-    }
-    return 'meh';
+    return 'maybe';
   }
 
   if (checkCode == 'accessForReview') {
     // Check access to the files
-    // IDEA it could be useful to check whether the license is consistent with the access rights
+    // On Infoscience, we should always have access if the files are actually hosted here
     let noAccess = $('div.panel-body:contains("Files are not publicly accessible.")');
     let embargoAccess = $('div.panel-body:contains("Files are currently under embargo")');
     if (noAccess.length || embargoAccess.length) {
@@ -833,24 +816,16 @@ function policyCheck(checkCode) {
   }
 
   if (checkCode == 'epflContact') {
+    let epflCreators = 0;
     let orcidEpflCreators = 0;
-    for (let creator of recordJson.metadata.creators) {
-      if ('affiliations' in creator) {
-      for (let affiliation of creator.affiliations) {
-        if (affiliation.name.includes('EPFL') || affiliation.name.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/) || affiliation.name.match(/[Ss]wiss [Ff]ederal [Ii]nstitute of [Tt]echnology .{1,4}Lausanne/)) {
-          if ('identifiers' in creator.person_or_org) {
-            for (let identifier of creator.person_or_org.identifiers) {
-              if (identifier.scheme.toLowerCase() == 'orcid') {
-                orcidEpflCreators += 1;
-              }
-            }
-          }
-        }
-      }
-      }
+    if ('cris.virtualsource.rid' in jsonData.metadata) {
+      orcidEpflCreators = jsonData.metadata['cris.virtualsource.rid'].length;
+    }
+    if ('cris.virtual.orcid' in jsonData.metadata) {
+      orcidEpflCreators = jsonData.metadata['cris.virtual.orcid'].length;
     }
     console.log('epfl orcids', orcidEpflCreators);
-    if (orcidEpflCreators) {
+    if (orcidEpflCreators && orcidEpflCreators == epflCreators) {
       return 'ok';
     }
     if ('dc.description.abstract' in jsonData.metadata) {
