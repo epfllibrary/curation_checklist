@@ -648,18 +648,7 @@ function addButtons() {
     addCheckElement(authorList, 'epflAuthor', 'before', true);
   }
 
-/*
-  let contentChecks = $('<div>');
-  
-  let contentElement = $('section#record-files');
-  console.log('files heading?', contentElement);
-  if (contentElement.length == 0) {
-    contentElement = $('div#files-list-accordion-trigger');
-    console.log('contentElement:', contentElement);
-  }
-  addCheckElement(contentChecks, 'accessForReview', 'after', true);
-*/
-
+  // Simple check: either a Files tab, or a DOI
   addCheckElement(importantFrame, 'accessForReview', 'after', true);
 
   //let abstract = $('div.item-detail ds-markdown-viewer span p');
