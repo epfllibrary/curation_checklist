@@ -932,9 +932,14 @@ function policyCheck(checkCode) {
       epflCreators = jsonData.metadata['cris.virtualsource.rid'].length;
     }
     if ('cris.virtual.orcid' in jsonData.metadata) {
-      orcidEpflCreators = jsonData.metadata['cris.virtual.orcid'].length;
+      for (let orcidField of jsonData.metadata['cris.virtual.orcid']) {
+        console.log([orcidField.value]);
+        if (orcidField.value != "#PLACEHOLDER_PARENT_METADATA_VALUE#") {
+          orcidEpflCreators += 1;
+        }
+      }
     }
-    console.log('epfl orcids', orcidEpflCreators);
+    console.log('epfl creators', epflCreators);
     console.log('epfl orcids', orcidEpflCreators);
     if (orcidEpflCreators) {
       if (orcidEpflCreators == epflCreators) {
