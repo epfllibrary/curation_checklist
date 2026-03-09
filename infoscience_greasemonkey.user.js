@@ -669,7 +669,6 @@ function addButtons() {
 
 
   //let abstract = $('div.item-detail ds-markdown-viewer span p');
-  // FIXME this only works if "EPFL Infoscience" is the publisher in the metadata...
   let publisher;
   if ('dc.publisher' in jsonData.metadata) {
     publisher = jsonData.metadata['dc.publisher'][0].value;
