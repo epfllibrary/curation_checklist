@@ -933,14 +933,11 @@ function policyCheck(checkCode) {
     }
     if ('cris.virtual.orcid' in jsonData.metadata) {
       for (let orcidField of jsonData.metadata['cris.virtual.orcid']) {
-        console.log([orcidField.value]);
         if (orcidField.value != "#PLACEHOLDER_PARENT_METADATA_VALUE#") {
           orcidEpflCreators += 1;
         }
       }
     }
-    console.log('epfl creators', epflCreators);
-    console.log('epfl orcids', orcidEpflCreators);
     if (orcidEpflCreators) {
       if (orcidEpflCreators == epflCreators) {
         return 'ok';
@@ -982,18 +979,21 @@ function policyCheck(checkCode) {
 
   if (checkCode == 'listedGrants') {
     // check for funding information
-    // 2025-07-30 at this point, give a green light if there is at least one structured funding field
-    if ('funding' in recordJson.metadata) {
-      for (let grant of recordJson.metadata.funding) {
-        if (grant.funder.id) {
-          if ('award' in grant) {
-            return 'ok';
-          } else {
-            return 'maybe'
+    let nGrants = 0;
+    let nGrantsCount = 0;
+    if ('oairecerif.funder' in jsonData.metadata) {
+      nGrants = jsonData.metadata['oairecerif.funder'].length;
+      if ('dc.relation.grantno' in jsonData.metadata) {
+        for (let grantNrField of jsonData.metadata['dc.relation.grantno']) {
+          if (grantNrField.value != "#PLACEHOLDER_PARENT_METADATA_VALUE#") {
+            nGrantsCount += 1;
           }
-          
         }
-      } 
+        if (nGrants == nGrantsCount) {
+          return 'ok';
+        }
+      }
+      return 'maybe';
     }
   }
 
