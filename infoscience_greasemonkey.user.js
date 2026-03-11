@@ -638,7 +638,7 @@ function addButtons() {
   let mainTitle = $('div.h4');
 
   // let authorList = $("span").filter(function(){ return $(this).text() === 'Author(s)';}); 
-  let authorList = $("span:contains('Author(s)'), span:contains('Auteur·trices')")
+  let authorList = $("span.col-3:contains('Author(s)'), span.col-3:contains('Auteur·trices')")
   if (authorList.length) {
     addCheckElement(authorList, 'epflAuthor', 'before', true);
   }
@@ -680,7 +680,7 @@ function addButtons() {
     addCheckElement(mainTitle, 'humanReadableTitle', 'after', true);
   }
 
-  let license = $('span:contains("License"), span:contains("Licence")');
+  let license = $('span.col-3:contains("License"), span.col-3:contains("Licence")');
   if (license.length) {
     addCheckElement(license, 'permissiveLicence', 'before', true);
   } else {
@@ -732,7 +732,7 @@ function addButtons() {
     addCheckElement(importantFrame, 'listedSourced', 'after', false);
   }
   */
-  let keywords = $('span:contains("Subjects"), span:contains("Sujets")');
+  let keywords = $('span.col-3:contains("Subjects"), span.col-3:contains("Sujets")');
   if (keywords.length) {
     addCheckElement(keywords, 'properKeywords', 'before', true);
   } else {
