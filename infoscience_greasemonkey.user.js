@@ -166,7 +166,7 @@ const checklistData = {
       'ok': ''
     },
     'category': 'recommended',
-    'short': '<i>&nbsp;</i>',
+    'short': '<i>Readable title?&nbsp;</i>',
     'wrapper': 'span'
   },
   'relatedWorks': {
@@ -455,9 +455,11 @@ function addCheckElement(selector, checkCode, position, normal) {
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
     myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
 
+    myHtml.append('<span>&nbsp;</span>');
     myHtml.append(`<label class="btn btn-danger" id='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
     myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
     myHtml.append(`<label class="btn btn-success" id='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
+    myHtml.append('<span>&nbsp;</span>');
 
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}${myHtml}</${checklistData[checkCode].wrapper}>`);
     checkElement = $(`<${checklistData[checkCode].wrapper}>`);
@@ -651,7 +653,7 @@ function addButtons() {
   if ('dc.publisher' in jsonData.metadata) {
     publisher = jsonData.metadata['dc.publisher'][0].value;
     let aboveAbstract = $(`div span ds-metadata-render span div span ds-metadata-link-view div span.ng-star-inserted:contains("${publisher}")`)
-    addCheckElement(aboveAbstract, 'sufficientDescription', 'after', true);
+    addCheckElement(aboveAbstract.parent().parent().parent().parent().parent(), 'sufficientDescription', 'after', true);
     // aboveAbstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   } else {
     addCheckElement(importantFrame, 'sufficientDescription', 'after', false);
