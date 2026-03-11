@@ -9,7 +9,7 @@
 // @include     https://infoscience.epfl.ch/entities/product/*
 // @run-at      document-idle
 // @grant       none
-// @version     1.0
+// @version     1.7.3
 // ==/UserScript==
 
 // https://infoscience.epfl.ch/server/api/core/items/a0c90826-53bb-4cb9-bde8-02aa6933fdc9?embed=owningCollection%2FparentCommunity%2FparentCommunity&embed=relationships&embed=version%2Fversionhistory&embed=bundles%2Fbitstreams&embed=thumbnail&embed=metrics
