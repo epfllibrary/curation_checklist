@@ -7,6 +7,9 @@
 // @namespace   curation.epflrdm.infoscience
 // @author      Alain Borel
 // @include     https://infoscience-test.epfl.ch/workflowitems/*
+// @include     https://infoscience.epfl.ch/workflowitems/*
+// @include     https://infoscience-test.epfl.ch/workspaceitems/*
+// @include     https://infoscience.epfl.ch/workspaceitems/*
 // @run-at      document-idle
 // @grant       none
 // @version     1.7.3
@@ -410,8 +413,13 @@ $('head').append(checklistStyle);
 console.log('greasemonkey_checklist active');
 
 let getUrl = window.location;
+// By default, assume a workflow item
+let itemStage = 'workflow/workflowitems';
+if (getUrl.pathname.match(/workspaceitems/g)) {
+  itemStage = 'submission/workspaceitems';
+}
 // https://infoscience-test.epfl.ch/server/api/workflow/workflowitems/6374?embed=item&embed=collection
-let baseUrl = getUrl.protocol + '//' + getUrl.host + '/server/api/workflow/workflowitems/' + getUrl.pathname.split('/')[2];
+let baseUrl = getUrl.protocol + '//' + getUrl.host + `/server/api/${itemStage}/` + getUrl.pathname.split('/')[2];
 console.log(baseUrl);
 let metadataUrl = baseUrl + '?embed=item&embed=collection';
 console.log(metadataUrl);
@@ -633,8 +641,8 @@ function addButtons() {
   */
 
   let menu;
-  if (document.URL.match(/workflowitems\/\d*/g)) {
-    console.log("locate menu: this is a workflowitem");
+  if (document.URL.match(/workflowitems\/\d*/g) || document.URL.match(/workspaceitems\/\d*/g)) {
+    console.log("locate menu: this is a workflow or workspace item");
     menu = $('ds-context-menu');
     console.log("menu:", menu.length);
   }
@@ -646,7 +654,7 @@ function addButtons() {
   // This one should always be there, let's use it as a reference point
 
   let importantFrame;
-  if (document.URL.match(/workflowitems\/\d*/g)) {
+  if (document.URL.match(/workflowitems\/\d*/g) || document.URL.match(/workspaceitems\/\d*/g)) {
     importantFrame = $('ds-context-menu');
   }
 

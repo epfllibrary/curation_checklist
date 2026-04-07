@@ -7,6 +7,7 @@
 // @namespace   curation.epflrdm.infoscience
 // @author      Alain Borel
 // @include     https://infoscience.epfl.ch/entities/product/*
+// @include     https://infoscience-test.epfl.ch/entities/product/*
 // @run-at      document-idle
 // @grant       none
 // @version     1.7.3
