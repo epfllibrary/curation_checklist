@@ -647,7 +647,7 @@ function addButtons() {
 
   let importantFrame;
   if (document.URL.match(/workflowitems\/\d*/g)) {
-    importantFrame = $('ds-context-menu.ng-star-inserted');
+    importantFrame = $('ds-context-menu');
   }
 
   let mainTitle = $('h1 div span').parent().parent();
@@ -716,10 +716,14 @@ function addButtons() {
     addCheckElement(importantFrame, 'listedGrants', 'after', false);
   }
 
-  // TODO find the proper location where the buttons should appear, then the README checks
+  // TODO adapt the README checks
+  let contentElement = $('h2:contains("Files")');
+  console.log("contentElement: ");
+  console.log(contentElement);
+
   if (contentElement.length) {
-    addCheckElement(contentChecks, 'cleanDataset', 'after', true);
-    addCheckElement(contentChecks, 'detailedReadme', 'after', true);
+    addCheckElement(contentElement, 'cleanDataset', 'after', true);
+    addCheckElement(contentElement, 'detailedReadme', 'after', true);
   }
 
   /*
@@ -749,7 +753,7 @@ function addButtons() {
   */
 
   // TODO find the proper metadata element
-  let keywords = $('span.col-3:contains("Subjects"), span.col-3:contains("Sujets")');
+  let keywords = $('tr td:contains("dc.subject")');
   if (keywords.length) {
     addCheckElement(keywords, 'properKeywords', 'before', true);
   } else {
@@ -802,7 +806,7 @@ function policyCheck(checkCode) {
     // Check access to the files
     // On Infoscience, we should always have access if the files are actually hosted here
 
-    let contentElement = $('a[title="Fichiers"], a[title="Files"]');
+    // let contentElement = $('a[title="Fichiers"], a[title="Files"]');
     console.log(contentElement);
     if (contentElement.length > 0) {
       console.log('we have some content');
