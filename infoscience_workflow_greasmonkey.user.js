@@ -672,8 +672,8 @@ function addButtons() {
 
 
   if (authorList.length) {
-    addCheckElement(authorList, 'epflContact', 'after', true);
-    addCheckElement(authorList, 'allORCIDs', 'after', true);
+    addCheckElement(authorList, 'epflContact', 'before', true);
+    addCheckElement(authorList, 'allORCIDs', 'before', true);
   }
 
   /*
@@ -693,13 +693,14 @@ function addButtons() {
     addCheckElement(mainTitle, 'humanReadableTitle', 'after', true);
   }
 
-  let license = $('span.col-3:contains("License"), span.col-3:contains("Licence")');
+  let license = $("tr td:contains('ctb.oaireXXlicenseCondition')");
   if (license.length) {
     addCheckElement(license, 'permissiveLicence', 'before', true);
   } else {
     addCheckElement(importantFrame, 'permissiveLicence', 'after', false);
   }
 
+  // TODO find the proper metadata element
   let relativeIdentifiers = $('table tr td span:contains("Relation")');
   if (relativeIdentifiers.length) {
     addCheckElement(relativeIdentifiers, 'relatedWorks', 'before', true);
@@ -707,8 +708,7 @@ function addButtons() {
     addCheckElement(importantFrame, 'relatedWorks', 'after', false);
   }
 
-
-
+  // TODO find the proper metadata element
   let grants = $('table tr td span:contains("Funder"), table tr td span:contains("Bailleur de fonds")');
   if (grants.length) {
     addCheckElement(grants, 'listedGrants', 'before', true);
@@ -716,11 +716,13 @@ function addButtons() {
     addCheckElement(importantFrame, 'listedGrants', 'after', false);
   }
 
-  /*
+  // TODO find the proper location where the buttons should appear, then the README checks
   if (contentElement.length) {
     addCheckElement(contentChecks, 'cleanDataset', 'after', true);
     addCheckElement(contentChecks, 'detailedReadme', 'after', true);
   }
+
+  /*
 
   let thesisUniversity = $('dt:contains("Awarding university")');
   if (thesisUniversity.length) {
@@ -745,6 +747,8 @@ function addButtons() {
     addCheckElement(importantFrame, 'listedSourced', 'after', false);
   }
   */
+
+  // TODO find the proper metadata element
   let keywords = $('span.col-3:contains("Subjects"), span.col-3:contains("Sujets")');
   if (keywords.length) {
     addCheckElement(keywords, 'properKeywords', 'before', true);
