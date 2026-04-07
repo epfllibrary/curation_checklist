@@ -1,0 +1,1321 @@
+// ==UserScript==
+// @name        EXPERIMENTAL Infoscience datasets as workflow items curation
+// @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js
+// @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js
+// @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js
+// @require     https://far-nyon.ch/assets/js/tinysort/src/jquery.tinysort.min.js
+// @namespace   curation.epflrdm.infoscience
+// @author      Alain Borel
+// @include     https://infoscience-test.epfl.ch/workflowitems/*
+// @run-at      document-idle
+// @grant       none
+// @version     1.7.3
+// ==/UserScript==
+
+// https://infoscience.epfl.ch/server/api/core/items/a0c90826-53bb-4cb9-bde8-02aa6933fdc9?embed=owningCollection%2FparentCommunity%2FparentCommunity&embed=relationships&embed=version%2Fversionhistory&embed=bundles%2Fbitstreams&embed=thumbnail&embed=metrics
+
+console.log('infoscience_greasemonkey here');
+
+
+
+function get_cookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    let cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      let cookie = jQuery.trim(cookies[i]);
+      if (cookie.substring(0, name.length + 1) === name + '=') {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+
+/*
+Check levels:
+All possible importance levels, in short and long format
+*/
+const checkLevels = [{'short': 'must', 'full': 'MUST (mandatory for acceptance into the collection)'}, {'short': 'recommended', 'full': 'RECOMMENDED'}, {'short': 'nth', 'full': 'NICE-TO-HAVE'}];
+
+
+/**
+Checklist data:
+each curation criterion is desribed by:
+- main identifier M1, M2,... Mn, R1, R2... Rn, N1, N2...Nn according to the importance level and numbering
+- full: the criterio as listed in the curation policy (to display as baloon help)
+- short: HTML string that will be inserted next to the relevant checklist buttons
+- answers: text used in the feedback message, depending on the selected checkbox button. bad = red x, meh = red ?, maybe = green ?, ok = green x, neutral otherwise
+- category: importance level, using the short code from checkLevels
+- wrapper: HTML tag that will contain the short text. span or div depending on what works best in the web page of interest.
+For some criteria, mostly when they deal with optional fields (such as keywords), there can can be alternative values:
+- altshort
+- altwrapper
+*/
+
+/* tags for code maintenance in case of policy changes */
+
+const ruleTags = {
+  'epflAuthor': 'M1',
+  'epflContact': 'M2',
+  'accessForReview': 'M3',
+  'sufficientDescription': 'M4',
+  'readmePresent': 'M5',
+  'originalDOI': 'M6',
+  'allORCIDs': 'R1',
+  'humanReadableTitle': 'R2',
+  'relatedWorks': 'R3',
+  'listedGrants': 'R4',
+  'noPersonalData': 'R5',
+  'cleanDataset': 'N1',
+  'permissiveLicence': 'N2',
+  'detailedReadme': 'N3',
+  'supervisorIfThesis': 'N4',
+  'openFileFormats': 'N5',
+  'listedSourced': 'N6',
+  'properKeywords': 'N7'
+}
+
+const checklistData = {
+  'epflAuthor': {
+    'full': 'At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work',
+    'short': '<i>EPFL authors?&nbsp;</i>',
+    'answers': {
+      'bad': 'There is not enough evidence that the authors are or were affiliated with EPFL, we would be grateful for more details (for example an e-mail address or ORCID identifier)',
+      'meh': 'NOT TOTALLY WRONG, BUT STILL...',
+      'maybe': '[Typical issue, please check!] One or more authors are affiliated with EPFL, which is sufficient for us, ' +
+                'but the format does not conform to the standard address format "École polytechnique fédérale de Lausanne (EPFL)" ' + 
+                '(part of the Directive concerning research integrity and good scientific practice at EPFL - LEX 3.3.2).' +
+                '\nIn the Zenodo entry form, the compliant suggestion by the entry form is the one listed with "Source: ROR (Prefered)".',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'must',
+    'wrapper': 'div'
+  },
+  'epflContact': {
+    'full': 'Contact information for at least one EPFL author is provided, preferably through an ORCID identifier',
+    'answers': {
+      'bad': 'Minimal contact information for an EPFL author must be available, please add it either using ORCID or in the Description.',
+      'meh': 'NOT TOTALLY WRONG, BUT STILL...',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'must',
+    'short': '<i>ORCID or email for 1 EPFL author?&nbsp;</i>',
+    'wrapper': 'div'
+  },
+  'accessForReview': {
+    'full': 'The content of the submitted work must be accessible for review, i.e. Open Access, or Restricted after an access request has been granted to the reviewers. Embargoed works will be reviewed after the embargo expires',
+    'answers': {
+      'bad': 'If we cannot access the content of the dataset, we cannot check its compliance with our curation criteria. Would it be possible to make it at least Restricted?',
+      'meh': 'NOT TOTALLY WRONG, BUT STILL...',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'must',
+    'short': '<i>Access to content?&nbsp;</i>',
+    'wrapper': 'div'
+  },
+  'sufficientDescription': {
+    'full': 'The Description of the submitted work is sufficiently detailed. Mere references to external articles or to other external resources are not sufficient descriptions',
+    'answers': {
+      'bad': 'For example, a few sentences explaining how the files were generated or used would be very helpful for a potential user. If the data was used in a publication, you could also include part of the article abstract, to make the scientific context more immediately apparent.',
+      'meh': 'NOT TOTALLY WRONG, BUT STILL...',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'must',
+    'short': '<i>Sufficient abstract?&nbsp;</i>',
+    'altshort': '<i>Sufficient abstract?&nbsp;</i>',
+    'wrapper': 'div'
+  },
+  'readmePresent': {
+    'full': 'The submitted work includes a clearly identifiable README file, typically in the root directory. This is not required for works consisting in one single document (ex. publication, poster, or presentation)',
+    'answers': {
+      'bad': 'Such a file really facilitates a potential user\'s understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, it is a requirement for long-term archiving by EPFL\'s ACOUA system (further info at the end of this message).',
+      'meh': 'Such a file really facilitates a potential user\'s understanding of your data. A minimal README will be similar to the general description, with the added value of being easier to download together with the rest of the data. Finally, it is a requirement for long-term archiving by EPFL\'s ACOUA system (further info at the end of this message).',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'must',
+    'short': '<i>README present?&nbsp;</i>',
+    'wrapper': 'span'
+  },
+  'originalDOI': {
+    'full': 'The main DOI has been assigned by Zenodo',
+    'answers': {
+      'bad': 'Entering an existing DOI as the main identifier is allowed only if the submitted work is an exact copy of a digital object that has already received its DOI on another platform, but even in that case an IsIdenticalTo relationship will be more correct. Typically, supplementary data to a journal article should NOT re-use the journal article DOI.',
+      'meh': 'NOT TOTALLY WRONG, BUT STILL...',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'must',
+    'short': '<i>&nbsp;Original (Zenodo) DOI?&nbsp;</i>',
+    'wrapper': 'span'
+  },
+  'allORCIDs': {
+    'full': 'All authors are identified by their ORCID',
+    'answers': {
+      'bad': 'By listing all authors with their respective ORCID, you make sure that they can be recognized unambiguously. If an EPFL author has no ORCID yet, we strongly suggest to create one: see https://actu.epfl.ch/news/link-your-orcid-profile-with-epfl/ for more info',
+      'meh': 'NOT TOTALLY WRONG, BUT STILL...',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'recommended',
+    'short': '<i>Authors with ORCID?&nbsp;</i>',
+    'wrapper': 'div'
+  },
+  'humanReadableTitle': {
+    'full': 'The main title should be human-readable on the same level as conventional publications: filenames or coded expressions are deprecated',
+    'answers': {
+      'bad': 'As for any scientific output, a good title is the first place where others will learn about the nature and purpose of your research. The same principles as for scientific papers are applicable.',
+      'meh': 'It is usually better to distinguish a dataset from the associated publication through their titles. A simple recipe could be "Dataset for " + the article title',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'recommended',
+    'short': '<i>Readable title?&nbsp;</i>',
+    'wrapper': 'span'
+  },
+  'relatedWorks': {
+    'full': 'If existing, references to related publications (e.g., article, source code, other datasets, etc.) are specified in the "Related works" field. If available, references are designated by their respective DOIs',
+    'answers': {
+      'bad': 'The upload appears to be related with a publication. If the final publication or a version of the manuscript is available online, it should be listed it in the "Related/alternate identifiers" section - preferably using a DOI but a URL is fine if no DOI has been assigned to the publication. If no online version exists yet (even a preprint), can you give us an estimated time for the expected publication?',
+      'meh': 'NOT TOTALLY WRONG, BUT STILL...',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'recommended',
+    'short': '<i>&nbsp</i>;',
+    'wrapper': 'span',
+    'altwrapper': 'dt',
+    'altshort': '<b>No related identifiers here, is it OK?&nbsp;</b>'
+  },
+  'listedGrants': {
+    'full': 'If related grants require an acknowledgement, they are listed using “Funding/Grants” fields',
+    'answers': {
+      'bad': 'There are specific fields to list grants, it is better to use them than to write an acknowledgement in the description: it facilitates the automatic retrieval of that information on the funders\' platfoms',
+      'meh': 'There is no mention of specific funding, which is fine if the project is operated using EPFL budget only. However, if some funding body (such as the Swiss National Science Foundation, some European program or other) is acknowledged in the publication it should be listed here as well.',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'recommended',
+    'short': '<i>&nbsp;</i>',
+    'wrapper': 'span',
+    'altshort': '<b>No grants here, is it OK?&nbsp;</b>',
+    'altwrapper': 'dt',
+    'selector': 'dt:contains("Grants:")'
+  },
+  'noPersonalData': {
+    'full': 'Any sensitive, personal data has been anonymized',
+    'answers': {
+      'bad': 'The upload contains personal data about human research subjects, which is forbidden by various laws. Make sure the access is strictly limited and/or replace the data with an anonymized version',
+      'meh': 'THIS IS NOT GREY AREA: IF YOU SUSPECT IT IS WRONG, IT IS PROBABLY WRONG',
+      'maybe': 'THIS IS NOT GREY AREA: IF YOU SUSPECT IT IS WRONG, IT IS PROBABLY WRONG',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'recommended',
+    'short': '<i>No sensitive data?&nbsp;</i>',
+    'wrapper': 'div'
+  },
+  'cleanDataset': {
+    'full': 'The submitted work has been cleaned up (e.g., there are no temporary files, no unnecessary empty files or folders, no superfluous file versions, etc.)',
+    'answers': {
+      'bad': '[ONE POSSIBLE CASE]This is just a suggestion at this point but is quite a frequent one for us: in the future, you might want to exclude .DS_Store and other similar MacOS files in your archives. The otherwise very convenient "Compress" command in the OSX Finder makes it difficult to avoid this, but there are other tools that you could use instead, see https://apple.stackexchange.com/questions/239578/compress-without-ds-store-and-macosx for a few possible options.',
+      'meh': 'NOT TOTALLY WRONG, BUT STILL...',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'nth',
+    'short': '<b>Clean content?&nbsp;</b> ',
+    'wrapper': 'div'
+  },
+  'permissiveLicence': {
+    'full': 'Permissive licenses are preferred. CC0, CC-BY-4.0, CC-BY-SA-4.0 for data and MIT, BSD, GPL for code are suggested',
+    'answers': {
+      'bad': 'Limited access and re-usability are against the principles of Open Science endorsed by EPFL. Are you sure you cannot use a more liberal license?',
+      'meh': 'The chosen license limits the potential re-use of your data by others. There can be valid reasons for that, but in general we encourage the most open options',
+      'maybe': 'An unusual license was chosen for this upload, is there a reason why it was preferred over the better-known options?',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'nth',
+    'short': '<i>&nbsp;</i>',
+    'wrapper': 'span',
+    'altshort': '<b>No license, probably wrong&nbsp;</b>',
+    'altwrapper': 'dt'
+  },
+  'detailedReadme': {
+    'full': 'The README file contains detailed information about the work creation (authors, time, place, methodologies…), content (file organization and naming, formats, relevant standards…), sharing and access, etc.',
+    'answers': {
+      'bad': 'A good README can significantly improve a potential user\'s understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/handle/20.500.14299/192546',
+      'meh': 'A good README can significantly improve a potential user\'s understanding of your data. Feel free to use our template and guidelines for inspiration: https://infoscience.epfl.ch/handle/20.500.14299/192546',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'nth',
+    'short': '<i>Good README?&nbsp;</i> ',
+    'wrapper': 'div'
+  },
+  'supervisorIfThesis': {
+    'full': 'If the submission is related to a PhD thesis, the supervisor is specified',
+    'answers': {
+      'bad': 'There are mentions of a PhD thesis, this should be formally declared using the relevant input field with the supervisor name and institution',
+      'meh': 'THIS IS NOT A GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.',
+      'maybe': 'THIS IS NOT A GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'nth',
+    'short': '<i>&nbsp;| Supervisor listed?&nbsp;</i>',
+    'wrapper': 'span',
+    'altshort': '<b>No thesis indication, probably fine&nbsp;</b>',
+    'altwrapper': 'dt'
+  },
+  'openFileFormats': {
+    'full': 'Files are available in open formats. If proprietary formats are present, the work also includes versions of the files converted to open formats, with the least possible loss of information',
+    'answers': {
+      'bad': 'A potential user is more likely to be able to work with your data if it is available in open formats, since they will less restricted by some specific software choice. You can check our Fast Guide for examples https://infoscience.epfl.ch/record/265349/files/04_Formats_EPFL_Library_RDM_FastGuide.pdf',
+      'meh': 'NOT TOTALLY WRONG, BUT STILL...',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'nth',
+    'short': '<i>Open file formats?&nbsp;</i> ',
+    'wrapper': 'div'
+  },
+  'listedSourced': {
+    'full': 'Where applicable, sources from which the work is derived are specified in the "References" field',
+    'answers': {
+      'bad': 'It seems that the upload is derived from existing data. In such a case, the source of that data is best acknowledged using structured metadata: the "Related/alternate identifiers" section is generally intended for digitial sources, the "References" section can be used for other sources',
+      'meh': 'THIS IS NOT GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.',
+      'maybe': 'THIS IS NOT GREY AREA: IF YOU HAVE SOLID EVIDENCE THAT IT IS WRONG, IT IS WRONG. OTHERWISE JUST FORGET IT.',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'nth',
+    'short': '<i>&nbsp;Relevant sources?&nbsp;</i>',
+    'wrapper': 'span',
+    'altshort': '<b>No "References" section, is this OK?&nbsp;</b>',
+    'altwrapper': 'span'
+  },
+  'properKeywords': {
+    'full': 'Keywords are entered as separated fields in the “Keywords and subjects" field',
+    'answers': {
+      'bad': 'To maximize the effectiveness of keywords, each concept must be listed a distinct entity: each entity will have its own link that leads to other records tagged with the same concept. This will not work if all keywords are combined as one single text entry.',
+      'meh': 'No keywords are listed, you might consider adding some. It will make it easier for potential users to discover the dataset (through search results or links from other datasets with the same keywords), and then to understand its context',
+      'maybe': 'NOT COMPLETELY RIGHT, ADD NUANCED COMMENT HERE',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'nth',
+    'short': '<i>&nbsp;</i>',
+    'wrapper': 'span',
+    'altshort': '<b>No keywords here, is it OK?&nbsp;</b>',
+    'altwrapper': 'dt'
+  }
+};
+
+// Values of all checkbuttons if created with computed evaluation
+const buttonValues = {
+  'neutral': [' ', '?', ' '],
+  'ok': [' ', ' ', 'x'],
+  'maybe': [' ', ' ', '?'],
+  'bad': ['x', ' ', ' '],
+  'meh': ['?', ' ', ' ']
+}
+
+
+function state2checkValue(buttonID, value) {
+  /**
+   * Convert manually selected checkbutton states into an evaluation
+   */
+  if (buttonID == 'bad' && value == 'x') {
+    return 'bad';
+  }
+  if (buttonID == 'bad' && value == '?') {
+    return 'meh';
+  }
+  if (buttonID == 'ok' && value == '?') {
+    return 'maybe';
+  }
+  if (buttonID == 'ok' && value == 'x') {
+    return 'ok';
+  }
+  return 'neutral';
+}
+
+// CSS for the checkbuttons. Do not touch.
+const checklistStyle = `
+<style>
+.check {
+  -webkit-appearance: none; /*hides the default checkbox*/
+  height: 2ch;
+  width: 2ch;
+  transition: 0.10s;
+  background-color: #FE0006;
+  text-align: center;
+  font-weight: 600;
+  color: white;
+  border-radius: 3px;
+  outline: none;
+}
+
+.check:checked {
+  background-color: #0E9700;
+}
+
+.check:before {
+  content: "✖";
+}
+.check:checked:before {
+  content: "✔";
+}
+
+.check:hover {
+  cursor: pointer; 
+  opacity: 0.8;
+}
+
+label.btn {
+  height: 4ch;
+  border: 1px solid gray
+}
+
+</style>
+`;
+
+// Script initialization. In particular, insert the necessary stylesheets
+this.$ = this.jQuery = jQuery.noConflict(true);
+$('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css'));
+$('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css'));
+
+$('head').append(checklistStyle);
+console.log('greasemonkey_checklist active');
+
+let getUrl = window.location;
+// https://infoscience-test.epfl.ch/server/api/workflow/workflowitems/6374?embed=item&embed=collection
+let baseUrl = getUrl.protocol + '//' + getUrl.host + '/server/api/workflow/workflowitems/' + getUrl.pathname.split('/')[2];
+console.log(baseUrl);
+let metadataUrl = baseUrl + '?embed=item&embed=collection';
+console.log(metadataUrl);
+
+// Thanks to https://stackoverflow.com/questions/190253/how-to-use-a-regular-expression-in-a-jquery-selector
+// useful helper to use regexps in JQuery selectors
+jQuery.expr.pseudos.regex = jQuery.expr.createPseudo(function (expression) {
+    return function (elem) {
+        var matchParams = expression.split(','),
+            validLabels = /^(data|css):/,
+            attr = {
+                method: matchParams[0].match(validLabels) ?
+                    matchParams[0].split(':')[0] : 'attr',
+                property: matchParams.shift().replace(validLabels, '')
+            },
+            regexFlags = 'ig',
+            regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g, ''), regexFlags);
+        return regex.test(jQuery(elem)[attr.method](attr.property));
+    }
+});
+
+
+let identifier;
+let doi;
+let allFileNames;
+let jsonData = {};
+let unknownRelated = [];
+
+fetch(metadataUrl, {
+  credentials: 'include'
+})
+  .then(response => response.json())
+  .then(jsonResponse => {
+    console.log("JSON response:")
+    console.log(jsonResponse);
+    console.log(jsonResponse.sections.dataset_details["dc.title"][0].value);
+    jsonData = {'metadata': jsonResponse.sections.dataset_details}
+    identifier = getUrl;
+
+    // Use the "..." button as a signal that Angular's work is complete
+    waitForKeyElements ("button#context-menu", addButtons);
+
+    })
+  .catch(console.error);
+
+
+function addCheckElement(selector, checkCode, position, normal) {
+  /**
+   * Add checkbuttons next to a DOM element
+   */
+  let checkElement;
+  // see if we can get a non-neutral answer for the current criterion
+
+  // FIXME lots of stuff before the checks can use Infoscience JSON
+  let status = 'neutral';
+  try {
+    status = policyCheck(checkCode);
+  } catch {
+    console.log("Error checking policy for", checkCode);
+  }
+
+  let myHtml;
+
+  if (normal) {
+    //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
+    myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
+
+    myHtml.append('<span>&nbsp;</span>');
+    myHtml.append(`<label class="btn btn-danger" id='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
+    myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
+    myHtml.append(`<label class="btn btn-success" id='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
+    myHtml.append('<span>&nbsp;</span>');
+
+    //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}${myHtml}</${checklistData[checkCode].wrapper}>`);
+    checkElement = $(`<${checklistData[checkCode].wrapper}>`);
+    checkElement.append($(`${checklistData[checkCode].short}`));
+    checkElement.append(myHtml);
+  } else {
+    //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].altwrapper}>`);    
+    myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
+
+    myHtml.append(`<label class="btn btn-danger" id='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
+    myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
+    myHtml.append(`<label class="btn btn-success" id='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
+
+    //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}${myHtml}</${checklistData[checkCode].wrapper}>`);
+    checkElement = $(`<${checklistData[checkCode].altwrapper}>`);
+    checkElement.append($(`${checklistData[checkCode].altshort}`));
+    checkElement.append(myHtml);
+
+
+  }
+  checkElement.attr('title', checklistData[checkCode].full);
+  checkElement.tooltip();
+  if (position == 'before') {
+    selector.prepend(checkElement);
+  } else {
+    selector.append(checkElement);
+  }
+}
+
+function addButtons() {
+
+  var btn = document.createElement('BUTTON');
+  var t = document.createTextNode('Prepare curation feedback e-mail');
+  var frm = document.createElement('FORM');
+  frm.setAttribute('id', 'is3_gm_form')
+  var icn = document.createElement('I');
+
+
+  icn.setAttribute('class', 'fa fa-external-link');
+  btn.setAttribute('class', 'btn btn-info btn-block sidebar-container');
+  btn.appendChild(icn);
+  btn.appendChild(t);
+  frm.appendChild(btn);
+
+  frm.addEventListener('click', function(event) {
+
+    let title = document.title.replace(' | Zenodo', '');
+    if (title == 'Infoscience') {
+      let possibleTitle = jsonData.metadata["dc.title"][0];
+      if (possibleTitle.length) {
+        title = possibleTitle.text();
+        identifier = 'unpublished'
+      }
+    }
+
+    let emailTo = 'researchdata@epfl.ch';
+    let emailSub = ' dataset listed on Infoscience';
+
+    var text = '';
+    event.preventDefault();
+
+    
+    for (let checkLevel of checkLevels) {
+      console.log('check level', checkLevel.short); 
+      let checkArray = [];
+      let checkBoxUnchecked = $(`label[name="${checkLevel.short}"][id='ok']:not(:contains("x"))`);
+      checkBoxUnchecked.each(function() {
+        let checkID = $(this).parent().attr('id');
+        let actualButton = $(this).parent().children('label:not(:contains(" "))');
+        let actualValue1 = actualButton.attr('id');
+        let actualValue2 = actualButton.text();
+        console.log(checkID, actualValue1, actualValue2, '==>', state2checkValue(actualValue1, actualValue2));
+        checkArray.push([checkID, checklistData[checkID].full, checklistData[checkID].answers[state2checkValue(actualValue1, actualValue2)]]);
+      });
+      if (checkArray.length) {
+        checkArray.sort();
+        text += `Total ${checkArray.length} ${checkLevel.full} criteria not fully met:\n`;
+        for (let element of checkArray) {
+          text += `**${ruleTags[element[0]]}: ${element[1]}**\n=> ${element[2]}\n\n`;
+        }
+      }
+    }
+
+    let now = new Date();
+    let greeting;
+    if (now.getHours() < 12) {
+      greeting = "Good morning";
+    } else if (now.getHours() > 16) {
+      greeting = "Good evening";
+    } else if (now.getHours() > 12) {
+      greeting = "Good afternoon";
+    } else {
+      greeting = "Hello"
+    }
+
+    let header = ''
+    let footer = ''
+    let infoscienceReport = ''
+    emailSub += encodeURIComponent(': ' + title);
+    if (text == '') {
+      // When all checkbuttons are set to ok, prepare the most positive feedback
+      header += `${greeting},\n\nYou are designated as EPFL creators for "${title}", listed as ${identifier} . Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
+      header += 'As part of our workflow, the dataset will also be listed on Infoscience by our staff. The record will be submitted for approval to your laboratory, similar to the process followed by publications imported from external sources (Web of Science, Scopus, OpenAlex...).\n\n'
+      header += 'XXX CHECK IF APPLICABLE XXX '
+      header += 'Furthermore, considering that the dataset is linked to a publication, we will also archive a copy of the dataset for long-time preservation in EPFL\'s ACOUA platform (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info).\n'
+      header += '\n\n'
+      header += 'If you have any question about these steps, do not hesitate to ask!\n'
+
+    } else {
+      // If even one checkbutton is not OK, there will be more to say
+      header += `${greeting},\n\nYou are designated as EPFL creators for "${title}", listed as ${identifier} .`;
+      header += ' We thank you and your coworkers for this contribution.\n\n'
+      header += 'In the context of our general curation procedure for datasets ( https://zenodo.org/communities/epfl/about ), we have identified a few details that could be improved:\n\n';
+
+      if (unknownRelated.length > 1) {
+        console.log('unknownRelated:', unknownRelated, unknownRelated.length)
+        infoscienceReport = 'Apparently, the following related publications are not yet listed on Infoscience:\n* ' + unknownRelated.join('\n* ') + '\n\n';
+        infoscienceReport += 'Assuming that they are EPFL publications, we invite you to submit them on https://infoscience.epfl.ch/mydspace to make sure the database is fully up-to-date.\n';
+        infoscienceReport += '(See https://go.epfl.ch/how-submit-infoscience if you are not familiar with entering new records on Infoscience)\n\n';
+      }frm
+      if (unknownRelated.length == 1) {
+        console.log('unknownRelated:', unknownRelated, unknownRelated.length)
+        infoscienceReport = 'Apparently, the following related publication is not yet listed on Infoscience:\n* ' + unknownRelated.join('\n* ') + '\n\n';
+        infoscienceReport += 'Assuming that this is an EPFL publication, we invite you to submit it on https://infoscience.epfl.ch/mydspace to make sure the database is fully up-to-date.\n';
+        infoscienceReport += '(See https://go.epfl.ch/how-submit-infoscience if you are not familiar with entering new records on Infoscience)\n\n';
+      }
+
+      footer += 'When the above feedback is addressed, we will be able to add value to your results and potentially save some of your time:\n';
+      footer += '    •   if the upload is related with a publication and if the distribution license allows it, we can take advantage of this situation to copy the data into EPFL\'s long time archive ACOUA (dedicated to safekeeping, not distribution of the data, the access to that platform is not public; see https://www.epfl.ch/campus/library/services-researchers/acoua-long-term-preservation/ for more info) without any administrative burden for the authors.\n';
+      footer += 'Please note that we cannot keep a case open for an indefinite time: we need your input regarding the possible delays.'
+      footer += ' If our messages are left unanswered for too long, we will process the submission according its current state.'
+      footer += ' If you would like us to re-open the case after an update on your side, just let us know and we will be happy to do so.'
+      footer += '\n\nIf you have any questions or comments about this service, do not hesitate to ask. We will be glad to answer or receive your feedback.\n\n'
+    }
+    footer += 'Best regards,\nZZZZZZ'
+
+    text = header + text + infoscienceReport + footer;
+    let finalURL = 'mailto:' + emailTo + '?&subject=' + emailSub + '&body=' + encodeURIComponent(text);
+    // console.log(finalURL);
+    openMailEditor(finalURL);
+  })
+
+  /**
+  Main Greasemoneky section
+  For all criteria, identify the relevant DOM element and insert the checkbuttons and short text using addCheckElement()
+  The checkbuttons can be inserted 'before' or 'after' the selected DOM element
+  */
+
+  let menu;
+  if (document.URL.match(/workflowitems\/\d*/g)) {
+    console.log("locate menu: this is a workflowitem");
+    menu = $('ds-context-menu');
+    console.log("menu:", menu.length);
+  }
+
+
+  menu.prepend(frm);
+
+  
+  // This one should always be there, let's use it as a reference point
+
+  let importantFrame;
+  if (document.URL.match(/workflowitems\/\d*/g)) {
+    importantFrame = $('ds-context-menu.ng-star-inserted');
+  }
+
+  let mainTitle = $('h1 div span').parent().parent();
+
+  // TODO check why authorList[0] doesn't work 100%
+  let authorList = $("tr td:contains('dc.contributor.author')")
+  if (authorList.length) {
+    addCheckElement(authorList, 'epflAuthor', 'before', true);
+  }
+
+  // Simple check: either a Files tab, or a DOI
+  addCheckElement(importantFrame, 'accessForReview', 'after', true);
+
+  //let abstract = $('div.item-detail ds-markdown-viewer span p');
+  if ('dc.description.abstract' in jsonData.metadata) {
+    let aboveAbstract = $("tr td:contains('dc.description.abstract')")
+    addCheckElement(aboveAbstract, 'sufficientDescription', 'before', true);
+    // aboveAbstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
+  } else {
+    addCheckElement(importantFrame, 'sufficientDescription', 'after', false);
+  }
+
+
+  if (authorList.length) {
+    addCheckElement(authorList, 'epflContact', 'after', true);
+    addCheckElement(authorList, 'allORCIDs', 'after', true);
+  }
+
+  /*
+
+  if (contentElement.length) {
+    addCheckElement(contentChecks, 'readmePresent', 'after', true);
+    addCheckElement(contentChecks, 'noPersonalData', 'after', true);
+  }
+
+  let doiElement = $('div#record-versions');
+  if (doiElement.length) {
+    addCheckElement(doiElement, 'originalDOI', 'before', true);
+  }
+  */
+
+  if (mainTitle.length) {
+    addCheckElement(mainTitle, 'humanReadableTitle', 'after', true);
+  }
+
+  let license = $('span.col-3:contains("License"), span.col-3:contains("Licence")');
+  if (license.length) {
+    addCheckElement(license, 'permissiveLicence', 'before', true);
+  } else {
+    addCheckElement(importantFrame, 'permissiveLicence', 'after', false);
+  }
+
+  let relativeIdentifiers = $('table tr td span:contains("Relation")');
+  if (relativeIdentifiers.length) {
+    addCheckElement(relativeIdentifiers, 'relatedWorks', 'before', true);
+  } else {
+    addCheckElement(importantFrame, 'relatedWorks', 'after', false);
+  }
+
+
+
+  let grants = $('table tr td span:contains("Funder"), table tr td span:contains("Bailleur de fonds")');
+  if (grants.length) {
+    addCheckElement(grants, 'listedGrants', 'before', true);
+  } else {
+    addCheckElement(importantFrame, 'listedGrants', 'after', false);
+  }
+
+  /*
+  if (contentElement.length) {
+    addCheckElement(contentChecks, 'cleanDataset', 'after', true);
+    addCheckElement(contentChecks, 'detailedReadme', 'after', true);
+  }
+
+  let thesisUniversity = $('dt:contains("Awarding university")');
+  if (thesisUniversity.length) {
+    addCheckElement(thesisUniversity, 'supervisorIfThesis', 'after', true);
+  } else {
+    addCheckElement(importantFrame, 'supervisorIfThesis', 'after', false);
+  }
+
+  if (contentElement.length) {
+    addCheckElement(contentChecks, 'openFileFormats', 'after', true);
+    let referencesWarning = '<div><b>Do not forget to check the references box at the bottom of the page...</b></div>';
+    contentChecks.append(referencesWarning);
+  }
+*/
+
+  /* Irrelevant on Infoscience
+  //let referencesElement = $('div#references-accordion-trigger');
+  let referencesElement = $('h3:contains("References")');
+  if (referencesElement.length) {
+    addCheckElement(referencesElement, 'listedSourced', 'after', true);
+  } else {
+    addCheckElement(importantFrame, 'listedSourced', 'after', false);
+  }
+  */
+  let keywords = $('span.col-3:contains("Subjects"), span.col-3:contains("Sujets")');
+  if (keywords.length) {
+    addCheckElement(keywords, 'properKeywords', 'before', true);
+  } else {
+    addCheckElement(importantFrame, 'properKeywords', 'after', false);
+  }
+
+  // TODO adapt contentChecks to Infoscience
+  // contentElement.prepend(contentChecks);
+
+  /**
+  End of the main Greasemonkey section
+  */
+
+  /**
+  Detect click on a checkbutton, change its value (circling between x, ? and empty) and clear its siblings if necessary
+  */
+  $('div.btn-group label.btn').on('click', function myclick(event) {
+    console.log('click detected', event);
+    console.log('in group selector', $(this).parent().attr('id'), $(this).attr('id'));
+    if ($(this).text() != 'x') {
+      $(this).siblings().text(' ');
+      //Process button click event
+      $(this).text('x');
+    } else {
+      $(this).text('?');
+    }
+  });
+}
+
+function openMailEditor(url) {
+  // Simply use the mailto URL
+  location.href = url;
+}
+
+
+function policyCheck(checkCode) {
+  /**
+  Automatic checks: will return 'neutral' by default.
+  The logic must be adapated to each criterion, not all of them can be automated.
+  */
+  if (checkCode == 'epflAuthor') {
+    // Check EPFL creators. Acceptable if there is at least one, OK if all (more than 1) creators are EPFL
+    if ('cris.virtualsource.rid' in jsonData.metadata) {
+      return 'ok';
+    }
+    return 'maybe';
+  }
+
+  if (checkCode == 'accessForReview') {
+    // Check access to the files
+    // On Infoscience, we should always have access if the files are actually hosted here
+
+    let contentElement = $('a[title="Fichiers"], a[title="Files"]');
+    console.log(contentElement);
+    if (contentElement.length > 0) {
+      console.log('we have some content');
+      return 'ok';
+    } else if ('dc.identifier.doi' in jsonData.metadata) {
+      console.log('we have some remote content');
+      return 'ok';  
+    } else {
+      console.log('no content to inspect')
+      return 'meh';
+    }
+  }
+
+  if (checkCode == 'epflContact') {
+    let orcidEpflCreators = 0;
+    if ('cris.virtualsource.rid' in jsonData.metadata) {
+      orcidEpflCreators = jsonData.metadata['cris.virtualsource.rid'].length;
+    }
+    if (orcidEpflCreators) {
+      return 'ok';
+    }
+    if ('dc.description.abstract' in jsonData.metadata) {
+      if (jsonData.metadata['dc.description.abstract'][0].includes('@epfl.ch')) {
+        return 'maybe';
+      }
+    }
+    return 'bad';
+  }
+
+  if (checkCode == 'sufficientDescription') {
+    // If the abstract is missing entirely, it's bad.
+    if ('dc.description.abstract' in jsonData.metadata) {
+      return 'maybe';
+    } else {
+      return 'bad';
+    }
+  }
+
+  if (checkCode == 'readmePresent') {
+    // Try to find a README
+    // This will not check the content of Zips or other archive files
+    let readmeFound = 'neutral';
+    $('a:regex(href, records/.*/files/)').each(function() {
+      let f = $(this).text().toLowerCase();
+      // console.log([f], f.indexOf('readme'));
+      if ((f.indexOf('readme') >= 0) && (f.indexOf('readme') < 4)) {
+        // console.log('should be OK');
+        readmeFound = 'ok';
+      }
+    });
+    return readmeFound;
+  }
+
+  if (checkCode == 'originalDOI') {
+    let originalZenodoDoi = 'bad';
+    if (doi.match(/^10\.5281\/zenodo/g) || doi.match(/^10\.5072\/zenodo/g)) {
+      originalZenodoDoi = 'ok';
+    }
+    return originalZenodoDoi;
+  }
+
+
+  if (checkCode == 'permissiveLicence') {
+    // Licenses: check for one of the better ones.
+    // Bad if there is no license at all.
+    const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl', 'cc 0', 'cc by', 'cc by sa', 'cc by-sa'];
+    try {
+      if ('ctb.oaireXXlicenseCondition' in jsonData.metadata) {
+        console.log([jsonData.metadata['ctb.oaireXXlicenseCondition'][0].value.toLowerCase()]);
+        if (goodLicenses.includes(jsonData.metadata['ctb.oaireXXlicenseCondition'][0].value.toLowerCase())) {
+          return 'ok';
+        }
+      }
+    } catch (error) {
+      console.log('License check error', error);
+      return 'bad';
+    }
+
+  }
+
+  if (checkCode == 'supervisorIfThesis') {
+    if ($("dt:contains('Awarding University:')").length) {
+      if ($("h5:contains('Thesis supervisor(s)')").nextAll('p').html().match(/<span/g).length) {
+        return 'ok';
+      }
+    }
+
+  }
+
+  if (checkCode == 'properKeywords') {
+    // Keywords: if there is only one string and it contains a comma or a semicolon, it is probably bad
+    //let kw = $( "dd a.label-link span.label" );
+    if ('dc.subject' in jsonData.metadata) {
+      let kw = jsonData.metadata['dc.subject'];
+      if (kw.length == 0) {
+        return 'meh';
+      }
+      if (kw.length == 1) {
+        if (kw[0].includes(',') || kw[0].includes(';')) {
+            return 'meh';
+        } else {
+          return 'ok'
+        }
+      }
+      if (kw.length == 2) {
+        return 'maybe';
+      }
+      if (kw.length > 2) {
+        return 'ok';
+      }
+    } else {
+      return 'meh';
+    }
+
+  }
+
+ if (checkCode == 'allORCIDs') {
+    // Check for ORCID iDs
+    // At least one creator with ORCID = maybe. All creators with ORCID = OK
+    let epflCreators = 0;
+    let orcidEpflCreators = 0;
+    if ('cris.virtualsource.rid' in jsonData.metadata) {
+      epflCreators = jsonData.metadata['cris.virtualsource.rid'].length;
+    }
+    if ('cris.virtual.orcid' in jsonData.metadata) {
+      for (let orcidField of jsonData.metadata['cris.virtual.orcid']) {
+        if (orcidField.value != "#PLACEHOLDER_PARENT_METADATA_VALUE#") {
+          orcidEpflCreators += 1;
+        }
+      }
+    }
+    if (orcidEpflCreators) {
+      if (orcidEpflCreators == epflCreators) {
+        return 'ok';
+      } else {
+        return 'maybe'
+      }
+      
+    }
+    return 'bad';
+  }
+
+  if (checkCode == 'relatedWorks') {
+    // check for related identifier (experimental)
+    let ignoredRelations = ['IsNewVersionOf', 'IsPreviousVersionOf', 'IsVersionOf', 'HasVersion'];
+    if ('datacite.relationType' in jsonData.metadata) {
+      for (let relation of jsonData.metadata['datacite.relationType']) {
+        if (!(relation.value in ignoredRelations)) {
+          return 'maybe'
+        }
+      }
+    } else {
+      // In the absence of any related identifier, a DOI in the description is suspiscious.
+      // Unless it is the object's DOI itelf => negative look ahead needed
+      function escapeRegex(string) {
+        return string.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
+      }
+      let doiAfterTen = doi.slice(3);
+      let re = new RegExp(String.raw`doi\.org\/10\.(?!${escapeRegex(doiAfterTen)})`, "g");
+      if ('dc.description.abstract' in jsonData.metadata) {
+        if (jsonData.metadata['dc.description.abstract'][0].value.match(re)) {
+          return 'meh';
+        }
+      }
+    }
+  }
+
+  if (checkCode == 'listedGrants') {
+    // check for funding information
+    let nGrants = 0;
+    let nGrantsCount = 0;
+    if ('oairecerif.funder' in jsonData.metadata) {
+      nGrants = jsonData.metadata['oairecerif.funder'].length;
+      if ('dc.relation.grantno' in jsonData.metadata) {
+        for (let grantNrField of jsonData.metadata['dc.relation.grantno']) {
+          if (grantNrField.value != "#PLACEHOLDER_PARENT_METADATA_VALUE#") {
+            nGrantsCount += 1;
+          }
+        }
+        if (nGrants == nGrantsCount) {
+          return 'ok';
+        }
+      }
+      return 'maybe';
+    }
+  }
+
+  // Default value if nothing else was noticed
+  return 'neutral';
+
+}
+
+function listContent(recordJson) {
+  /**
+  List the content of a Zenodo record
+  */
+  let filenames = [];
+  let previewDocument;
+  // let archive_extensions = ["zip", "gz","tar", "7z", "bz2"];
+  // Zenodo only previews Zip files at the moment
+  let archive_extensions = ["zip"];
+    // There will be no entries for restricted access objects
+    if ('entries' in recordJson.files) {
+    for (let file of Object.keys(recordJson.files.entries)) {
+      console.log(recordJson.files.entries[file]["ext"]);
+      if (archive_extensions.indexOf(recordJson.files.entries[file]["ext"]) > -1) {
+        console.log('Archive found', file);
+        let previewUrl = recordJson.links.self_html + '/preview/' + file;
+        console.log(previewUrl);
+        fetch(previewUrl, {
+            method: 'GET',
+          })
+          .then(resp => resp.text())
+          .then(text => {
+            const parser = new DOMParser();
+            previewDocument = parser.parseFromString(text, 'text/html');
+            let allcontent = ulTreeToPathList($(previewDocument).find("ul.tree"));
+            console.log(allcontent)
+            filenames.push(...allcontent);
+          })
+          .catch(err => console.error(err));
+
+
+
+        } else {
+          console.log('File found', file);
+          filenames.push(file);
+        }
+      }
+    }
+    
+    return filenames;
+  }
+
+
+function ulTreeToPathList($ul, basePath = '') {
+  // 2025-08-04 this seems to work when called on a preview page as ulTreeToPathList($('url.tree'))
+  const paths = [];
+  
+  // Find all direct li children of this ul
+  $ul.children('li').each(function() {
+      const $li = $(this);
+      $li.children('div').children('div.row').each(function() {
+          let $item = $(this).children('div, a');
+          const nodeName = $item.first().text().trim();
+          // console.log('we have a', [$item.first().prop('tagName')], 'named', [nodeName]);
+          let currentPath = basePath ? basePath + '/' + nodeName : nodeName;
+
+          // console.log(['basePath:', basePath]);
+          // console.log(['currentPath:', currentPath]);
+          
+      
+          // Check if this li has nested ul children
+          let $childUl = [];
+          if ($item.first().prop('tagName') === 'A') {
+              $childUl = $li.find('ul').first();
+          }
+      
+          if ($childUl.length > 0) {
+              // Recursively process nested ul elements and merge results
+              const childPaths = ulTreeToPathList($childUl, currentPath);
+              paths.push(...childPaths);
+          } else {
+              // Leaf node - add the complete path
+              paths.push(currentPath);
+          }
+      })
+      
+  });
+  
+  return paths;
+}
+
+async function listedOnInfoscience(identifier, idScheme) {
+  // Check whether a record for the listed identifier already exists on Infoscience
+  // Public API calls => only published records will be detected, not workspace items 
+  let isPresent;
+  let normalizedIdentifier;
+  // By default, use the identifier directly, unless the scheme has further requirements
+  switch (idScheme) {
+    case 'doi':
+      normalizedIdentifier = doiNormalize(identifier);
+      break;
+    case 'arxiv':
+      normalizedIdentifier = arxivNormalize(identifier);
+      break;
+    default:
+      normalizedIdentifier = identifier;   
+  }
+
+  console.log(idScheme, normalizedIdentifier)
+
+  let searchURL = 'https://infoscience.epfl.ch/server/api/discover/search/objects?query=dc.identifier.' + idScheme + '%3A%22' + encodeURIComponent(normalizedIdentifier) + '%22';
+  console.log(searchURL);
+  await fetch(searchURL, {
+    method: 'GET',
+    headers: {
+      accept: 'application/json'
+    }
+  })
+  .then(resp => resp.json())
+  .then(json => {
+    if (json._embedded.searchResult._embedded.objects.length > 0) {
+      console.log(doi, 'yep')
+      isPresent = true
+    } else {
+      isPresent = false
+    }
+  })
+  return isPresent;
+}
+
+async function relatedItemsNotOnInfoscience(recordJson) {
+  // check all related identifiers with: 
+  // 1) publication-like resource types
+  // 2) publication-oriented identifier schemes
+  // Returns the ones not publicly listed on Infoscience (adding the scheme in capitals)
+
+  const relevantResourceTypes = ['publication',
+                                 'publication-annotationcollection',
+                                 'publication-article',
+                                 'publication-book',
+                                 'publication-conferencepaper',
+                                 'publication-datamanagementplan',
+                                 'publication-deliverable',
+                                 'publication-milestone',
+                                 'publication-other',
+                                 'publication-patent',
+                                 'publication-preprint',
+                                 'publication-proposal',
+                                 'publication-report',
+                                 'publication-section',
+                                 'publication-softwaredocumentation',
+                                 'publication-taxonomictreatment',
+                                 'publication-technicalnote',
+                                 'publication-thesis',
+                                 'publication-workingpaper',
+                                 'presentation', 
+                                 'poster'];
+        
+  const relevantIdSchemes = ['doi', 'arxiv', 'isbn', 'pmid'];
+
+  let infoscienceMissingRelated = [];
+  
+  // TODO test how this works, but maybe not really important?
+  if ('datacite.relatedIdentifier' in recordJson.metadata) {
+    for (let relatedResource of recordJson.metadata['datacite.relatedIdentifier']) {
+      console.log(relatedResource);
+      let isPresent = false;
+      for (let idScheme of relevantIdSchemes) {
+        isPresent = await listedOnInfoscience(relatedResource.value, idScheme);
+        if (isPresent) {
+          break;
+        }
+      }
+      if (!isPresent) {
+        infoscienceMissingRelated.push(relatedResource.scheme.toUpperCase() + ': ' + relatedResource.identifier);
+      }
+    }
+  }
+  
+  return infoscienceMissingRelated;
+}
+
+
+// Adapted from https://github.com/altmetric/identifiers-arxiv
+function arxivNormalize(str) {
+
+  function extractPre2007Ids(str) {
+    return extractIds(str, /(?:^|\s|\/)((?:arXiv:)?[a-z-]+(?:\.[A-Z]{2})?\/\d{2}(?:0[1-9]|1[012])\d{3}(?:v\d+)?(?=$|\s))/gi);
+  }
+
+  function extractPost2007Ids(str) {
+    return extractIds(str, /(?:^|\s|\/)((?:arXiv:)?\d{4}\.\d{4,5}(?:v\d+)?(?=$|\s))/gi);
+  }
+
+  function extractIds(str, re) {
+    let match = [];
+    let matches = [];
+    while ((match = re.exec(str)) !== null) {
+        matches.push(match[1]);
+    }
+    return matches.map(stripScheme);
+  }
+
+  function stripScheme(str) {
+    return str.replace(/^arXiv:/i, "");
+  }
+
+  return extractPre2007Ids(str).concat(extractPost2007Ids(str));
+}
+
+
+// Adapted from https://github.com/altmetric/identifiers-doi
+function doiNormalize(str) {
+
+  const PATTERN = "\\b10\\.(?:97[89]\\.\\d{2,8}\\/\\d{1,7}|\\d{4,9}\\/\\S+)";
+  const GLOBAL_PATTERN = new RegExp(PATTERN, "g");
+  const SINGLE_PATTERN = new RegExp(PATTERN);
+  
+  function extractOne(str) {
+    const match = String(str).toLowerCase().match(SINGLE_PATTERN);
+    if (!match) {
+        return;
+    }
+    return stripPunctuation(match[0]);
+  }
+
+  function stripPunctuation(doi) {
+    const VALID_ENDING = /(?:\w|\(.+\)|2-#)$/;
+    if (VALID_ENDING.test(doi)) {
+        return doi;
+    }
+    return extractOne(doi.replace(/\W$/, ""));
+  }
+
+  const matches = String(str).toLowerCase().match(GLOBAL_PATTERN);
+  if (!matches) {
+        return [];
+  }
+
+  return matches.map(stripPunctuation).filter(Boolean);
+}
+
+
+/*--- waitForKeyElements():  A utility function, for Greasemonkey scripts,
+    that detects and handles AJAXed content.
+
+    Usage example:
+
+        waitForKeyElements (
+            "div.comments"
+            , commentCallbackFunction
+        );
+
+        //--- Page-specific function to do what we want when the node is found.
+        function commentCallbackFunction (jNode) {
+            jNode.text ("This comment changed by waitForKeyElements().");
+        }
+
+    IMPORTANT: This function requires your script to have loaded jQuery.
+    
+    https://gist.githubusercontent.com/BrockA/2625891/raw/9c97aa67ff9c5d56be34a55ad6c18a314e5eb548/waitForKeyElements.js
+    
+*/
+function waitForKeyElements (
+    selectorTxt,    /* Required: The jQuery selector string that
+                        specifies the desired element(s).
+                    */
+    actionFunction, /* Required: The code to run when elements are
+                        found. It is passed a jNode to the matched
+                        element.
+                    */
+    bWaitOnce,      /* Optional: If false, will continue to scan for
+                        new elements even after the first match is
+                        found.
+                    */
+    iframeSelector  /* Optional: If set, identifies the iframe to
+                        search.
+                    */
+) {
+    var targetNodes, btargetsFound;
+
+    if (typeof iframeSelector == "undefined")
+        targetNodes     = $(selectorTxt);
+    else
+        targetNodes     = $(iframeSelector).contents ()
+                                           .find (selectorTxt);
+
+    if (targetNodes  &&  targetNodes.length > 0) {
+        btargetsFound   = true;
+        /*--- Found target node(s).  Go through each and act if they
+            are new.
+        */
+        targetNodes.each ( function () {
+            var jThis        = $(this);
+            var alreadyFound = jThis.data ('alreadyFound')  ||  false;
+
+            if (!alreadyFound) {
+                //--- Call the payload function.
+                var cancelFound     = actionFunction (jThis);
+                if (cancelFound)
+                    btargetsFound   = false;
+                else
+                    jThis.data ('alreadyFound', true);
+            }
+        } );
+    }
+    else {
+        btargetsFound   = false;
+    }
+
+    //--- Get the timer-control variable for this selector.
+    var controlObj      = waitForKeyElements.controlObj  ||  {};
+    var controlKey      = selectorTxt.replace (/[^\w]/g, "_");
+    var timeControl     = controlObj [controlKey];
+
+    //--- Now set or clear the timer as appropriate.
+    if (btargetsFound  &&  bWaitOnce  &&  timeControl) {
+        //--- The only condition where we need to clear the timer.
+        clearInterval (timeControl);
+        delete controlObj [controlKey]
+    }
+    else {
+        //--- Set a timer, if needed.
+        if ( ! timeControl) {
+            timeControl = setInterval ( function () {
+                    waitForKeyElements (    selectorTxt,
+                                            actionFunction,
+                                            bWaitOnce,
+                                            iframeSelector
+                                        );
+                },
+                300
+            );
+            controlObj [controlKey] = timeControl;
+        }
+    }
+    waitForKeyElements.controlObj   = controlObj;
+}
