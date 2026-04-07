@@ -700,16 +700,14 @@ function addButtons() {
     addCheckElement(importantFrame, 'permissiveLicence', 'after', false);
   }
 
-  // TODO find the proper metadata element
-  let relativeIdentifiers = $('table tr td span:contains("Relation")');
+  let relativeIdentifiers = $('tr td:contains("datacite.relationType")');
   if (relativeIdentifiers.length) {
     addCheckElement(relativeIdentifiers, 'relatedWorks', 'before', true);
   } else {
     addCheckElement(importantFrame, 'relatedWorks', 'after', false);
   }
 
-  // TODO find the proper metadata element
-  let grants = $('table tr td span:contains("Funder"), table tr td span:contains("Bailleur de fonds")');
+  let grants = $('tr td:contains("dc.relation.funding")');
   if (grants.length) {
     addCheckElement(grants, 'listedGrants', 'before', true);
   } else {
