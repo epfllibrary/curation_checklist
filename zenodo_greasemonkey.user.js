@@ -20,7 +20,7 @@
 // @exclude     https://zenodo.org/records/*preview/*
 // @downloadURL https://github.com/epfllibrary/curation_checklist/raw/refs/heads/main/zenodo_greasemonkey.user.js
 // @grant       none
-// @version     1.7.3
+// @version     1.7.4
 // ==/UserScript==
 
 // TODO add standardized comments for non-compliant results where possible
