@@ -655,7 +655,7 @@ function addButtons() {
   // TODO check why authorList[0] doesn't work 100%
   let authorList = $("tr td:contains('dc.contributor.author')")
   if (authorList.length) {
-    addCheckElement(authorList, 'epflAuthor', 'before', true);
+    addCheckElement(authorList.first(), 'epflAuthor', 'before', true);
   }
 
   // Simple check: either a Files tab, or a DOI
@@ -663,7 +663,7 @@ function addButtons() {
 
   //let abstract = $('div.item-detail ds-markdown-viewer span p');
   if ('dc.description.abstract' in jsonData.metadata) {
-    let aboveAbstract = $("tr td:contains('dc.description.abstract')")
+    let aboveAbstract = $("tr td:contains('dc.description.abstract')").first()
     addCheckElement(aboveAbstract, 'sufficientDescription', 'before', true);
     // aboveAbstract.prepend($('<div>----------------------------------------------------------------------------------------------------------------------------------</div>'));
   } else {
@@ -672,8 +672,8 @@ function addButtons() {
 
 
   if (authorList.length) {
-    addCheckElement(authorList, 'epflContact', 'before', true);
-    addCheckElement(authorList, 'allORCIDs', 'before', true);
+    addCheckElement(authorList.first(), 'epflContact', 'before', true);
+    addCheckElement(authorList.first(), 'allORCIDs', 'before', true);
   }
 
   /*
@@ -702,14 +702,14 @@ function addButtons() {
 
   let relativeIdentifiers = $('tr td:contains("datacite.relationType")');
   if (relativeIdentifiers.length) {
-    addCheckElement(relativeIdentifiers, 'relatedWorks', 'before', true);
+    addCheckElement(relativeIdentifiers.first(), 'relatedWorks', 'before', true);
   } else {
     addCheckElement(importantFrame, 'relatedWorks', 'after', false);
   }
 
   let grants = $('tr td:contains("dc.relation.funding")');
   if (grants.length) {
-    addCheckElement(grants, 'listedGrants', 'before', true);
+    addCheckElement(grants.first(), 'listedGrants', 'before', true);
   } else {
     addCheckElement(importantFrame, 'listedGrants', 'after', false);
   }
@@ -753,7 +753,7 @@ function addButtons() {
   // TODO find the proper metadata element
   let keywords = $('tr td:contains("dc.subject")');
   if (keywords.length) {
-    addCheckElement(keywords, 'properKeywords', 'before', true);
+    addCheckElement(keywords.first(), 'properKeywords', 'before', true);
   } else {
     addCheckElement(importantFrame, 'properKeywords', 'after', false);
   }
