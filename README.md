@@ -6,7 +6,17 @@
 ## Use cases
 - Zenodo EPFL community curation zenodo_checklist.html (obsolete)
 - Zenodo EPFL community curation within the Zenodo record: `zenodo_greasemonkey.user.js` (Greasemonkey/Tampermonkey user script)
-- Infoscience Greasemonkey script to facilitate some workflow steps
+- Infoscience workflow/workspace item Greasemonkey script for actual curation
+- Infoscience public record item  Greasemonkey script (debatable usefulness)
+
+### Infoscience API key
+
+The Infoscience scripts use the Dspace API to access various objects more reliably than through the DOM.
+The relevant API key must be included in the header of HTTP requests sent by the script:
+- Header field name: Authorization
+- Header field value: Bearer $YOUR_API_KEY
+
+The API key can be used through a browser plugin such as https://github.com/warren-bank/crx-simple-modify-headers (Firefox) or https://chromewebstore.google.com/detail/modheader-modify-http-hea/idgpnmonknjnojddfkpgkljpfnnfcklj?pli=1 (Chrome).
 
 ## Greasemonkey information
 
