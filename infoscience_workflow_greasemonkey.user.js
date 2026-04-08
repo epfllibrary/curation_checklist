@@ -456,7 +456,7 @@ fetch(metadataUrl, {
     console.log("JSON response:")
     console.log(jsonResponse);
     console.log(jsonResponse.sections.dataset_details["dc.title"][0].value);
-    jsonData = {'metadata': jsonResponse.sections.dataset_details}
+    jsonData = jsonResponse._embedded.item;
     identifier = getUrl;
 
     // Use the "..." button as a signal that Angular's work is complete
@@ -660,7 +660,6 @@ function addButtons() {
 
   let mainTitle = $('h1 div span').parent().parent();
 
-  // TODO check why authorList[0] doesn't work 100%
   let authorList = $("tr td:contains('dc.contributor.author')")
   if (authorList.length) {
     addCheckElement(authorList.first(), 'epflAuthor', 'before', true);
@@ -758,7 +757,6 @@ function addButtons() {
   }
   */
 
-  // TODO find the proper metadata element
   let keywords = $('tr td:contains("dc.subject")');
   if (keywords.length) {
     addCheckElement(keywords.first(), 'properKeywords', 'before', true);
@@ -878,19 +876,18 @@ function policyCheck(checkCode) {
   if (checkCode == 'permissiveLicence') {
     // Licenses: check for one of the better ones.
     // Bad if there is no license at all.
+    console.log('checking license')
     const goodLicenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl', 'cc 0', 'cc by', 'cc by sa', 'cc by-sa'];
-    try {
-      if ('ctb.oaireXXlicenseCondition' in jsonData.metadata) {
-        console.log([jsonData.metadata['ctb.oaireXXlicenseCondition'][0].value.toLowerCase()]);
-        if (goodLicenses.includes(jsonData.metadata['ctb.oaireXXlicenseCondition'][0].value.toLowerCase())) {
-          return 'ok';
-        }
+    if ('ctb.oaireXXlicenseCondition' in jsonData.metadata) {
+      console.log([jsonData.metadata['ctb.oaireXXlicenseCondition'][0].value.toLowerCase()]);
+      if (goodLicenses.includes(jsonData.metadata['ctb.oaireXXlicenseCondition'][0].value.toLowerCase())) {
+        return 'ok';
+      } else {
+        return 'meh'
       }
-    } catch (error) {
-      console.log('License check error', error);
+    } else {
       return 'bad';
     }
-
   }
 
   if (checkCode == 'supervisorIfThesis') {
