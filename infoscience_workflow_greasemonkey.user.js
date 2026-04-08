@@ -458,6 +458,15 @@ fetch(metadataUrl, {
   .then(jsonResponse => {
     console.log("JSON response:")
     console.log(jsonResponse);
+
+    if ('error' in jsonResponse) {
+      if (jsonResponse.error == "Unauthorized") {
+        let msg = "infoscience_workflow_greasemonkey needs a valid Dspace API key, see the docs for details"
+        alert(msg);
+        throw new Error(msg);
+      }
+    }
+
     console.log(jsonResponse.sections.dataset_details["dc.title"][0].value);
     jsonData = jsonResponse._embedded.item;
     identifier = getUrl;
