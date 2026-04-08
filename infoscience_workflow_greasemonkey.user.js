@@ -446,7 +446,9 @@ let identifier;
 let doi;
 let allFileNames;
 let jsonData = {};
+let bitstreamsData = [];
 let unknownRelated = [];
+let bitstreamsUrl;
 
 fetch(metadataUrl, {
   credentials: 'include'
@@ -459,10 +461,34 @@ fetch(metadataUrl, {
     jsonData = jsonResponse._embedded.item;
     identifier = getUrl;
 
-    // Use the "..." button as a signal that Angular's work is complete
-    waitForKeyElements ("button#context-menu", addButtons);
+    let bundlesUrl = jsonData._links.bundles.href;
+    fetch(bundlesUrl)
+    .then(response => response.json())
+    .then(jsonResponse => {
+        console.log("1st bundles JSON response:")
+        console.log(jsonResponse);
+        console.log(jsonResponse._embedded.bundles);
+        let bundlesData = jsonResponse._embedded.bundles;
+        for (let bundle of bundlesData) {
+          console.log(bundle.metadata['dc.title']);
+          if (bundle.metadata['dc.title'][0].value == 'ORIGINAL') {
+            bitstreamsUrl = bundle._links.bitstreams.href;
+          }
+        }
+        fetch(bitstreamsUrl)
+        .then(response => response.json())
+        .then(jsonResponse => {
+          console.log("1st bitstream JSON response:")
+          console.log(jsonResponse);
+          console.log(jsonResponse._embedded.bitstreams);
+          bitstreamsData = jsonResponse._embedded.bitstreams;
 
+
+          // Use the "..." button as a signal that Angular's work is complete
+          waitForKeyElements("button#context-menu", addButtons);
+        })
     })
+  })
   .catch(console.error);
 
 
@@ -473,7 +499,6 @@ function addCheckElement(selector, checkCode, position, normal) {
   let checkElement;
   // see if we can get a non-neutral answer for the current criterion
 
-  // FIXME lots of stuff before the checks can use Infoscience JSON
   let status = 'neutral';
   try {
     status = policyCheck(checkCode);
@@ -715,7 +740,7 @@ function addButtons() {
     addCheckElement(importantFrame, 'listedGrants', 'after', false);
   }
 
-  // TODO adapt the README checks
+  // TODO adapt the cleanDataset check
   let contentElement = $('h2:contains("Files")');
   console.log("contentElement: ");
   console.log(contentElement);
@@ -760,9 +785,6 @@ function addButtons() {
   } else {
     addCheckElement(importantFrame, 'properKeywords', 'after', false);
   }
-
-  // TODO adapt contentChecks to Infoscience
-  // contentElement.prepend(contentChecks);
 
   /**
   End of the main Greasemonkey section
@@ -850,44 +872,19 @@ function policyCheck(checkCode) {
   if (checkCode == 'readmePresent') {
     // Try to find a README
     // This will not check the content of Zips or other archive files
-    // FIXME the README is detected but the value is nor returned as intended
     let readmeFound = 'neutral';
-    let bundlesUrl = jsonData._links.bundles.href;
-    let bitstreamsUrl;
-    fetch(bundlesUrl)
-    .then(response => response.json())
-    .then(jsonResponse => {
-        console.log("bundles JSON response:")
-        console.log(jsonResponse);
-        console.log(jsonResponse._embedded.bundles);
-        let bundlesData = jsonResponse._embedded.bundles;
-        for (let bundle of bundlesData) {
-          console.log(bundle.metadata['dc.title']);
-          if (bundle.metadata['dc.title'][0].value == 'ORIGINAL') {
-            bitstreamsUrl = bundle._links.bitstreams.href;
-          }
-        }
-        fetch(bitstreamsUrl)
-        .then(response => response.json())
-        .then(jsonResponse => {
-          console.log("bitstream JSON response:")
-          console.log(jsonResponse);
-          console.log(jsonResponse._embedded.bitstreams);
-          let bitstreamsData = jsonResponse._embedded.bitstreams;
-          for (let bitstream of bitstreamsData) {
-            console.log(bitstream.name.toLowerCase());
-            if (bitstream.name.toLowerCase().match(/readme/g)) {
-              console.log('yay!');
-              readmeFound = 'ok';
-            }
-          }
-        })
-        .catch(console.error);
-
-    })
-    .catch(console.error);
-
+    
+    for (let bitstream of bitstreamsData) {
+      console.log(bitstream.name.toLowerCase());
+      if (bitstream.name.toLowerCase().match(/readme/g)) {
+        console.log('yay!');
+        readmeFound = 'ok';
+      }
+    }
+    console.log('about to return from readmePresent');
+    console.log(readmeFound);
     return readmeFound;
+
   }
 
   if (checkCode == 'originalDOI') {
