@@ -475,18 +475,20 @@ fetch(metadataUrl, {
             bitstreamsUrl = bundle._links.bitstreams.href;
           }
         }
-        fetch(bitstreamsUrl)
-        .then(response => response.json())
-        .then(jsonResponse => {
-          console.log("1st bitstream JSON response:")
-          console.log(jsonResponse);
-          console.log(jsonResponse._embedded.bitstreams);
-          bitstreamsData = jsonResponse._embedded.bitstreams;
-
-
-          // Use the "..." button as a signal that Angular's work is complete
-          waitForKeyElements("button#context-menu", addButtons);
-        })
+        if (bitstreamsUrl) {
+          fetch(bitstreamsUrl)
+          .then(response => response.json())
+          .then(jsonResponse => {
+            console.log("1st bitstream JSON response:")
+            console.log(jsonResponse);
+            console.log(jsonResponse._embedded.bitstreams);
+            bitstreamsData = jsonResponse._embedded.bitstreams;
+          })
+        } else {
+           bitstreamsData = [];
+        }
+        // Use the "..." button as a signal that Angular's work is complete
+        waitForKeyElements("button#context-menu", addButtons);
     })
   })
   .catch(console.error);
@@ -834,7 +836,7 @@ function policyCheck(checkCode) {
     // Check access to the files
     // On Infoscience, we should always have access if the files are actually hosted here
 
-    if (bitstreamsData.length) {
+    if (bitstreamData.length) {
       console.log('we have some content');
       return 'ok';
     } else if ('dc.identifier.doi' in jsonData.metadata) {
