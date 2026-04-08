@@ -690,9 +690,6 @@ function addButtons() {
     addCheckElement(authorList.first(), 'epflAuthor', 'before', true);
   }
 
-  // Simple check: either a Files tab, or a DOI
-  addCheckElement(importantFrame, 'accessForReview', 'after', true);
-
   //let abstract = $('div.item-detail ds-markdown-viewer span p');
   if ('dc.description.abstract' in jsonData.metadata) {
     let aboveAbstract = $("tr td:contains('dc.description.abstract')").first()
@@ -747,10 +744,18 @@ function addButtons() {
 
   if (contentElement.length) {
     contentElement.append('<div/>');
+    // Simple check: either a Files tab, or a DOI
+    addCheckElement(contentElement, 'accessForReview', 'after', true);
     addCheckElement(contentElement, 'readmePresent', 'after', true);
     addCheckElement(contentElement, 'noPersonalData', 'after', true);
     addCheckElement(contentElement, 'cleanDataset', 'after', true);
     addCheckElement(contentElement, 'detailedReadme', 'after', true);
+  } else {
+    addCheckElement(importantFrame, 'accessForReview', 'after', true);
+    addCheckElement(importantFrame, 'readmePresent', 'after', true);
+    addCheckElement(importantFrame, 'noPersonalData', 'after', true);
+    addCheckElement(importantFrame, 'cleanDataset', 'after', true);
+    addCheckElement(importantFrame, 'detailedReadme', 'after', true);
   }
 
   /*
@@ -829,10 +834,7 @@ function policyCheck(checkCode) {
     // Check access to the files
     // On Infoscience, we should always have access if the files are actually hosted here
 
-    // let contentElement = $('a[title="Fichiers"], a[title="Files"]');
-    let contentElement = $('h2:contains("Files")');
-    console.log(contentElement);
-    if (contentElement.length > 0) {
+    if (bitstreamsData.length) {
       console.log('we have some content');
       return 'ok';
     } else if ('dc.identifier.doi' in jsonData.metadata) {
