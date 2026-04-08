@@ -684,12 +684,6 @@ function addButtons() {
   }
 
   /*
-
-  if (contentElement.length) {
-    addCheckElement(contentChecks, 'readmePresent', 'after', true);
-    addCheckElement(contentChecks, 'noPersonalData', 'after', true);
-  }
-
   let doiElement = $('div#record-versions');
   if (doiElement.length) {
     addCheckElement(doiElement, 'originalDOI', 'before', true);
@@ -727,6 +721,9 @@ function addButtons() {
   console.log(contentElement);
 
   if (contentElement.length) {
+    contentElement.append('<div/>');
+    addCheckElement(contentElement, 'readmePresent', 'after', true);
+    addCheckElement(contentElement, 'noPersonalData', 'after', true);
     addCheckElement(contentElement, 'cleanDataset', 'after', true);
     addCheckElement(contentElement, 'detailedReadme', 'after', true);
   }
@@ -811,6 +808,7 @@ function policyCheck(checkCode) {
     // On Infoscience, we should always have access if the files are actually hosted here
 
     // let contentElement = $('a[title="Fichiers"], a[title="Files"]');
+    let contentElement = $('h2:contains("Files")');
     console.log(contentElement);
     if (contentElement.length > 0) {
       console.log('we have some content');
@@ -852,15 +850,43 @@ function policyCheck(checkCode) {
   if (checkCode == 'readmePresent') {
     // Try to find a README
     // This will not check the content of Zips or other archive files
+    // FIXME the README is detected but the value is nor returned as intended
     let readmeFound = 'neutral';
-    $('a:regex(href, records/.*/files/)').each(function() {
-      let f = $(this).text().toLowerCase();
-      // console.log([f], f.indexOf('readme'));
-      if ((f.indexOf('readme') >= 0) && (f.indexOf('readme') < 4)) {
-        // console.log('should be OK');
-        readmeFound = 'ok';
-      }
-    });
+    let bundlesUrl = jsonData._links.bundles.href;
+    let bitstreamsUrl;
+    fetch(bundlesUrl)
+    .then(response => response.json())
+    .then(jsonResponse => {
+        console.log("bundles JSON response:")
+        console.log(jsonResponse);
+        console.log(jsonResponse._embedded.bundles);
+        let bundlesData = jsonResponse._embedded.bundles;
+        for (let bundle of bundlesData) {
+          console.log(bundle.metadata['dc.title']);
+          if (bundle.metadata['dc.title'][0].value == 'ORIGINAL') {
+            bitstreamsUrl = bundle._links.bitstreams.href;
+          }
+        }
+        fetch(bitstreamsUrl)
+        .then(response => response.json())
+        .then(jsonResponse => {
+          console.log("bitstream JSON response:")
+          console.log(jsonResponse);
+          console.log(jsonResponse._embedded.bitstreams);
+          let bitstreamsData = jsonResponse._embedded.bitstreams;
+          for (let bitstream of bitstreamsData) {
+            console.log(bitstream.name.toLowerCase());
+            if (bitstream.name.toLowerCase().match(/readme/g)) {
+              console.log('yay!');
+              readmeFound = 'ok';
+            }
+          }
+        })
+        .catch(console.error);
+
+    })
+    .catch(console.error);
+
     return readmeFound;
   }
 
