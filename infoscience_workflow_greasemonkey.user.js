@@ -446,6 +446,7 @@ let identifier;
 let doi;
 let allFileNames;
 let jsonData = {};
+let bundlesData = [];
 let bitstreamsData = [];
 let unknownRelated = [];
 let bitstreamsUrl;
@@ -468,7 +469,7 @@ fetch(metadataUrl, {
         console.log("1st bundles JSON response:")
         console.log(jsonResponse);
         console.log(jsonResponse._embedded.bundles);
-        let bundlesData = jsonResponse._embedded.bundles;
+        bundlesData = jsonResponse._embedded.bundles;
         for (let bundle of bundlesData) {
           console.log(bundle.metadata['dc.title']);
           if (bundle.metadata['dc.title'][0].value == 'ORIGINAL') {
@@ -744,7 +745,7 @@ function addButtons() {
   console.log("contentElement: ");
   console.log(contentElement);
 
-  if (contentElement.length) {
+  if (contentElement.length && bundlesData.length) {
     contentElement.append('<div/>');
     // Simple check: either a Files tab, or a DOI
     addCheckElement(contentElement, 'accessForReview', 'after', true);
@@ -836,7 +837,7 @@ function policyCheck(checkCode) {
     // Check access to the files
     // On Infoscience, we should always have access if the files are actually hosted here
 
-    if (bitstreamData.length) {
+    if (bitstreamsData.length) {
       console.log('we have some content');
       return 'ok';
     } else if ('dc.identifier.doi' in jsonData.metadata) {
