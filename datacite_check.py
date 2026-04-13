@@ -372,7 +372,7 @@ class CandidateObject:
 
         if check_code == 'permissiveLicence':
             # TODO add more synonyms
-            good_licenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl']
+            good_licenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl', 'cc-by', 'cc0', 'cc-by-sa', 'cc by', 'cc by sa']
             try:
                 license_id = self.metadata['rightsList'][0]['rightsIdentifier'].lower()
                 if license_id in good_licenses:
