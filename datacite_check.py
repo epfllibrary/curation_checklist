@@ -1,5 +1,12 @@
 import re
+import string
+
+import pyo3_runtime
 import requests
+
+from datahugger import DOIResolver, resolve, FileEntry, DirEntry
+from langdetect import detect_langs
+
 
 
 checklistData = {
@@ -329,9 +336,10 @@ class CandidateObject:
 
             if orcid_epfl_creators:
                 return 'ok'
-            description = self.metadata.get('description', '')
-            if '@epfl.ch' in description:
-                return 'maybe'
+            descriptions = self.metadata.get('descriptions', [])
+            for description in descriptions:
+                if '@epfl.ch' in description:
+                    return 'maybe'
             return 'bad'
 
         if check_code == 'sufficientDescription':
@@ -340,15 +348,25 @@ class CandidateObject:
             else:
                 return 'bad'
 
-        """
         if check_code == 'readmePresent':
             readme_found = 'neutral'
-            for tag in soup.find_all('a', href=re.compile(r'records/.*/files/')):
-                f = tag.get_text().lower()
-                if 0 <= f.find('readme') < 4:
-                    readme_found = 'ok'
+            try:
+                doi_resolver = DOIResolver(timeout=30)
+                # print([self.metadata['doi']])
+                url = doi_resolver.resolve(self.metadata['doi'], True)
+                # print(url)
+                dataset = resolve(url)
+
+                for entry in dataset.crawl():
+                    if isinstance(entry, FileEntry):
+                        filename = entry.path_crawl_rel.name
+                        if re.match(r'readme(\.txt|\.md)?', filename, re.IGNORECASE):
+                            readme_found = 'ok'
+            except BaseException as e:
+                # datahugger will fail in some cases, for example Dryad and Figshare
+                print(e)
+                pass
             return readme_found
-        """
 
         if check_code == 'originalDOI':
             allowed_prefixes = [r'10\.15151',
@@ -373,12 +391,15 @@ class CandidateObject:
         if check_code == 'permissiveLicence':
             # TODO add more synonyms
             good_licenses = ['cc0-1.0', 'cc-by-4.0', 'cc-by-sa-4.0', 'mit', 'bsd-3-clause', 'gpl', 'cc-by', 'cc0', 'cc-by-sa', 'cc by', 'cc by sa']
-            try:
-                license_id = self.metadata['rightsList'][0]['rightsIdentifier'].lower()
-                if license_id in good_licenses:
-                    return 'ok'
-            except (KeyError, IndexError, TypeError) as e:
-                print(f'License check error: {e}')
+            if 'rightsList' in self.metadata:
+                if len(self.metadata['rightsList']):
+                    if 'rightsIdentifier' in self.metadata['rightsList'][0]:
+                        license_id = self.metadata['rightsList'][0]['rightsIdentifier'].lower()
+                        if license_id in good_licenses:
+                            return 'ok'
+                else:
+                    return 'bad'
+            else:
                 return 'bad'
 
         """
@@ -428,7 +449,7 @@ class CandidateObject:
             # At least one related identifier = green light
             if 'relatedIdentifiers' in self.metadata:
                 for related_resource in self.metadata['relatedIdentifiers']:
-                    if related_resource.get('relationType', {}) == 'IsSupplementTo':
+                    if related_resource.get('relationType', '') == 'IsSupplementTo':
                         return 'ok'
                 return 'maybe'
             else:
@@ -442,12 +463,25 @@ class CandidateObject:
                         if re.search(pattern, self.metadata['description']):
                             return 'meh'
 
+        if check_code == 'humanReadableTitle':
+            if 'titles' in self.metadata:
+                if len(self.metadata['titles']):
+                    main_title = self.metadata['titles'][0]['title']
+                    words = [w.strip(string.punctuation) for w in main_title.split()]
+                    words_with_radio_instead = [w if not any([c.isdigit() for c in w]) else 'radio' for w in words]
+                    possible_languages = detect_langs(' '.join(words_with_radio_instead))
+                    if len(main_title) > 16 and possible_languages[0].prob > 0.9999:
+                        return 'ok'
+                    if possible_languages[0].prob > 0.9999:
+                        return 'maybe'
+            return 'bad'
+
         return 'neutral'
 
 
 if __name__ == "__main__":
     doi = ''
-    example_object = CandidateObject(doi='10.5281/zenodo.19045843')
+    example_object = CandidateObject(doi='10.5281/zenodo.18545921')
     print(example_object.metadata.keys())
 
     # check_code = 'epflAuthor'

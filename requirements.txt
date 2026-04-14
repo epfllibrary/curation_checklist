@@ -1,2 +1,6 @@
 datacite
+langdetect
 pandas
+#datahugger
+datahugger-ng
+pyo3_runtime
