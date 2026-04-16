@@ -400,17 +400,6 @@ class CandidateObject:
             else:
                 return 'bad'
 
-        """
-        if check_code == 'supervisorIfThesis':
-            awarding_uni = soup.find('dt', string=re.compile('Awarding University:'))
-            if awarding_uni:
-                supervisor_h5 = soup.find('h5', string=re.compile('Thesis supervisor\\(s\\)'))
-                if supervisor_h5:
-                    next_p = supervisor_h5.find_next_sibling('p')
-                    if next_p and next_p.find('span'):
-                        return 'ok'
-        """
-
         if check_code == 'properKeywords':
             if 'subjects' in self.metadata:
                 kw = self.metadata['subjects']
@@ -418,9 +407,9 @@ class CandidateObject:
                     return 'meh'
                 if len(kw) == 1:
                     if 'scheme' not in kw[0]:
-                        if ',' in kw[0]:
+                        if ',' in kw[0]['subject']:
                             return 'bad'
-                        if ';' in kw[0]:
+                        if ';' in kw[0]['subject']:
                             return 'bad'
                 if len(kw) > 1:
                     return 'ok'
