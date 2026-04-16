@@ -7,7 +7,7 @@ import requests
 from datahugger import DOIResolver, resolve, FileEntry, DirEntry
 from langdetect import detect_langs
 
-
+too_zenodo_specific = ['supervisorIfThesis']
 
 checklistData = {
   'epflAuthor': {
@@ -264,13 +264,11 @@ checklistData = {
 }
 
 
-
 class CandidateObject:
     metadata = None
 
     def __init__(self, doi=None):
         self.doi = doi
-        print(self.doi)
         self.metadata = self.get_metadata(self.doi)
 
     def get_metadata(self, doi):
@@ -363,7 +361,7 @@ class CandidateObject:
                         if re.match(r'readme(\.txt|\.md)?', filename, re.IGNORECASE):
                             readme_found = 'ok'
             except BaseException as e:
-                # datahugger will fail in some cases, for example Dryad and Figshare
+                # datahugger will fail in some cases, such as Dryad, Figshare...
                 print(e)
                 pass
             return readme_found
@@ -429,7 +427,7 @@ class CandidateObject:
 
         if check_code == 'allORCIDs':
             # Check for ORCID iDs
-            # At least one creator with ORCID = maybe. All creators with ORCID = OK
+            # At least one creator with ORCID = maybe. All creators = OK
             orcid_creators = 0
             for creator in self.metadata.get('creators', []):
                 if 'nameIdentifiers' in creator:
@@ -481,7 +479,7 @@ class CandidateObject:
 
 if __name__ == "__main__":
     doi = ''
-    example_object = CandidateObject(doi='10.5281/zenodo.18545921')
+    example_object = CandidateObject(doi='10.5281/zenodo.5730294')
     print(example_object.metadata.keys())
 
     # check_code = 'epflAuthor'
