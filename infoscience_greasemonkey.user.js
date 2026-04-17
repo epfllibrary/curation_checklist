@@ -533,13 +533,13 @@ function addButtons() {
         let actualValue1 = actualButton.attr('id');
         let actualValue2 = actualButton.text();
         console.log(checkID, actualValue1, actualValue2, '==>', state2checkValue(actualValue1, actualValue2));
-        checkArray.push([checkID, checklistData[checkID].full, checklistData[checkID].answers[state2checkValue(actualValue1, actualValue2)]]);
+        checkArray.push([ruleTags[checkID], checklistData[checkID].full, checklistData[checkID].answers[state2checkValue(actualValue1, actualValue2)]]);
       });
       if (checkArray.length) {
         checkArray.sort();
         text += `Total ${checkArray.length} ${checkLevel.full} criteria not fully met:\n`;
         for (let element of checkArray) {
-          text += `**${ruleTags[element[0]]}: ${element[1]}**\n=> ${element[2]}\n\n`;
+          text += `**${element[0]}: ${element[1]}**\n=> ${element[2]}\n\n`;
         }
       }
     }
