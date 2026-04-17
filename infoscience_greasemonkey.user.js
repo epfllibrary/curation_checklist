@@ -887,8 +887,10 @@ function policyCheck(checkCode) {
         return 'meh';
       }
       if (kw.length == 1) {
-        if (kw[0].includes(',') || kw[0].includes(';')) {
-            return 'meh';
+        if (!('scheme' in kw[0])) {
+          if (kw[0].subject.match(/[,;]/g)) {
+            return 'bad';
+          }
         } else {
           return 'ok'
         }

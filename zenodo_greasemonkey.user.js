@@ -942,10 +942,7 @@ function policyCheck(checkCode) {
       }
       if (kw.length == 1) {
         if (!('scheme' in kw[0])) {
-          if (kw[0].includes(',')) {
-            return 'bad';
-          }
-          if (kw[0].includes(';')) {
+          if (kw[0].subject.match(/[,;]/g)) {
             return 'bad';
           }
         } else {
