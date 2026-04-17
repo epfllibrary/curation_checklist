@@ -887,12 +887,8 @@ function policyCheck(checkCode) {
         return 'meh';
       }
       if (kw.length == 1) {
-        if (!('scheme' in kw[0])) {
-          if (kw[0].subject.match(/[,;]/g)) {
+        if (kw[0].value.match(/[,;]/g)) {
             return 'bad';
-          }
-        } else {
-          return 'ok'
         }
       }
       if (kw.length == 2) {
