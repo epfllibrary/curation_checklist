@@ -836,9 +836,14 @@ function policyCheck(checkCode) {
   */
   if (checkCode == 'epflAuthor') {
     // Check EPFL creators. Acceptable if there is at least one, OK if all (more than 1) creators are EPFL
-    if ('cris.virtualsource.rid' in jsonData.metadata) {
-      return 'ok';
+    for (let affiliation of jsonData.metadata['oairecerif.author.affiliation']) {
+      console.log('we have some affiliations:');
+      console.log(jsonData.metadata['oairecerif.author.affiliation']);
+      if (affiliation.value.match(/EPFL/) || affiliation.value.match(/[Pp]olytechnique [Ff][eé]d[eé]rale de Lausanne/) || affiliation.value.match(/[Ss]wiss [Ff]ederal [Ii]nstitute of [Tt]echnology .{1,4}Lausanne/)) {
+          return 'ok';
+      }
     }
+
     return 'maybe';
   }
 
