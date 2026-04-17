@@ -867,7 +867,7 @@ function policyCheck(checkCode) {
       return 'ok';
     }
     if ('description' in recordJson.metadata) {
-      if (recordJson.metadata.description.includes('@epfl.ch')) {
+      if (recordJson.metadata.description.match(/@epfl.ch/g)) {
         return 'maybe';
       }
     }

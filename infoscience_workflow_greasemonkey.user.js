@@ -872,7 +872,7 @@ function policyCheck(checkCode) {
       return 'ok';
     }
     if ('dc.description.abstract' in jsonData.metadata) {
-      if (jsonData.metadata['dc.description.abstract'][0].includes('@epfl.ch')) {
+      if (jsonData.metadata['dc.description.abstract'][0].value.match(/@epfl.ch/g)) {
         return 'maybe';
       }
     }
@@ -950,7 +950,7 @@ function policyCheck(checkCode) {
         return 'meh';
       }
       if (kw.length == 1) {
-        if (kw[0].match(/[,;]/g)) {
+        if (kw[0].value.match(/[,;]/g)) {
           return 'bad';
         }
       }

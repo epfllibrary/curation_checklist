@@ -811,7 +811,7 @@ function policyCheck(checkCode) {
       return 'ok';
     }
     if ('dc.description.abstract' in jsonData.metadata) {
-      if (jsonData.metadata['dc.description.abstract'][0].includes('@epfl.ch')) {
+      if (jsonData.metadata['dc.description.abstract'][0].value.match(/@epfl.ch/g)) {
         return 'maybe';
       }
     }
