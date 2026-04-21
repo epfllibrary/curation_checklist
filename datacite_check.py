@@ -454,14 +454,13 @@ class CandidateObject:
             if 'titles' in self.metadata:
                 if len(self.metadata['titles']):
                     main_title = self.metadata['titles'][0]['title']
-                    words = [w.strip(string.punctuation) for w in main_title.split()]
-                    words_with_radio_instead = [w if not any([c.isdigit() for c in w]) else 'radio' for w in words]
-                    possible_languages = detect_langs(' '.join(words_with_radio_instead))
-                    if len(main_title) > 16 and possible_languages[0].prob > 0.9999:
-                        return 'ok'
-                    if possible_languages[0].prob > 0.9999:
+                    words = [''.join([c for c in w if not c in string.punctuation]) for w in main_title.split()]
+                    if len(words) < 2:
+                        return 'bad'
+                    if len(words) < 4:
+                        return 'meh'
+                    if len(words) > 4:
                         return 'maybe'
-            return 'bad'
 
         return 'neutral'
 

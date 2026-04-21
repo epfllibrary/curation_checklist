@@ -888,6 +888,22 @@ function policyCheck(checkCode) {
     }
   }
 
+  if (checkCode == 'humanReadableTitle') {
+    // If the abstract is missing entirely, it's bad.
+    if ('dc.title' in jsonData.metadata) {
+    let words = jsonData.metadata['dc.title'][0].value.split(/\s+/).map(w => w.replace(/[^\w\s]|_/g, ''));
+    if (words.length < 2) {
+      return 'bad';
+    }
+    if (words.length < 4) {
+      return 'meh';
+    }
+    if (words.length > 4) {
+      return 'maybe';
+    }      
+  }
+
+
   if (checkCode == 'readmePresent') {
     // Try to find a README
     // This will not check the content of Zips or other archive files

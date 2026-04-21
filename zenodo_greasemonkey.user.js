@@ -883,6 +883,19 @@ function policyCheck(checkCode) {
     }
   }
 
+  if (checkCode == 'humanReadableTitle') {
+    let words = recordJson.metadata.title.split(/\s+/).map(w => w.replace(/[^\w\s]|_/g, ''));
+    if (words.length < 2) {
+      return 'bad';
+    }
+    if (words.length < 4) {
+      return 'meh';
+    }
+    if (words.length > 4) {
+      return 'maybe';
+    }                   
+  }
+
   if (checkCode == 'readmePresent') {
     // Try to find a README
     // This will not check the content of Zips or other archive files
