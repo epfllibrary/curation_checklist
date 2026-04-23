@@ -424,6 +424,8 @@ class CandidateObject:
                             return 'bad'
                         if ';' in kw[0]['subject']:
                             return 'bad'
+                        if len(kw[0]['subject'].split()) > 3:
+                            return 'meh'
                 if len(kw) > 1:
                     return 'ok'
 
