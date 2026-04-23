@@ -308,15 +308,28 @@ class CandidateObject:
                 return 'maybe'
             return 'meh'
 
-        """
+
         if check_code == 'accessForReview':
-            no_access = soup.find('div', class_='panel-body', string=re.compile('Files are not publicly accessible\\.'))
-            embargo_access = soup.find('div', class_='panel-body', string=re.compile('Files are currently under embargo'))
-            if no_access or embargo_access:
-                return 'bad'
-            else:
-                return 'maybe'
-        """
+            accessForReview = 'maybe'
+            try:
+                doi_resolver = DOIResolver(timeout=30)
+                # print([self.metadata['doi']])
+                url = doi_resolver.resolve(self.metadata['doi'], True)
+                # print(url)
+                dataset = resolve(url)
+                file_list = list(dataset.crawl())
+            except RuntimeError as e:
+                # In Zenodo, restricted-access datasets return 403 when listing the files
+                if re.search(r'with state code: 403', str(e)):
+                    accessForReview = 'meh'
+                # Otherwise: don't know what to do yet
+                pass
+            except BaseException as e:
+                # datahugger will fail in some cases, such as Dryad, Figshare...
+                print(e)
+                pass
+            return accessForReview
+
 
         if check_code == 'epflContact':
             orcid_epfl_creators = 0
