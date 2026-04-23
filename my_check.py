@@ -3,6 +3,9 @@ import pandas
 import time
 
 infile = '/Users/borel/temp/OpenAlexDatasetsEPFL(OpenAlexDatasetsEPFL).csv'
+# infile = 'mini.csv'
+
+grading = {"bad": -2, "meh": -1, "neutral": 0, "maybe": 1, "ok": 2}
 
 data = pandas.read_csv(infile, delimiter=';', encoding='utf-8')
 
@@ -12,5 +15,5 @@ print('\t'.join(['doi'] + checks))
 
 for doi in data['doi']:
     current_object = datacite_check.CandidateObject(doi=doi)
-    print('\t'.join([doi] + [current_object.policy_check(x) for x in checks]))
+    print('\t'.join([doi] + [str(grading[current_object.policy_check(x)]) for x in checks]))
     time.sleep(1)
