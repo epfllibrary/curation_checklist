@@ -231,7 +231,7 @@ checklistData = {
     'short': '<i>Open file formats?&nbsp;</i> ',
     'wrapper': 'div'
   },
-  'listedSourced': {
+  'listedSources': {
     'full': 'Where applicable, sources from which the work is derived are specified in the "References" field',
     'answers': {
       'bad': 'It seems that the upload is derived from existing data. In such a case, the source of that data is best acknowledged using structured metadata: the "Related/alternate identifiers" section is generally intended for digitial sources, the "References" section can be used for other sources',
@@ -476,6 +476,11 @@ class CandidateObject:
                         return 'meh'
                     if len(words) > 4:
                         return 'maybe'
+
+        if check_code == "listedGrants":
+            if 'fundingReferences' in self.metadata:
+                if len(self.metadata['fundingReferences']):
+                    return 'maybe'
 
         return 'neutral'
 

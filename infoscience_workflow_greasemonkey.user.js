@@ -77,7 +77,7 @@ const ruleTags = {
   'detailedReadme': 'N3',
   'supervisorIfThesis': 'N4',
   'openFileFormats': 'N5',
-  'listedSourced': 'N6',
+  'listedSources': 'N6',
   'properKeywords': 'N7'
 }
 
@@ -303,7 +303,7 @@ const checklistData = {
     'short': '<i>Open file formats?&nbsp;</i> ',
     'wrapper': 'div'
   },
-  'listedSourced': {
+  'listedSources': {
     'full': 'Where applicable, sources from which the work is derived are specified in the "References" field',
     'answers': {
       'bad': 'It seems that the upload is derived from existing data. In such a case, the source of that data is best acknowledged using structured metadata: the "Related/alternate identifiers" section is generally intended for digitial sources, the "References" section can be used for other sources',
@@ -790,9 +790,9 @@ function addButtons() {
   //let referencesElement = $('div#references-accordion-trigger');
   let referencesElement = $('h3:contains("References")');
   if (referencesElement.length) {
-    addCheckElement(referencesElement, 'listedSourced', 'after', true);
+    addCheckElement(referencesElement, 'listedSources', 'after', true);
   } else {
-    addCheckElement(importantFrame, 'listedSourced', 'after', false);
+    addCheckElement(importantFrame, 'listedSources', 'after', false);
   }
   */
 
