@@ -854,9 +854,15 @@ function policyCheck(checkCode) {
     if (bitstreamsData.length) {
       console.log('we have some content');
       return 'ok';
-    } else if ('dc.identifier.doi' in jsonData.metadata) {
+    } lse if ('dc.identifier.doi' in jsonData.metadata) {
       console.log('we have some remote content');
-      return 'ok';  
+      return 'maybe';  
+    } else if ('dc.identifier.uri' in jsonData.metadata) {
+      for (let uri of jsonData.metadata['dc.identifier.uri']) {
+        if (!(uri.value.match(/infoscience.epfl.ch\/handle/))) {
+          return 'maybe';
+        }
+      }
     } else {
       console.log('no content to inspect')
       return 'meh';
