@@ -805,7 +805,10 @@ function policyCheck(checkCode) {
   if (checkCode == 'epflContact') {
     let orcidEpflCreators = 0;
     if ('cris.virtualsource.rid' in jsonData.metadata) {
-      orcidEpflCreators = jsonData.metadata['cris.virtualsource.rid'].length;
+      orcidEpflCreators += jsonData.metadata['cris.virtualsource.rid'].length;
+    }
+    if ('epfl.author.orcid' in jsonData.metadata) {
+      orcidEpflCreators += jsonData.metadata['epfl.author.orcid'].length;
     }
     if (orcidEpflCreators) {
       return 'ok';
@@ -827,8 +830,6 @@ function policyCheck(checkCode) {
     }
   }
 
-
-
   if (checkCode == 'humanReadableTitle') {
     // If the abstract is missing entirely, it's bad.
     let words
@@ -845,8 +846,6 @@ function policyCheck(checkCode) {
       return 'maybe';
     }      
   }
-
-
 
   if (checkCode == 'readmePresent') {
     // Try to find a README
@@ -924,7 +923,7 @@ function policyCheck(checkCode) {
 
   }
 
- if (checkCode == 'allORCIDs') {
+  if (checkCode == 'allORCIDs') {
     // Check for ORCID iDs
     // At least one creator with ORCID = maybe. All creators with ORCID = OK
     let epflCreators = 0;
@@ -932,12 +931,8 @@ function policyCheck(checkCode) {
     if ('cris.virtualsource.rid' in jsonData.metadata) {
       epflCreators = jsonData.metadata['cris.virtualsource.rid'].length;
     }
-    if ('cris.virtual.orcid' in jsonData.metadata) {
-      for (let orcidField of jsonData.metadata['cris.virtual.orcid']) {
-        if (orcidField.value != "#PLACEHOLDER_PARENT_METADATA_VALUE#") {
-          orcidEpflCreators += 1;
-        }
-      }
+    if ('epfl.author.orcid' in jsonData.metadata) {
+      orcidEpflCreators = jsonData.metadata['epfl.author.orcid'].length;
     }
     if (orcidEpflCreators) {
       if (orcidEpflCreators == epflCreators) {
