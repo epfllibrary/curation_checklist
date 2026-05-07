@@ -83,6 +83,9 @@ const checklistData = {
       'maybe': '',
       'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
       'ok': ''
+    },
+    'category': 'must',
+    'wrapper': 'div'
   },
   'epflAuthor': {
     'full': 'At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work',
@@ -822,7 +825,7 @@ function policyCheck(checkCode) {
   */
 
   if (checkCode == 'eligibleResourceType') {
-    if (recordJson.metadata["resource_type"]["id"] not in eligibleTypes) {
+    if (!(recordJson.metadata["resource_type"]["id"] in eligibleTypes)) {
       return 'bad';
     } else {
       return 'ok';
