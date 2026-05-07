@@ -50,6 +50,7 @@ For some criteria, mostly when they deal with optional fields (such as keywords)
 /* tags for code maintenance in case of policy changes */
 
 const ruleTags = {
+  'eligibleResourceType': 'M0',
   'epflAuthor': 'M1',
   'epflContact': 'M2',
   'accessForReview': 'M3',
@@ -71,6 +72,16 @@ const ruleTags = {
 }
 
 const checklistData = {
+  'allowedResourceType': {
+    'full': 'Only objects with the following resource types are eligible for he EPFL Community: XXXX ',
+    'short': '<b>Eligible type?&nbsp;</b>',
+    'answers': {
+      'bad': 'The resource type is not eligible for the EPFL Community, as Infoscience is the designated official platform to list EPFL outputs such as YYYY.',
+      'meh': 'Instead of XXXX, the resource type should by YYYY',
+      'maybe': '',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+  },
   'epflAuthor': {
     'full': 'At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work',
     'short': '<b>EPFL authors?&nbsp;</b>',
