@@ -74,7 +74,7 @@ const ruleTags = {
 }
 
 const checklistData = {
-  'allowedResourceType': {
+  'eligibleResourceType': {
     'full': 'Only objects with the following resource types are eligible for he EPFL Community: XXXX ',
     'short': '<b>Eligible type?&nbsp;</b>',
     'answers': {
@@ -689,6 +689,11 @@ function addButtons() {
   if (document.URL.match(/request/g)) {
     // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
     importantFrame = $('h2:contains("Versions")').parent();
+  }
+
+  let typeElement = $('span[aria-label="Resource type"]');
+  if (typeElement.length) {
+    addCheckElement(typeElement, 'eligibleResourceType', 'after', true);
   }
 
   let mainTitle = $('h1#record-title');
