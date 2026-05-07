@@ -49,6 +49,8 @@ For some criteria, mostly when they deal with optional fields (such as keywords)
 
 /* tags for code maintenance in case of policy changes */
 
+const eligibleTypes = [];
+
 const ruleTags = {
   'eligibleResourceType': 'M0',
   'epflAuthor': 'M1',
@@ -818,6 +820,15 @@ function policyCheck(checkCode) {
   Automatic checks: will return 'neutral' by default.
   The logic must be adapated to each criterion, not all of them can be automated.
   */
+
+  if (checkCode == 'eligibleResourceType') {
+    if (recordJson.metadata["resource_type"]["id"] not in eligibleTypes) {
+      return 'bad';
+    } else {
+      return 'ok';
+    }
+  }
+
   if (checkCode == 'epflAuthor') {
     // Check EPFL creators. Acceptable if there is at least one, OK if all (more than 1) creators are EPFL
     let epflCreators = 0;
