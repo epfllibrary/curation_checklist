@@ -49,7 +49,7 @@ For some criteria, mostly when they deal with optional fields (such as keywords)
 
 /* tags for code maintenance in case of policy changes */
 
-const eligibleTypes = [];
+const eligibleTypes = ["dataset", "software"];
 
 const ruleTags = {
   'eligibleResourceType': 'M0',
@@ -830,10 +830,11 @@ function policyCheck(checkCode) {
   */
 
   if (checkCode == 'eligibleResourceType') {
-    if (!(recordJson.metadata["resource_type"]["id"] in eligibleTypes)) {
-      return 'bad';
-    } else {
+    console.log(recordJson.metadata.resource_type.id)
+    if (eligibleTypes.includes(recordJson.metadata.resource_type.id)) {
       return 'ok';
+    } else {
+      return 'bad';
     }
   }
 
