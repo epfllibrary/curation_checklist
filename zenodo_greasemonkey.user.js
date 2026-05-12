@@ -445,8 +445,8 @@ for (let exportFormat of exportFormats) {
 }
 
 if (!jsonUrl) {
+  // Something went really wrong
   console.error('No JSON export found');
-  return;
 }
 console.log(jsonUrl);
 
@@ -509,33 +509,19 @@ function addCheckElement(selector, checkCode, position, normal) {
 
   let myHtml;
 
-  if (normal) {
-    //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
-    myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
+  // Select normal or alternative short and wrapper
+  const short = normal ? checklistData[checkCode].short : checklistData[checkCode].altshort;
+  const wrapper = normal ? checklistData[checkCode].wrapper : checklistData[checkCode].altwrapper;
 
-    myHtml.append(`<label class="btn btn-danger" label='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
-    myHtml.append(`<label class="btn btn-light" label="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
-    myHtml.append(`<label class="btn btn-success" label='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
+  myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
+  myHtml.append(`<label class="btn btn-danger" label='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
+  myHtml.append(`<label class="btn btn-light" label="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
+  myHtml.append(`<label class="btn btn-success" label='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
 
-    //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}${myHtml}</${checklistData[checkCode].wrapper}>`);
-    checkElement = $(`<${checklistData[checkCode].wrapper}>`);
-    checkElement.append($(`${checklistData[checkCode].short}`));
-    checkElement.append(myHtml);
-  } else {
-    //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].altwrapper}>`);    
-    myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
-
-    myHtml.append(`<label class="btn btn-danger" label='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
-    myHtml.append(`<label class="btn btn-light" label="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
-    myHtml.append(`<label class="btn btn-success" label='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
-
-    //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}${myHtml}</${checklistData[checkCode].wrapper}>`);
-    checkElement = $(`<${checklistData[checkCode].altwrapper}>`);
-    checkElement.append($(`${checklistData[checkCode].altshort}`));
-    checkElement.append(myHtml);
-
-
-  }
+  checkElement = $(`<${wrapper}>`);
+  checkElement.append($(`${short}`));
+  checkElement.append(myHtml);
+  
   checkElement.attr('title', checklistData[checkCode].full);
   checkElement.tooltip();
   if (position == 'before') {
@@ -769,7 +755,7 @@ function addButtons() {
     addCheckElement(contentChecks, 'detailedReadme', 'after', true);
   }
 
-  let thesisUniversity = $('dt:contains("Awarding university")');
+  let thesisUniversity = $('dt:contains("Thesis")');
   if (thesisUniversity.length) {
     addCheckElement(thesisUniversity, 'supervisorIfThesis', 'after', true);
   } else {
@@ -973,12 +959,30 @@ function policyCheck(checkCode) {
   }
 
   if (checkCode == 'supervisorIfThesis') {
-    if ($("dt:contains('Awarding University:')").length) {
-      if ($("h5:contains('Thesis supervisor(s)')").nextAll('p').html().match(/<span/g).length) {
-        return 'ok';
+    let thesisDeclared = ($("dt:contains('Thesis')").length > 0);
+    let thesisRelated = false;
+    if ('related_identifiers' in recordJson.metadata) {
+      for (let relatedResource of recordJson.metadata.related_identifiers) {
+        if ('resource_type' in relatedResource) {
+          thesisRelated = (relatedResource.resource_type.id == "thesis");
+        }
       }
     }
-
+    if (thesisDeclared || thesisRelated) {
+      let everybody = recordJson.metadata.creators;
+      if (recordJson.metadata.contributors) {
+        everybody.push(...recordJson.metadata.contributors);
+      }
+      console.log(everybody)
+      for (let someone of everybody) {
+        if (someone.role) {
+          if (someone.role.id == 'supervisor') {
+            return 'ok';
+          }
+        }
+      }
+      return 'bad';
+    }
   }
 
   if (checkCode == 'properKeywords') {
