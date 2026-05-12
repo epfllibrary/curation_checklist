@@ -533,21 +533,9 @@ function addCheckElement(selector, checkCode, position, normal) {
 
 function addButtons() {
 
-  var btn = document.createElement('BUTTON');
-  var t = document.createTextNode('Prepare curation feedback e-mail');
-  var frm = document.createElement('FORM');
-  var icn = document.createElement('I');
+  let $frm = $('<form><button class="btn btn-info btn-block sidebar-container"><i class="fa fa-external-link">Prepare curation feedback e-mail</i></button></form>');
 
-
-  icn.setAttribute('class', 'fa fa-external-link');
-  btn.setAttribute('class', 'btn btn-info btn-block sidebar-container');
-  btn.appendChild(icn);
-  btn.appendChild(t);
-  frm.appendChild(btn);
-
-  frm.addEventListener('click', function(event) {
-
-    //var collapse = document.getElementById('collapseTwo'); 
+  $frm.on('click', function(event) {
 
     var zenodoURL = window.location.href;
     let title = document.title.replace(' | Zenodo', '');
@@ -660,17 +648,17 @@ function addButtons() {
   let menu;
   if (document.URL.match(/record/g)) {
     console.log("locate menu: this is a record");
-    menu = $('aside.sixteen.wide.tablet.five.wide.computer.column.sidebar')[0];
+    menu = $('aside.sixteen.wide.tablet.five.wide.computer.column.sidebar');
   }
   if (document.URL.match(/request/g)) {
     // TODO using this definition messes up with the formatting of the "Edit" button => it could be prettier
-    menu = $('div#request-actions')[0];
+    menu = $('div#request-actions');
     console.log("locate menu: this is a request");
   }
 
-  menu.prepend(frm);
+  menu.prepend($frm);
 
-    // This one should always be there, let's use it as a reference point
+  // This one should always be there, let's use it as a reference point
 
   let importantFrame;
   if (document.URL.match(/record/g)) {
