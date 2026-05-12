@@ -553,7 +553,7 @@ function addButtons() {
     console.log(zenodoURL);
 
     let emailTo = 'info@zenodo.org';
-    let emailSub = 'Zenodo dataset submitted to the EPFL community';
+    let emailSub = encodeURIComponent('Zenodo dataset submitted to the EPFL community: ' + title);
 
     var text = '';
     event.preventDefault();
@@ -595,7 +595,7 @@ function addButtons() {
     let header = ''
     let footer = ''
     let infoscienceReport = ''
-    emailSub += encodeURIComponent(': ' + title);
+    
     if (text == '') {
       // When all checkbuttons are set to ok, prepare the most positive feedback
       header += `${greeting},\n\nYou are designated as EPFL creators for "${title}" (${identifier}), which has been submitted to the EPFL Community on Zenodo. Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
@@ -636,7 +636,7 @@ function addButtons() {
     footer += 'Best regards,\nZZZZZZ'
 
     text = header + text + infoscienceReport + footer;
-    let finalURL = 'mailto:' + emailTo + '?&subject=' + emailSub + '&body=' + encodeURIComponent(text);
+    let finalURL = 'mailto:' + emailTo + '?subject=' + emailSub + '&body=' + encodeURIComponent(text);
     // console.log(finalURL);
     openMailEditor(finalURL);
   })
