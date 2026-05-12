@@ -3,17 +3,16 @@
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js
-// @require     https://far-nyon.ch/assets/js/tinysort/src/jquery.tinysort.min.js
 // @namespace   curation.epflrdm.zenodo
 // @author      Alain Borel
-// @include     https://zenodo.org/records/*
-// @include     https://sandbox.zenodo.org/records/*
-// @include     https://zenodo.org/communities/epfl/requests/*
-// @include     https://zenodo.org/communities/eth-domain-oer-rdm/requests/*
-// @include     https://sandbox.zenodo.org/communities/epfl/requests/*
-// @include     https://sandbox.zenodo.org/communities/eth-domain-oer-rdm/requests/*
-// @include     https://zenodo.org/me/requests/*
-// @include     https://sandbox.zenodo.org/me/requests/*
+// @match       https://zenodo.org/records/*
+// @match       https://sandbox.zenodo.org/records/*
+// @match       https://zenodo.org/communities/epfl/requests/*
+// @match       https://zenodo.org/communities/eth-domain-oer-rdm/requests/*
+// @match       https://sandbox.zenodo.org/communities/epfl/requests/*
+// @match       https://sandbox.zenodo.org/communities/eth-domain-oer-rdm/requests/*
+// @match       https://zenodo.org/me/requests/*
+// @match       https://sandbox.zenodo.org/me/requests/*
 // @exclude     https://sandbox.zenodo.org/records/*/export/*
 // @exclude     https://sandbox.zenodo.org/records/*preview/*
 // @exclude     https://zenodo.org/records/*/export/*
@@ -444,6 +443,11 @@ for (let exportFormat of exportFormats) {
     jsonUrl = window.location.protocol + '//' + window.location.hostname + exportFormat.export_url;
   }
 }
+
+if (!jsonUrl) {
+  console.error('No JSON export found');
+  return;
+}
 console.log(jsonUrl);
 
 let identifier;
@@ -509,9 +513,9 @@ function addCheckElement(selector, checkCode, position, normal) {
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
     myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
 
-    myHtml.append(`<label class="btn btn-danger" id='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
-    myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
-    myHtml.append(`<label class="btn btn-success" id='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
+    myHtml.append(`<label class="btn btn-danger" label='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
+    myHtml.append(`<label class="btn btn-light" label="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
+    myHtml.append(`<label class="btn btn-success" label='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
 
     //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}${myHtml}</${checklistData[checkCode].wrapper}>`);
     checkElement = $(`<${checklistData[checkCode].wrapper}>`);
@@ -521,9 +525,9 @@ function addCheckElement(selector, checkCode, position, normal) {
     //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].altwrapper}>`);    
     myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
 
-    myHtml.append(`<label class="btn btn-danger" id='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
-    myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
-    myHtml.append(`<label class="btn btn-success" id='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
+    myHtml.append(`<label class="btn btn-danger" label='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
+    myHtml.append(`<label class="btn btn-light" label="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
+    myHtml.append(`<label class="btn btn-success" label='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
 
     //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}${myHtml}</${checklistData[checkCode].wrapper}>`);
     checkElement = $(`<${checklistData[checkCode].altwrapper}>`);
@@ -581,11 +585,11 @@ function addButtons() {
     for (let checkLevel of checkLevels) {
       console.log('check level', checkLevel.short); 
       let checkArray = [];
-      let checkBoxUnchecked = $(`label[name="${checkLevel.short}"][id='ok']:not(:contains("x"))`);
+      let checkBoxUnchecked = $(`label[name="${checkLevel.short}"][label='ok']:not(:contains("x"))`);
       checkBoxUnchecked.each(function() {
         let checkID = $(this).parent().attr('id');
         let actualButton = $(this).parent().children('label:not(:contains(" "))');
-        let actualValue1 = actualButton.attr('id');
+        let actualValue1 = actualButton.attr('label');
         let actualValue2 = actualButton.text();
         console.log(checkID, actualValue1, actualValue2, '==>', state2checkValue(actualValue1, actualValue2));
         checkArray.push([ruleTags[checkID], checklistData[checkID].full, checklistData[checkID].answers[state2checkValue(actualValue1, actualValue2)]]);
@@ -804,7 +808,7 @@ function addButtons() {
   */
   $('div.btn-group label.btn').on('click', function myclick(event) {
     console.log('click detected', event);
-    console.log('in group selector', $(this).parent().attr('id'), $(this).attr('id'));
+    console.log('in group selector', $(this).parent().attr('id'), $(this).attr('label'));
     if ($(this).text() != 'x') {
       $(this).siblings().text(' ');
       //Process button click event
@@ -924,7 +928,8 @@ function policyCheck(checkCode) {
     }
     if (words.length > 4) {
       return 'maybe';
-    }                   
+    }
+    // no explicit return for words.length === 4 → falls through to 'neutral'
   }
 
   if (checkCode == 'readmePresent') {
@@ -959,6 +964,7 @@ function policyCheck(checkCode) {
       if (goodLicenses.includes(recordJson.metadata.rights[0].id.toLowerCase())) {
         return 'ok';
       }
+      // otherwise fall through to default 'neutral'
     } catch (error) {
       console.log('License check error', error);
       return 'bad';
@@ -1033,7 +1039,7 @@ function policyCheck(checkCode) {
     // 2025-07-30 at this point, give a green light if there is at least one related identifier
     if ('related_identifiers' in recordJson.metadata) {
       for (let relatedResource of recordJson.metadata.related_identifiers) {
-        if ('id' in relatedResource) {
+        if ('resource_type' in relatedResource) {
           if (relatedResource.resource_type.id == "publication") {
             return 'ok'
           }
