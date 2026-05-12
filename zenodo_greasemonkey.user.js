@@ -533,9 +533,12 @@ function addCheckElement(selector, checkCode, position, normal) {
 
 function addButtons() {
 
-  let $frm = $('<form><button class="btn btn-info btn-block sidebar-container"><i class="fa fa-external-link">Prepare curation feedback e-mail</i></button></form>');
+  let btn = $('<button>', {
+      class: 'btn btn-info btn-block sidebar-container',
+      html: $('<i>', { class: 'fa fa-external-link', text: 'Prepare curation feedback e-mail' })
+  });
 
-  $frm.on('click', function(event) {
+  btn.on('click', function(event) {
 
     var zenodoURL = window.location.href;
     let title = document.title.replace(' | Zenodo', '');
@@ -656,7 +659,7 @@ function addButtons() {
     console.log("locate menu: this is a request");
   }
 
-  menu.prepend($frm);
+  menu.prepend(btn);
 
   // This one should always be there, let's use it as a reference point
 
