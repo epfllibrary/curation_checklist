@@ -3,13 +3,12 @@
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js
-// @require     https://far-nyon.ch/assets/js/tinysort/src/jquery.tinysort.min.js
 // @namespace   curation.epflrdm.infoscience
 // @author      Alain Borel
-// @include     https://infoscience-test.epfl.ch/workflowitems/*
-// @include     https://infoscience.epfl.ch/workflowitems/*
-// @include     https://infoscience-test.epfl.ch/workspaceitems/*
-// @include     https://infoscience.epfl.ch/workspaceitems/*
+// @match       https://infoscience-test.epfl.ch/workflowitems/*
+// @match       https://infoscience.epfl.ch/workflowitems/*
+// @match       https://infoscience-test.epfl.ch/workspaceitems/*
+// @match       https://infoscience.epfl.ch/workspaceitems/*
 // @run-at      document-idle
 // @grant       none
 // @version     1.7.4
@@ -82,6 +81,19 @@ const ruleTags = {
 }
 
 const checklistData = {
+    'eligibleResourceType': {
+    'full': 'Only objects with the following resource types are eligible for he EPFL Community: XXXX ',
+    'short': '<b>Eligible type?&nbsp;</b>',
+    'answers': {
+      'bad': 'The resource type is not eligible for the EPFL Community, as Infoscience is the designated official platform to list EPFL outputs such as YYYY.',
+      'meh': 'Instead of XXXX, the resource type should by YYYY',
+      'maybe': '',
+      'neutral': 'OUBLI DANS LA CURATION: A VERIFIER! :-)',
+      'ok': ''
+    },
+    'category': 'must',
+    'wrapper': 'div'
+  },
   'epflAuthor': {
     'full': 'At least one author must be affiliated with EPFL at the time of the submission or creation of the submitted work',
     'short': '<i>EPFL authors?&nbsp;</i>',
@@ -520,35 +532,19 @@ function addCheckElement(selector, checkCode, position, normal) {
 
   let myHtml;
 
-  if (normal) {
-    //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].wrapper}>`);
-    myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
-
-    myHtml.append('<span>&nbsp;</span>');
-    myHtml.append(`<label class="btn btn-danger" id='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
-    myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
-    myHtml.append(`<label class="btn btn-success" id='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
-    myHtml.append('<span>&nbsp;</span>');
-
-    //checkElement = $(`<${checklistData[checkCode].wrapper}>${checklistData[checkCode].short}${myHtml}</${checklistData[checkCode].wrapper}>`);
-    checkElement = $(`<${checklistData[checkCode].wrapper}>`);
-    checkElement.append($(`${checklistData[checkCode].short}`));
-    checkElement.append(myHtml);
-  } else {
-    //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}<input type="checkbox" name="${checklistData[checkCode].category}" class="check" value="${checkCode}" /></${checklistData[checkCode].altwrapper}>`);    
-    myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
-
-    myHtml.append(`<label class="btn btn-danger" id='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
-    myHtml.append(`<label class="btn btn-light" id="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
-    myHtml.append(`<label class="btn btn-success" id='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
-
-    //checkElement = $(`<${checklistData[checkCode].altwrapper}>${checklistData[checkCode].altshort}${myHtml}</${checklistData[checkCode].wrapper}>`);
-    checkElement = $(`<${checklistData[checkCode].altwrapper}>`);
-    checkElement.append($(`${checklistData[checkCode].altshort}`));
-    checkElement.append(myHtml);
-
-
-  }
+  // Select normal or alternative short and wrapper
+  const short = normal ? checklistData[checkCode].short : checklistData[checkCode].altshort;
+  const wrapper = normal ? checklistData[checkCode].wrapper : checklistData[checkCode].altwrapper;
+ 
+  myHtml = $(`<div class="btn-group" id="${checkCode}"/>`);
+  myHtml.append(`<label class="btn btn-danger" label='bad' name="${checklistData[checkCode].category}">${buttonValues[status][0]}</label>`);
+  myHtml.append(`<label class="btn btn-light" label="undecided" name="${checklistData[checkCode].category}">${buttonValues[status][1]}</label>`);
+  myHtml.append(`<label class="btn btn-success" label='ok' name="${checklistData[checkCode].category}">${buttonValues[status][2]}</label>`);
+ 
+  checkElement = $(`<${wrapper}>`);
+  checkElement.append($(`${short}`));
+  checkElement.append(myHtml);
+  
   checkElement.attr('title', checklistData[checkCode].full);
   checkElement.tooltip();
   if (position == 'before') {
@@ -560,20 +556,12 @@ function addCheckElement(selector, checkCode, position, normal) {
 
 function addButtons() {
 
-  var btn = document.createElement('BUTTON');
-  var t = document.createTextNode('Prepare curation feedback e-mail');
-  var frm = document.createElement('FORM');
-  frm.setAttribute('id', 'is3_gm_form')
-  var icn = document.createElement('I');
+  let btn = $('<button>', {
+      class: 'btn btn-info btn-block sidebar-container',
+      html: $('<i>', { class: 'fa fa-external-link', text: 'Prepare curation feedback e-mail' })
+  });
 
-
-  icn.setAttribute('class', 'fa fa-external-link');
-  btn.setAttribute('class', 'btn btn-info btn-block sidebar-container');
-  btn.appendChild(icn);
-  btn.appendChild(t);
-  frm.appendChild(btn);
-
-  frm.addEventListener('click', function(event) {
+  btn.on('click', function(event) {
 
     let title = document.title.replace(' | Zenodo', '');
     if (title == 'Infoscience') {
@@ -585,7 +573,7 @@ function addButtons() {
     }
 
     let emailTo = 'researchdata@epfl.ch';
-    let emailSub = ' dataset listed on Infoscience';
+    let emailSub = encodeURIComponent('dataset listed on Infoscience: ' + title);
 
     var text = '';
     event.preventDefault();
@@ -594,11 +582,11 @@ function addButtons() {
     for (let checkLevel of checkLevels) {
       console.log('check level', checkLevel.short); 
       let checkArray = [];
-      let checkBoxUnchecked = $(`label[name="${checkLevel.short}"][id='ok']:not(:contains("x"))`);
+      let checkBoxUnchecked = $(`label[name="${checkLevel.short}"][label='ok']:not(:contains("x"))`);
       checkBoxUnchecked.each(function() {
         let checkID = $(this).parent().attr('id');
         let actualButton = $(this).parent().children('label:not(:contains(" "))');
-        let actualValue1 = actualButton.attr('id');
+        let actualValue1 = actualButton.attr('label');
         let actualValue2 = actualButton.text();
         console.log(checkID, actualValue1, actualValue2, '==>', state2checkValue(actualValue1, actualValue2));
         checkArray.push([ruleTags[checkID], checklistData[checkID].full, checklistData[checkID].answers[state2checkValue(actualValue1, actualValue2)]]);
@@ -627,7 +615,7 @@ function addButtons() {
     let header = ''
     let footer = ''
     let infoscienceReport = ''
-    emailSub += encodeURIComponent(': ' + title);
+    
     if (text == '') {
       // When all checkbuttons are set to ok, prepare the most positive feedback
       header += `${greeting},\n\nYou are designated as EPFL creators for "${title}", listed as ${identifier} . Thanks for this contribution! It is my pleasure to report that the dataset meets all of our quality requirements and is now accepted in the collection.\n\n`;
@@ -648,7 +636,7 @@ function addButtons() {
         infoscienceReport = 'Apparently, the following related publications are not yet listed on Infoscience:\n* ' + unknownRelated.join('\n* ') + '\n\n';
         infoscienceReport += 'Assuming that they are EPFL publications, we invite you to submit them on https://infoscience.epfl.ch/mydspace to make sure the database is fully up-to-date.\n';
         infoscienceReport += '(See https://go.epfl.ch/how-submit-infoscience if you are not familiar with entering new records on Infoscience)\n\n';
-      }frm
+      }
       if (unknownRelated.length == 1) {
         console.log('unknownRelated:', unknownRelated, unknownRelated.length)
         infoscienceReport = 'Apparently, the following related publication is not yet listed on Infoscience:\n* ' + unknownRelated.join('\n* ') + '\n\n';
@@ -666,7 +654,7 @@ function addButtons() {
     footer += 'Best regards,\nZZZZZZ'
 
     text = header + text + infoscienceReport + footer;
-    let finalURL = 'mailto:' + emailTo + '?&subject=' + emailSub + '&body=' + encodeURIComponent(text);
+    let finalURL = 'mailto:' + emailTo + '?subject=' + emailSub + '&body=' + encodeURIComponent(text);
     // console.log(finalURL);
     openMailEditor(finalURL);
   })
@@ -685,7 +673,7 @@ function addButtons() {
   }
 
 
-  menu.prepend(frm);
+  menu.prepend(btn);
 
   
   // This one should always be there, let's use it as a reference point
@@ -812,7 +800,7 @@ function addButtons() {
   */
   $('div.btn-group label.btn').on('click', function myclick(event) {
     console.log('click detected', event);
-    console.log('in group selector', $(this).parent().attr('id'), $(this).attr('id'));
+    console.log('in group selector', $(this).parent().attr('id'), $(this).attr('label'));
     if ($(this).text() != 'x') {
       $(this).siblings().text(' ');
       //Process button click event
@@ -854,7 +842,7 @@ function policyCheck(checkCode) {
     if (bitstreamsData.length) {
       console.log('we have some content');
       return 'ok';
-    } lse if ('dc.identifier.doi' in jsonData.metadata) {
+    } else if ('dc.identifier.doi' in jsonData.metadata) {
       console.log('we have some remote content');
       return 'maybe';  
     } else if ('dc.identifier.uri' in jsonData.metadata) {
@@ -900,16 +888,18 @@ function policyCheck(checkCode) {
   if (checkCode == 'humanReadableTitle') {
     // If the abstract is missing entirely, it's bad.
     if ('dc.title' in jsonData.metadata) {
-    let words = jsonData.metadata['dc.title'][0].value.split(/\s+/).map(w => w.replace(/[^\w\s]|_/g, ''));
-    if (words.length < 2) {
-      return 'bad';
+      let words = jsonData.metadata['dc.title'][0].value.split(/\s+/).map(w => w.replace(/[^\w\s]|_/g, ''));
+      if (words.length < 2) {
+        return 'bad';
+      }
+      if (words.length < 4) {
+        return 'meh';
+      }
+      if (words.length > 4) {
+        return 'maybe';
+      }
+      // no explicit return for words.length === 4 → falls through to 'neutral'
     }
-    if (words.length < 4) {
-      return 'meh';
-    }
-    if (words.length > 4) {
-      return 'maybe';
-    }      
   }
 
 
@@ -952,18 +942,20 @@ function policyCheck(checkCode) {
       } else {
         return 'meh'
       }
+      // otherwise fall through to default 'neutral'
     } else {
+      // something is wrong if no license information is available
       return 'bad';
     }
   }
 
   if (checkCode == 'supervisorIfThesis') {
+    // 1. Check for related work
     if ($("dt:contains('Awarding University:')").length) {
       if ($("h5:contains('Thesis supervisor(s)')").nextAll('p').html().match(/<span/g).length) {
         return 'ok';
       }
     }
-
   }
 
   if (checkCode == 'properKeywords') {
