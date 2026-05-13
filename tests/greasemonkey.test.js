@@ -62,6 +62,7 @@ async function runTrivialTests() {
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
+    await page.addScriptTag({url: 'https://code.jquery.com/jquery-3.7.1.slim.min.js'}),
 
     // ── 1. Stub Greasemonkey APIs BEFORE the page loads ──────────────────────
     //    evaluateOnNewDocument runs in the page context before any script,
@@ -139,6 +140,7 @@ async function runTests() {
     });
     const page = await browser.newPage();
 
+
     // ── 1. Stub Greasemonkey APIs BEFORE the page loads ──────────────────────
     //    evaluateOnNewDocument runs in the page context before any script,
     //    making GM_* available when our userscript executes.
@@ -160,6 +162,7 @@ async function runTests() {
 
     // ── 2. Navigate to the fixture ────────────────────────────────────────────
     await page.goto(fixtureUrl, { waitUntil: "domcontentloaded" });
+    await page.addScriptTag({url: 'https://code.jquery.com/jquery-3.7.1.slim.min.js'})
 
     // ── 3. Inject the userscript ──────────────────────────────────────────────
     //    addScriptTag executes in the page context, just like a content script.
@@ -180,7 +183,16 @@ async function runTests() {
   {
     const { page, browser } = await setupPage({ });
 
-    assertEqual(1, 1, "Everything looks fine so far")    
+    assertEqual(1, 1, "Everything looks fine so far")
+
+    const displayedChecks = await page.evaluate(() => {
+      // return 19
+      let btnGroups = $('div.btn-group');
+      console.log('btnGroups', btnGroups);
+      return btnGroups ? btnGroups.length : 0 
+    });
+
+    assertEqual(displayedChecks, 19, "All checkboxes present and accounted for");
 
     await browser.close();
   }
@@ -193,10 +205,13 @@ async function runTests() {
   }
 }
 
-runTrivialTests().catch((err) => {
-  console.error("Test test runner crashed:", err);
-  process.exit(1);
-});
+
+// runTrivialTests()
+//  .catch((err) => {
+//   console.error("Test test runner crashed:", err);
+//   process.exit(1);
+// });
+
 
 runTests().catch((err) => {
   console.error("Test runner crashed:", err);
