@@ -69,7 +69,7 @@ async function runTrivialTests() {
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
-    await page.addScriptTag({url: 'https://code.jquery.com/jquery-3.7.1.slim.min.js'}),
+    await page.addScriptTag({url: 'https://code.jquery.com/jquery-3.7.1.slim.min.js'})
 
     // ── 1. Stub Greasemonkey APIs BEFORE the page loads ──────────────────────
     //    evaluateOnNewDocument runs in the page context before any script,
@@ -174,16 +174,19 @@ async function runTests() {
       };
     }, gmValues);
 
+    console.log("Hi y'all")
+
     // ── 2. Navigate to the fixture ────────────────────────────────────────────
     await page.goto(fixtureUrl, { waitUntil: "domcontentloaded" });
-    await page.addScriptTag({url: 'https://code.jquery.com/jquery-3.7.1.slim.min.js'})
 
     // ── 3. Inject the userscript ──────────────────────────────────────────────
     //    addScriptTag executes in the page context, just like a content script.
+    await page.addScriptTag({url: 'https://code.jquery.com/jquery-3.7.1.slim.min.js'})
     await page.addScriptTag({ content: scriptContent });
 
     // Give the script a tick to finish synchronous work
-    await new Promise((r) => setTimeout(r, 100));
+    console.log("what'sup doc?")
+    await new Promise((r) => setTimeout(r, 1000));
 
     return { page, browser };
   }
