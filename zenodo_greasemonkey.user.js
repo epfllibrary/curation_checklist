@@ -1,5 +1,6 @@
 // ==UserScript==
 // @name        Zenodo Curation Checklist
+// @description Adds curation checkboxes to Zenodo records
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js

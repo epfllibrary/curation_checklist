@@ -1,5 +1,6 @@
 // ==UserScript==
 // @name        EXPERIMENTAL Infoscience datasets as workflow items curation
+// @description Adds curation checkboxes to Infoscience workflow items
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/tinysort/3.2.8/tinysort.min.js
