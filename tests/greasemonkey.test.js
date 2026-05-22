@@ -58,6 +58,13 @@ async function runTrivialTests() {
    */
   async function setupPage(gmValues = { }) {
     const browser = await puppeteer.launch({
+      browser: 'firefox',
+      extraPrefsFirefox: {
+        // Enable additional Firefox logging from its protocol implementation
+        // 'remote.log.level': 'Trace',
+      },
+      // Make browser logs visible
+      dumpio: true,
       headless: "new", // use new headless mode
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
@@ -135,6 +142,13 @@ async function runTests() {
    */
   async function setupPage(gmValues = { }) {
     const browser = await puppeteer.launch({
+      browser: 'firefox',
+      extraPrefsFirefox: {
+        // Enable additional Firefox logging from its protocol implementation
+        // 'remote.log.level': 'Trace',
+      },
+      // Make browser logs visible
+      dumpio: true,
       headless: "new", // use new headless mode
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
