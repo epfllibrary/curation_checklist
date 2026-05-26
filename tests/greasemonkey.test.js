@@ -40,6 +40,57 @@ function assertEqual(actual, expected, message) {
   }
 }
 
+async function setupPage(fixtureUrl, scriptContent, gmValues = { }) {
+  const browser = await puppeteer.launch({
+    browser: 'firefox',
+    extraPrefsFirefox: {
+      // Enable additional Firefox logging from its protocol implementation
+      // 'remote.log.level': 'Trace',
+    },
+    // Make browser logs visible
+    dumpio: true,
+    headless: "new", // use new headless mode
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+  const page = await browser.newPage();
+
+
+  // ── 1. Stub Greasemonkey APIs BEFORE the page loads ──────────────────────
+  //    evaluateOnNewDocument runs in the page context before any script,
+  //    making GM_* available when our userscript executes.
+  await page.evaluateOnNewDocument((values) => {
+    // GM_getValue: return stubbed values or a default
+    window.GM_getValue = (key, defaultVal) =>
+      key in values ? values[key] : defaultVal;
+
+    // GM_setValue: no-op (or capture for assertions if needed)
+    window.GM_setValue = () => {};
+
+    // GM_addStyle: inject a real <style> tag so CSS rules apply
+    window.GM_addStyle = (css) => {
+      const style = document.createElement("style");
+      style.textContent = css;
+      document.head.appendChild(style);
+    };
+  }, gmValues);
+
+  console.log("Hi y'all")
+
+  // ── 2. Navigate to the fixture ────────────────────────────────────────────
+  await page.goto(fixtureUrl, { waitUntil: "domcontentloaded" });
+
+  // ── 3. Inject the userscript ──────────────────────────────────────────────
+  //    addScriptTag executes in the page context, just like a content script.
+  await page.addScriptTag({url: 'https://code.jquery.com/jquery-3.7.1.slim.min.js'})
+  await page.addScriptTag({ content: scriptContent });
+
+  // Give the script a tick to finish synchronous work
+  console.log("what'sup doc?")
+  await new Promise((r) => setTimeout(r, 1000));
+
+  return { page, browser };
+}
+
 // ─── Testing the test runner ─────────────────────────────────────────────────────────────
 async function runTrivialTests() {
   const fixtureUrl =
@@ -56,52 +107,7 @@ async function runTrivialTests() {
    *
    * @param {object} gmValues  - key/value pairs returned by GM_getValue stubs
    */
-  async function setupPage(gmValues = { }) {
-    const browser = await puppeteer.launch({
-      browser: 'firefox',
-      extraPrefsFirefox: {
-        // Enable additional Firefox logging from its protocol implementation
-        // 'remote.log.level': 'Trace',
-      },
-      // Make browser logs visible
-      dumpio: true,
-      headless: "new", // use new headless mode
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-    const page = await browser.newPage();
-    await page.addScriptTag({url: 'https://code.jquery.com/jquery-3.7.1.slim.min.js'})
-
-    // ── 1. Stub Greasemonkey APIs BEFORE the page loads ──────────────────────
-    //    evaluateOnNewDocument runs in the page context before any script,
-    //    making GM_* available when our userscript executes.
-    await page.evaluateOnNewDocument((values) => {
-      // GM_getValue: return stubbed values or a default
-      window.GM_getValue = (key, defaultVal) =>
-        key in values ? values[key] : defaultVal;
-
-      // GM_setValue: no-op (or capture for assertions if needed)
-      window.GM_setValue = () => {};
-
-      // GM_addStyle: inject a real <style> tag so CSS rules apply
-      window.GM_addStyle = (css) => {
-        const style = document.createElement("style");
-        style.textContent = css;
-        document.head.appendChild(style);
-      };
-    }, gmValues);
-
-    // ── 2. Navigate to the fixture ────────────────────────────────────────────
-    await page.goto(fixtureUrl, { waitUntil: "domcontentloaded" });
-
-    // ── 3. Inject the userscript ──────────────────────────────────────────────
-    //    addScriptTag executes in the page context, just like a content script.
-    await page.addScriptTag({ content: scriptContent });
-
-    // Give the script a tick to finish synchronous work
-    await new Promise((r) => setTimeout(r, 100));
-
-    return { page, browser };
-  }
+  
 
   // ─── Test Suite ─────────────────────────────────────────────────────────────
 
@@ -110,7 +116,7 @@ async function runTrivialTests() {
   // ── Suite 1: Price parsing & highlight classes ────────────────────────────
   console.log("\n📦  Suite 1: Trivial test just to be sure");
   {
-    const { page, browser } = await setupPage({ });
+    const { page, browser } = await setupPage(fixtureUrl, scriptContent, { });
 
     assertEqual(1, 1, "Everything looks fine in the trivial test")    
 
@@ -140,56 +146,7 @@ async function runTests() {
    *
    * @param {object} gmValues  - key/value pairs returned by GM_getValue stubs
    */
-  async function setupPage(gmValues = { }) {
-    const browser = await puppeteer.launch({
-      browser: 'firefox',
-      extraPrefsFirefox: {
-        // Enable additional Firefox logging from its protocol implementation
-        // 'remote.log.level': 'Trace',
-      },
-      // Make browser logs visible
-      dumpio: true,
-      headless: "new", // use new headless mode
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-    const page = await browser.newPage();
-
-
-    // ── 1. Stub Greasemonkey APIs BEFORE the page loads ──────────────────────
-    //    evaluateOnNewDocument runs in the page context before any script,
-    //    making GM_* available when our userscript executes.
-    await page.evaluateOnNewDocument((values) => {
-      // GM_getValue: return stubbed values or a default
-      window.GM_getValue = (key, defaultVal) =>
-        key in values ? values[key] : defaultVal;
-
-      // GM_setValue: no-op (or capture for assertions if needed)
-      window.GM_setValue = () => {};
-
-      // GM_addStyle: inject a real <style> tag so CSS rules apply
-      window.GM_addStyle = (css) => {
-        const style = document.createElement("style");
-        style.textContent = css;
-        document.head.appendChild(style);
-      };
-    }, gmValues);
-
-    console.log("Hi y'all")
-
-    // ── 2. Navigate to the fixture ────────────────────────────────────────────
-    await page.goto(fixtureUrl, { waitUntil: "domcontentloaded" });
-
-    // ── 3. Inject the userscript ──────────────────────────────────────────────
-    //    addScriptTag executes in the page context, just like a content script.
-    await page.addScriptTag({url: 'https://code.jquery.com/jquery-3.7.1.slim.min.js'})
-    await page.addScriptTag({ content: scriptContent });
-
-    // Give the script a tick to finish synchronous work
-    console.log("what'sup doc?")
-    await new Promise((r) => setTimeout(r, 1000));
-
-    return { page, browser };
-  }
+  
 
   // ─── Test Suite ─────────────────────────────────────────────────────────────
 
@@ -198,7 +155,7 @@ async function runTests() {
   // ── Suite 1: Price parsing & highlight classes ────────────────────────────
   console.log("\n📦  Suite 2: Loading test, just to be sure");
   {
-    const { page, browser } = await setupPage({ });
+    const { page, browser } = await setupPage(fixtureUrl, scriptContent, { });
 
     assertEqual(1, 1, "Everything looks fine so far")
 
