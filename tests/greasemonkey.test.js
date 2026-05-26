@@ -49,7 +49,6 @@ function assertEqual(actual, expected, message) {
  * @param {object} gmValues  - key/value pairs returned by GM_getValue stubs
  */
   
-
 async function setupPage(fixtureUrl, scriptContent, gmValues = { }) {
   const browser = await puppeteer.launch({
     browser: 'firefox',
@@ -115,7 +114,7 @@ async function runTrivialTests() {
 
   console.log("Entering test suite, not much to see yet");
 
-  // ── Suite 1: Price parsing & highlight classes ────────────────────────────
+  // ── Suite 1: Just loading stuff ────────────────────────────
   console.log("\n📦  Suite 1: Trivial test just to be sure");
   {
     const { page, browser } = await setupPage(fixtureUrl, scriptContent, { });
@@ -147,8 +146,8 @@ async function runTests() {
 
   console.log("Entering test suite, not much to see yet");
 
-  // ── Suite 1: Price parsing & highlight classes ────────────────────────────
-  console.log("\n📦  Suite 2: Loading test, just to be sure");
+  // ── Suite 1: Just loading stuff ────────────────────────────
+  console.log("\n📦  Suite 2: Loading test + counting inserted checkboxes");
   {
     const { page, browser } = await setupPage(fixtureUrl, scriptContent, { });
 
