@@ -40,6 +40,16 @@ function assertEqual(actual, expected, message) {
   }
 }
 
+/**
+ * Helper: launch browser, load the fixture, inject GM stubs + userscript,
+ * then return { page, browser } ready for assertions.
+ *
+ * @param {string} fixtureUrl - HTML page to test (saved from the Zenodo sandbox)
+ * @param {string} scriptContent - file object containing the GM user script
+ * @param {object} gmValues  - key/value pairs returned by GM_getValue stubs
+ */
+  
+
 async function setupPage(fixtureUrl, scriptContent, gmValues = { }) {
   const browser = await puppeteer.launch({
     browser: 'firefox',
@@ -101,14 +111,6 @@ async function runTrivialTests() {
   );
   const scriptContent = fs.readFileSync(scriptPath, "utf8");
 
-  /**
-   * Helper: launch browser, load the fixture, inject GM stubs + userscript,
-   * then return { page, browser } ready for assertions.
-   *
-   * @param {object} gmValues  - key/value pairs returned by GM_getValue stubs
-   */
-  
-
   // ─── Test Suite ─────────────────────────────────────────────────────────────
 
   console.log("Entering test suite, not much to see yet");
@@ -140,13 +142,6 @@ async function runTests() {
   );
   const scriptContent = fs.readFileSync(scriptPath, "utf8");
 
-  /**
-   * Helper: launch browser, load the fixture, inject GM stubs + userscript,
-   * then return { page, browser } ready for assertions.
-   *
-   * @param {object} gmValues  - key/value pairs returned by GM_getValue stubs
-   */
-  
 
   // ─── Test Suite ─────────────────────────────────────────────────────────────
 
