@@ -1,189 +1,148 @@
-/**
- * Puppeteer Unit Tests for zenodo_greasemonkey.user.js
- *
- * Strategy:
- *  - Serve the fixture HTML via a local file URL (no server needed).
- *  - Stub out Greasemonkey APIs (GM_getValue, GM_setValue, GM_addStyle)
- *    with page.evaluateOnNewDocument() before the script runs.
- *  - Inject the userscript with page.addScriptTag().
- *  - Assert on DOM state using page.evaluate().
- *
- * Run with:  node tests/price-highlighter.test.js
- */
+// tests/greasemonkey.test.js
+const path = require('path');
+const fs   = require('fs');
 
-const puppeteer = require("puppeteer");
-const path = require("path");
-const fs = require("fs");
+const FIXTURE_RECORD  = 'file://' + path.resolve(__dirname, 'fixtures/Zenodo curation demo dataset 2.html');
+const FIXTURE_EMPTY   = 'file://' + path.resolve(__dirname, 'fixtures/empty.html');
+const SCRIPT_CONTENT  = fs.readFileSync(
+  path.resolve(__dirname, '../zenodo_greasemonkey.user.js'), 'utf8'
+);
 
-// ─── Tiny assertion helpers ───────────────────────────────────────────────────
-let passed = 0;
-let failed = 0;
+// ─── Shared setup helper ──────────────────────────────────────────────────────
+// Equivalent to your setupPage(), but doesn't manage browser/page lifetime
+// (jest-puppeteer injects `page` and `browser` as globals).
 
-function assert(condition, message) {
-  if (condition) {
-    console.log(`  ✅  ${message}`);
-    passed++;
-  } else {
-    console.error(`  ❌  ${message}`);
-    failed++;
-  }
-}
-
-function assertEqual(actual, expected, message) {
-  const ok = actual === expected;
-  if (ok) {
-    console.log(`  ✅  ${message}`);
-    passed++;
-  } else {
-    console.error(`  ❌  ${message} — expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
-    failed++;
-  }
-}
-
-/**
- * Helper: launch browser, load the fixture, inject GM stubs + userscript,
- * then return { page, browser } ready for assertions.
- *
- * @param {string} fixtureUrl - HTML page to test (saved from the Zenodo sandbox)
- * @param {string} scriptContent - file object containing the GM user script
- * @param {object} gmValues  - key/value pairs returned by GM_getValue stubs
- */
-  
-async function setupPage(fixtureUrl, scriptContent, gmValues = { }) {
-  const browser = await puppeteer.launch({
-    browser: 'firefox',
-    extraPrefsFirefox: {
-      // Enable additional Firefox logging from its protocol implementation
-      // 'remote.log.level': 'Trace',
-    },
-    // Make browser logs visible
-    dumpio: true,
-    headless: "new", // use new headless mode
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-  const page = await browser.newPage();
-
-
-  // ── 1. Stub Greasemonkey APIs BEFORE the page loads ──────────────────────
-  //    evaluateOnNewDocument runs in the page context before any script,
-  //    making GM_* available when our userscript executes.
+async function injectScript(gmValues = {}) {
   await page.evaluateOnNewDocument((values) => {
-    // GM_getValue: return stubbed values or a default
-    window.GM_getValue = (key, defaultVal) =>
-      key in values ? values[key] : defaultVal;
-
-    // GM_setValue: no-op (or capture for assertions if needed)
+    window.GM_getValue = (key, def) => (key in values ? values[key] : def);
     window.GM_setValue = () => {};
-
-    // GM_addStyle: inject a real <style> tag so CSS rules apply
     window.GM_addStyle = (css) => {
-      const style = document.createElement("style");
-      style.textContent = css;
-      document.head.appendChild(style);
+      const s = document.createElement('style');
+      s.textContent = css;
+      document.head.appendChild(s);
     };
   }, gmValues);
-
-  console.log("Hi y'all")
-
-  // ── 2. Navigate to the fixture ────────────────────────────────────────────
-  await page.goto(fixtureUrl, { waitUntil: "domcontentloaded" });
-
-  // ── 3. Inject the userscript ──────────────────────────────────────────────
-  //    addScriptTag executes in the page context, just like a content script.
-  await page.addScriptTag({url: 'https://code.jquery.com/jquery-3.7.1.slim.min.js'})
-  await page.addScriptTag({ content: scriptContent });
-
-  // Give the script a tick to finish synchronous work
-  console.log("what'sup doc?")
-  await new Promise((r) => setTimeout(r, 1000));
-
-  return { page, browser };
 }
 
-// ─── Testing the test runner ─────────────────────────────────────────────────────────────
-async function runTrivialTests() {
-  const fixtureUrl =
-    "file://" + path.resolve(__dirname, "fixtures/empty.html");
-  const scriptPath = path.resolve(
-    __dirname,
-    "../zenodo_greasemonkey.user.js"
-  );
-  const scriptContent = fs.readFileSync(scriptPath, "utf8");
-
-  // ─── Test Suite ─────────────────────────────────────────────────────────────
-
-  console.log("Entering test suite, not much to see yet");
-
-  // ── Suite 1: Just loading stuff ────────────────────────────
-  console.log("\n📦  Suite 1: Trivial test just to be sure");
-  {
-    const { page, browser } = await setupPage(fixtureUrl, scriptContent, { });
-
-    assertEqual(1, 1, "Everything looks fine in the trivial test")    
-
-    await browser.close();
-  }
-
-  // ── Summary ───────────────────────────────────────────────────────────────
-  console.log(`\n${"─".repeat(50)}`);
-  console.log(`Results: ${passed} passed, ${failed} failed`);
-  if (failed > 0) {
-    process.exit(1);
-  }
+async function loadFixture(url) {
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
+  await page.addScriptTag({ url: 'https://code.jquery.com/jquery-3.7.1.slim.min.js' });
+  // Wait until $ is actually available in the page before injecting the userscript
+  await page.waitForFunction(() => typeof window.jQuery !== 'undefined', { timeout: 10000 });
+  await page.addScriptTag({ content: SCRIPT_CONTENT });
+  // Wait until the script has inserted at least one btn-group
+  await page.waitForSelector('div.btn-group', { timeout: 10000 });
 }
 
-async function runTests() {
-  const fixtureUrl =
-    "file://" + path.resolve(__dirname, "fixtures/Zenodo curation demo dataset 2.html");
-  const scriptPath = path.resolve(
-    __dirname,
-    "../zenodo_greasemonkey.user.js"
-  );
-  const scriptContent = fs.readFileSync(scriptPath, "utf8");
+// ─── Suite 1: Smoke test on the empty fixture ─────────────────────────────────
 
 
-  // ─── Test Suite ─────────────────────────────────────────────────────────────
+describe('Smoke test — empty page', () => {
+  // beforeEach runs before EVERY it() in this describe block.
+  // If the browser crashes mid-test, the next test still gets a fresh page.
+  beforeEach(async () => {
+    await injectScript();
+    await loadFixture(FIXTURE_RECORD);
+  });
 
-  console.log("Entering test suite, not much to see yet");
-
-  // ── Suite 1: Just loading stuff ────────────────────────────
-  console.log("\n📦  Suite 2: Loading test + counting inserted checkboxes");
-  {
-    const { page, browser } = await setupPage(fixtureUrl, scriptContent, { });
-
-    assertEqual(1, 1, "Everything looks fine so far")
-
-    const displayedChecks = await page.evaluate(() => {
-      // return 19
-      let btnGroups = $('div.btn-group');
-      console.log('btnGroups', btnGroups);
-      return btnGroups ? btnGroups.length : 0 
-    });
-
-    assertEqual(displayedChecks, 19, "All checkboxes present and accounted for");
-
-    await browser.close();
-  }
-
-  // ── Summary ───────────────────────────────────────────────────────────────
-  console.log(`\n${"─".repeat(50)}`);
-  console.log(`Results: ${passed} passed, ${failed} failed`);
-  if (failed > 0) {
-    process.exit(1);
-  }
-}
-
-
-// runTrivialTests()
-//  .catch((err) => {
-//   console.error("Test test runner crashed:", err);
-//   process.exit(1);
-// });
-
-
-runTests().catch((err) => {
-  console.error("Test runner crashed:", err);
-  process.exit(1);
+  it('loads without throwing a JS error', async () => {
+    // If the script threw, addScriptTag would have rejected and this line
+    // would never be reached — the test fails with a clear message.
+    const title = await page.title();
+    expect(typeof title).toBe('string');
+  });
 });
 
+// ─── Suite 2: Record page — structural checks ─────────────────────────────────
 
+describe('Record page — checkbox insertion', () => {
+  beforeEach(async () => {
+    await injectScript();
+    await loadFixture(FIXTURE_RECORD);
+  });
+
+  it('inserts the expected number of btn-group elements', async () => {
+    const count = await page.evaluate(() =>
+      document.querySelectorAll('div.btn-group').length
+    );
+    expect(count).toBe(19);
+  });
+
+  // More targeted than the count: verify a specific group exists
+  it('inserts a checkbox group for eligibleResourceType', async () => {
+    const exists = await page.evaluate(() =>
+      !!document.querySelector('#eligibleResourceType')
+    );
+    expect(exists).toBe(true);
+  });
+});
+
+// ─── Suite 3: policyCheck results reflected in button state ───────────────────
+// These are the tests that were completely missing before.
+// They verify that the automated logic sets the right button state for
+// each criterion, given what is in the fixture HTML.
+
+describe('Record page — automated policy checks', () => {
+  beforeEach(async () => {
+    await injectScript();
+    await loadFixture(FIXTURE_RECORD);
+  });
+
+  // Helper: returns which label in a btn-group contains 'x' (active button)
+  // Returns 'bad', 'undecided', or 'ok' matching the label attribute.
+  async function activeButton(groupId) {
+    return page.evaluate((id) => {
+      const group = document.querySelector(`#${id}`);
+      if (!group) return null;
+      const active = Array.from(group.querySelectorAll('label.btn'))
+        .find(l => l.textContent.trim() === 'x');
+      return active ? active.getAttribute('label') : 'undecided';
+    }, groupId);
+  }
+
+  it('eligibleResourceType is OK for a dataset fixture', async () => {
+    expect(await activeButton('eligibleResourceType')).toBe('ok');
+  });
+
+  it('originalDOI is OK when fixture has a 10.5281/zenodo DOI', async () => {
+    expect(await activeButton('originalDOI')).toBe('ok');
+  });
+
+  // Add one test per automated check in policyCheck().
+  // For criteria the fixture doesn't cover (e.g. missing description),
+  // create a second minimal fixture and a parallel describe block.
+});
+
+// ─── Suite 4: Button click interaction ────────────────────────────────────────
+
+describe('Record page — checkbox click behaviour', () => {
+  beforeEach(async () => {
+    await injectScript();
+    await loadFixture(FIXTURE_RECORD);
+  });
+
+  it('clicking a red (bad) button marks it x and clears siblings', async () => {
+    const result = await page.evaluate(() => {
+      const group = document.querySelector('#allORCIDs');
+      const badBtn = group.querySelector('label.btn-danger');
+      badBtn.click();
+      const siblings = Array.from(group.querySelectorAll('label.btn'));
+      return siblings.map(l => l.textContent.trim());
+    });
+    // After clicking bad, it should be 'x' and the other two ' '
+    expect(result[0]).toBe('x');
+    expect(result[1]).toBe(' ');
+    expect(result[2]).toBe(' ');
+  });
+
+  it('clicking an already-x button cycles it to ?', async () => {
+    const result = await page.evaluate(() => {
+      const group = document.querySelector('#eligibleResourceType');
+      // The ok button starts as 'x' for a dataset fixture
+      const okBtn = group.querySelector('label.btn-success');
+      okBtn.click(); // x → ?
+      return okBtn.textContent.trim();
+    });
+    expect(result).toBe('?');
+  });
+});

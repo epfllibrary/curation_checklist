@@ -1,12 +1,23 @@
-  {
+{
   "name": "RDM curation checklists",
   "version": "1.7.5",
   "description": "Dataset curation using Greasemonkey userscript",
-  "scripts": {
-    "test": "node tests/greasemonkey.test.js"
-  },
   "dependencies": {
-    "puppeteer": "^24.15.0",
     "eslint": "^9.34"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "jest-puppeteer",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "testTimeout": 30000
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-puppeteer": "^10.1.4",
+    "puppeteer": "^22.15.0"
   }
 }
